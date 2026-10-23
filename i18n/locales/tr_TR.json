@@ -2728,7 +2728,7 @@
           "show_separators": "Ayırıcıları göster",
           "show_separators_description": "Bölümler arasında yatay ayırıcı çizgiler göster.",
           "logo": "Logo",
-          "logo_description": "Kare bir görsel yükle (512×512 PNG önerilir). Uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır. ICO dosyaları desteklenmez.",
+          "logo_description": "Kare bir görsel yükle. Uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır. ICO dosyaları desteklenmez.",
           "favicon": "Favicon",
           "favicon_description": "İsteğe bağlı. Tarayıcı sekmesi için daha sade bir simge. PNG, ICO veya WebP.",
           "login_page": "Giriş sayfası",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Yükleme başarısız: {status}",
           "delete_failed": "Silme başarısız: {status}",
           "banner": "Menü afişi",
-          "banner_description": "Oyuncular ve ziyaretçiler için yan menünün üstünde gösterilir. Afiş yoksa menü logonu ve adını gösterir."
+          "banner_description": "Oyuncular ve ziyaretçiler için yan menünün üstünde gösterilir. Afiş yoksa menü logonu ve adını gösterir.",
+          "recommended_size": "Önerilen {w} × {h} px"
         },
         "language": {
           "title": "Dil",

@@ -165,9 +165,17 @@ import {
         >
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium">{{
-                $t("pages.settings.application.branding.logo")
-              }}</label>
+              <div class="flex items-baseline justify-between gap-3">
+                <label class="text-sm font-medium">{{
+                  $t("pages.settings.application.branding.logo")
+                }}</label>
+                <span class="font-mono text-xs text-muted-foreground">{{
+                  $t("pages.settings.application.branding.recommended_size", {
+                    w: 512,
+                    h: 512,
+                  })
+                }}</span>
+              </div>
               <p class="text-sm text-muted-foreground">
                 {{ $t("pages.settings.application.branding.logo_description") }}
               </p>
@@ -185,9 +193,17 @@ import {
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium">{{
-                $t("pages.settings.application.branding.favicon")
-              }}</label>
+              <div class="flex items-baseline justify-between gap-3">
+                <label class="text-sm font-medium">{{
+                  $t("pages.settings.application.branding.favicon")
+                }}</label>
+                <span class="font-mono text-xs text-muted-foreground">{{
+                  $t("pages.settings.application.branding.recommended_size", {
+                    w: 64,
+                    h: 64,
+                  })
+                }}</span>
+              </div>
               <p class="text-sm text-muted-foreground">
                 {{
                   $t("pages.settings.application.branding.favicon_description")
@@ -210,9 +226,17 @@ import {
               v-if="supportsBanner"
               class="flex flex-col gap-2 sm:col-span-2"
             >
-              <label class="text-sm font-medium">{{
-                $t("pages.settings.application.branding.banner")
-              }}</label>
+              <div class="flex items-baseline justify-between gap-3">
+                <label class="text-sm font-medium">{{
+                  $t("pages.settings.application.branding.banner")
+                }}</label>
+                <span class="font-mono text-xs text-muted-foreground">{{
+                  $t("pages.settings.application.branding.recommended_size", {
+                    w: 840,
+                    h: 228,
+                  })
+                }}</span>
+              </div>
               <p class="text-sm text-muted-foreground">
                 {{
                   $t("pages.settings.application.branding.banner_description")
@@ -224,6 +248,7 @@ import {
                 fit="cover"
                 crop
                 :crop-output="{ w: 840, h: 228 }"
+                :crop-recommended-width="840"
                 accept="image/png,image/jpeg,image/svg+xml,image/webp"
                 :upload-fn="(blob) => uploadBrandingFile('banner', blob)"
                 :delete-fn="() => deleteBrandingFile('banner')"

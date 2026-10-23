@@ -2728,7 +2728,7 @@
           "show_separators": "구분선 표시",
           "show_separators_description": "섹션 사이에 가로 구분선을 표시합니다.",
           "logo": "로고",
-          "logo_description": "정사각형 이미지 1개를 업로드하세요(512×512 PNG 권장). 앱 전반과 PWA 설치 아이콘 생성에 사용됩니다. ICO 파일은 지원되지 않습니다.",
+          "logo_description": "정사각형 이미지 1개를 업로드하세요. 앱 전반과 PWA 설치 아이콘 생성에 사용됩니다. ICO 파일은 지원되지 않습니다.",
           "favicon": "파비콘",
           "favicon_description": "선택 사항입니다. 브라우저 탭에 표시할 간단한 마크입니다. PNG, ICO 또는 WebP.",
           "login_page": "로그인 페이지",
@@ -2805,7 +2805,8 @@
           "upload_failed": "업로드 실패: {status}",
           "delete_failed": "삭제 실패: {status}",
           "banner": "내비게이션 배너",
-          "banner_description": "플레이어와 방문자의 사이드 내비게이션 상단에 표시됩니다. 없으면 로고와 이름이 표시됩니다."
+          "banner_description": "플레이어와 방문자의 사이드 내비게이션 상단에 표시됩니다. 없으면 로고와 이름이 표시됩니다.",
+          "recommended_size": "권장 {w} × {h} px"
         },
         "language": {
           "title": "언어",

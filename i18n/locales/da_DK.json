@@ -2728,7 +2728,7 @@
           "show_separators": "Vis skillelinjer",
           "show_separators_description": "Vis vandrette skillelinjer mellem sektioner.",
           "logo": "Logo",
-          "logo_description": "Upload ét kvadratisk billede (512×512 PNG anbefales). Bruges i hele appen og til at generere dit PWA-installationsikon. ICO-filer understøttes ikke.",
+          "logo_description": "Upload ét kvadratisk billede. Bruges i hele appen og til at generere dit PWA-installationsikon. ICO-filer understøttes ikke.",
           "favicon": "Favicon",
           "favicon_description": "Valgfrit. Et enklere mærke til browserfanen. PNG, ICO eller WebP.",
           "login_page": "Loginside",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Upload mislykkedes: {status}",
           "delete_failed": "Sletning mislykkedes: {status}",
           "banner": "Menubanner",
-          "banner_description": "Vises øverst i sidemenuen for spillere og besøgende. Uden et banner viser menuen dit logo og navn."
+          "banner_description": "Vises øverst i sidemenuen for spillere og besøgende. Uden et banner viser menuen dit logo og navn.",
+          "recommended_size": "Anbefalet {w} × {h} px"
         },
         "language": {
           "title": "Sprog",

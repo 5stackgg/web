@@ -2728,7 +2728,7 @@
           "show_separators": "Afficher les séparateurs",
           "show_separators_description": "Affiche des lignes de séparation horizontales entre les sections.",
           "logo": "Logo",
-          "logo_description": "Envoie une image carrée (PNG 512×512 recommandé). Utilisée dans toute l'app et pour générer l'icône d'installation PWA. Les fichiers ICO ne sont pas pris en charge.",
+          "logo_description": "Envoie une image carrée. Utilisée dans toute l'app et pour générer l'icône d'installation PWA. Les fichiers ICO ne sont pas pris en charge.",
           "favicon": "Favicon",
           "favicon_description": "Facultatif. Une marque plus simple pour l'onglet du navigateur. PNG, ICO ou WebP.",
           "login_page": "Page de connexion",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Échec du téléversement : {status}",
           "delete_failed": "Échec de la suppression : {status}",
           "banner": "Bannière du menu",
-          "banner_description": "Affichée en haut du menu latéral pour les joueurs et les visiteurs. Sans bannière, le menu affiche votre logo et votre nom."
+          "banner_description": "Affichée en haut du menu latéral pour les joueurs et les visiteurs. Sans bannière, le menu affiche votre logo et votre nom.",
+          "recommended_size": "Recommandé : {w} × {h} px"
         },
         "language": {
           "title": "Langue",

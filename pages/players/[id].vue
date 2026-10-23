@@ -3675,16 +3675,6 @@ const playerSubscription = typedGql("subscription")({
           short_name: true,
         },
       ],
-      wins: true,
-      losses: true,
-      wins_competitive: true,
-      wins_wingman: true,
-      wins_duel: true,
-      wins_rush: true,
-      losses_competitive: true,
-      losses_wingman: true,
-      losses_duel: true,
-      losses_rush: true,
       faceit_skill_level: true,
       faceit_elo: true,
       faceit_url: true,
@@ -4163,14 +4153,6 @@ export default {
       return formatStatValue(
         this.player?.stats.kills / this.player?.stats.deaths,
       );
-    },
-    winLossRatio() {
-      const wins = this.player?.wins || 0;
-      const losses = this.player?.losses || 0;
-      if (losses === 0) {
-        return wins > 0 ? wins : "0.00";
-      }
-      return formatStatValue(wins / losses);
     },
     combatStats() {
       return [

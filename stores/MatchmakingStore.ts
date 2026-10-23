@@ -4,7 +4,11 @@ import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { e_match_types_enum, $ } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { PLAYERS_MESSAGE_REQUESTS_QUERY } from "~/graphql/messageRequests";
-import { MY_FRIENDS_SUBSCRIPTION } from "~/graphql/myFriends";
+import {
+  MY_FRIENDS_ROW_STATE_SUBSCRIPTION,
+  MY_FRIENDS_SUBSCRIPTION,
+} from "~/graphql/myFriends";
+import { schemaHasField } from "~/utilities/schemaHasType";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import debounce from "~/utilities/debounce";
@@ -167,8 +171,19 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const viewingMatchId = ref<string | undefined>();
   const subscribeToFriends = async (mySteamId: bigint) => {
-    const subscription = getGraphqlClient().subscribe({
-      query: MY_FRIENDS_SUBSCRIPTION,
+    const client = getGraphqlClient();
+    const rowState = await schemaHasField(
+      client,
+      "my_friends",
+      "is_in_another_match",
+    );
+    if (useAuthStore().me?.steam_id !== mySteamId) {
+      return;
+    }
+    const subscription = client.subscribe({
+      query: rowState
+        ? MY_FRIENDS_ROW_STATE_SUBSCRIPTION
+        : MY_FRIENDS_SUBSCRIPTION,
       variables: {
         mySteamId,
       },
@@ -179,7 +194,16 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       "matchmaking:friends",
       subscription.subscribe({
         next: ({ data }) => {
-          friends.value = data.my_friends;
+          // Read where it always was, on the friend's player.
+          friends.value = rowState
+            ? data.my_friends.map((friend: any) => ({
+                ...friend,
+                player: friend.player && {
+                  ...friend.player,
+                  is_in_another_match: friend.is_in_another_match,
+                },
+              }))
+            : data.my_friends;
           friendsLoaded.value = true;
         },
       }),

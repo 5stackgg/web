@@ -9027,9 +9027,8 @@
     "failed": "Anlık bildirimler açılamadı. Tekrar dene."
   },
   "app_update": {
-    "title": "Yeni sürüm hazır",
-    "description": "En son sürümü almak için sayfayı yenile.",
-    "refresh": "Yenile",
+    "title": "Yeni sürüm",
+    "reload": "Yenile",
     "dismiss": "Kapat"
   },
   "feature_spotlights": {

@@ -9027,9 +9027,8 @@
     "failed": "Kunde inte slå på push-aviseringar. Försök igen."
   },
   "app_update": {
-    "title": "Ny version tillgänglig",
-    "description": "Uppdatera sidan för att få den senaste versionen.",
-    "refresh": "Uppdatera",
+    "title": "Ny version",
+    "reload": "Ladda om",
     "dismiss": "Avfärda"
   },
   "feature_spotlights": {

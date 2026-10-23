@@ -9027,9 +9027,8 @@
     "failed": "Não foi possível ativar as notificações push. Tente de novo."
   },
   "app_update": {
-    "title": "Nova versão disponível",
-    "description": "Atualize a página para obter a versão mais recente.",
-    "refresh": "Atualizar",
+    "title": "Nova versão",
+    "reload": "Recarregar",
     "dismiss": "Dispensar"
   },
   "feature_spotlights": {

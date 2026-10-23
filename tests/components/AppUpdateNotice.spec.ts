@@ -1,8 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import { flushPromises, type DOMWrapper } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import AppUpdateNotice from "~/components/AppUpdateNotice.vue";
 import { useAppUpdate } from "~/composables/useAppUpdate";
+import { useRightSidebar } from "~/composables/useRightSidebar";
+import { useAuthStore } from "~/stores/AuthStore";
 
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined;
 
@@ -31,17 +34,17 @@ async function mountNotice() {
   return { wrapper, reload };
 }
 
-const refreshButton = (mounted: NonNullable<typeof wrapper>) =>
+const reloadButton = (mounted: NonNullable<typeof wrapper>) =>
   mounted
     .findAll("button")
-    .find((button: DOMWrapper<Element>) => button.text() === "Refresh");
+    .find((button: DOMWrapper<Element>) => button.text() === "Reload");
 
 describe("new version notice", () => {
   it("shows nothing while the tab runs the latest build", async () => {
     const { wrapper } = await mountNotice();
 
     expect(useAppUpdate().available.value).toBe(false);
-    expect(wrapper.text()).not.toContain("New version available");
+    expect(wrapper.text()).not.toContain("New version");
   });
 
   it("appears when a new build is deployed, without reloading", async () => {
@@ -50,16 +53,16 @@ describe("new version notice", () => {
     await newBuildDeployed();
 
     expect(useAppUpdate().available.value).toBe(true);
-    expect(wrapper.text()).toContain("New version available");
-    expect(refreshButton(wrapper)).toBeDefined();
+    expect(wrapper.text()).toContain("New version");
+    expect(reloadButton(wrapper)).toBeDefined();
     expect(reload).not.toHaveBeenCalled();
   });
 
-  it("reloads the page when Refresh is pressed", async () => {
+  it("reloads the page when Reload is pressed", async () => {
     const { wrapper, reload } = await mountNotice();
     await newBuildDeployed();
 
-    await refreshButton(wrapper)!.trigger("click");
+    await reloadButton(wrapper)!.trigger("click");
 
     expect(reload).toHaveBeenCalledTimes(1);
   });
@@ -71,7 +74,7 @@ describe("new version notice", () => {
     await wrapper.find('button[aria-label="Dismiss"]').trigger("click");
     await newBuildDeployed();
 
-    expect(wrapper.text()).not.toContain("New version available");
+    expect(wrapper.text()).not.toContain("New version");
     expect(reload).not.toHaveBeenCalled();
   });
 
@@ -85,8 +88,39 @@ describe("new version notice", () => {
       await newBuildDeployed();
 
       expect(useAppUpdate().available.value).toBe(true);
-      expect(wrapper.text()).not.toContain("New version available");
+      expect(wrapper.text()).not.toContain("New version");
     } finally {
+      route.meta.layout = layout;
+    }
+  });
+
+  // On desktop the hub's dock, and its card while open, hold the right edge;
+  // the pill centres itself on the page left of them.
+  it("keeps clear of the right hub on the app layout", async () => {
+    const route = useRoute();
+    const layout = route.meta.layout;
+    delete route.meta.layout;
+    const authStore = useAuthStore();
+    const { setRightSidebarOpen } = useRightSidebar();
+
+    try {
+      const { wrapper } = await mountNotice();
+      await newBuildDeployed();
+      const hubSpace = () =>
+        wrapper.find('[role="status"]').attributes("style");
+
+      expect(hubSpace()).toContain("--app-update-hub: 0px");
+
+      authStore.me = { steam_id: "76561198000000001", role: "user" } as any;
+      await nextTick();
+      expect(hubSpace()).toContain("--app-update-hub: 4.75rem");
+
+      setRightSidebarOpen(true);
+      await nextTick();
+      expect(hubSpace()).toContain("--app-update-hub: 30.75rem");
+    } finally {
+      setRightSidebarOpen(false);
+      authStore.me = undefined;
       route.meta.layout = layout;
     }
   });

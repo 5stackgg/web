@@ -9027,9 +9027,8 @@
     "failed": "Push-Benachrichtigungen konnten nicht aktiviert werden. Versuche es erneut."
   },
   "app_update": {
-    "title": "Neue Version verfügbar",
-    "description": "Lade die Seite neu, um die neueste Version zu erhalten.",
-    "refresh": "Neu laden",
+    "title": "Neue Version",
+    "reload": "Neu laden",
     "dismiss": "Ausblenden"
   },
   "feature_spotlights": {

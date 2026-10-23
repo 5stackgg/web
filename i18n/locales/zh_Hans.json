@@ -9027,9 +9027,8 @@
     "failed": "无法开启推送通知，请重试。"
   },
   "app_update": {
-    "title": "有新版本可用",
-    "description": "刷新页面即可获取最新版本。",
-    "refresh": "刷新",
+    "title": "新版本",
+    "reload": "重新加载",
     "dismiss": "关闭"
   },
   "feature_spotlights": {

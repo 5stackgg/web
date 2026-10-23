@@ -9027,9 +9027,8 @@
     "failed": "Nie udało się włączyć powiadomień push. Spróbuj ponownie."
   },
   "app_update": {
-    "title": "Dostępna jest nowa wersja",
-    "description": "Odśwież stronę, aby pobrać najnowszą wersję.",
-    "refresh": "Odśwież",
+    "title": "Nowa wersja",
+    "reload": "Przeładuj",
     "dismiss": "Odrzuć"
   },
   "feature_spotlights": {

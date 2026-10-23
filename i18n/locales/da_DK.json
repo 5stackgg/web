@@ -9027,9 +9027,8 @@
     "failed": "Kunne ikke slå push-notifikationer til. Prøv igen."
   },
   "app_update": {
-    "title": "Ny version tilgængelig",
-    "description": "Opdater for at få den nyeste version.",
-    "refresh": "Opdater",
+    "title": "Ny version",
+    "reload": "Genindlæs",
     "dismiss": "Afvis"
   },
   "feature_spotlights": {

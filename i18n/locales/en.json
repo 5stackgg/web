@@ -9027,9 +9027,8 @@
     "failed": "Couldn't enable push notifications. Try again."
   },
   "app_update": {
-    "title": "New version available",
-    "description": "Refresh to get the latest version.",
-    "refresh": "Refresh",
+    "title": "New version",
+    "reload": "Reload",
     "dismiss": "Dismiss"
   },
   "feature_spotlights": {

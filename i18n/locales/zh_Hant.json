@@ -9027,9 +9027,8 @@
     "failed": "無法開啟推播通知，請再試一次。"
   },
   "app_update": {
-    "title": "有新版本可用",
-    "description": "重新整理頁面即可取得最新版本。",
-    "refresh": "重新整理",
+    "title": "新版本",
+    "reload": "重新載入",
     "dismiss": "關閉"
   },
   "feature_spotlights": {

@@ -35775,6 +35775,7 @@ elo?: [{	/** JSON select path */
 	friend_steam_id?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
 	invited_by_steam_id?:boolean | `@${string}`,
+	is_in_another_match?:boolean | `@${string}`,
 	language?:boolean | `@${string}`,
 last_presence_state?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
@@ -35915,6 +35916,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 	friend_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_ban_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	invited_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	language?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_presence_state?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -35984,6 +35986,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 	friend_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
 	invited_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: boolean | undefined | null | Variable<any, string>,
 	language?: string | undefined | null | Variable<any, string>,
 	last_presence_state?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -36168,6 +36171,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 	friend_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invited_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	language?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_presence_state?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -36221,6 +36225,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 	friend_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
 	invited_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: boolean | undefined | null | Variable<any, string>,
 	language?: string | undefined | null | Variable<any, string>,
 	last_presence_state?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -36344,6 +36349,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 	friend_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
 	invited_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: boolean | undefined | null | Variable<any, string>,
 	language?: string | undefined | null | Variable<any, string>,
 	last_presence_state?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -51361,6 +51367,8 @@ invited_players_aggregate?: [{	/** distinct select on columns */
 	is_admin_sanctioned?:boolean | `@${string}`,
 	/** A computed field, executes function "is_banned" */
 	is_banned?:boolean | `@${string}`,
+	/** A computed field, executes function "is_friend" */
+	is_friend?:boolean | `@${string}`,
 	/** A computed field, executes function "is_gagged" */
 	is_gagged?:boolean | `@${string}`,
 	/** A computed field, executes function "is_in_another_match" */
@@ -51853,6 +51861,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	invited_players_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	is_admin_sanctioned?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_banned?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_friend?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_gagged?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_in_another_match?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_in_draft?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -52262,6 +52271,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	invited_players_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	is_admin_sanctioned?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_banned?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_friend?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_gagged?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_in_another_match?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_in_draft?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -129660,6 +129670,7 @@ elo?: [{	/** JSON select path */
 	friend_steam_id?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
 	invited_by_steam_id?:boolean | `@${string}`,
+	is_in_another_match?:boolean | `@${string}`,
 	language?:boolean | `@${string}`,
 last_presence_state?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
@@ -129800,6 +129811,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 	friend_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	game_ban_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	invited_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	is_in_another_match?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	language?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	last_presence_state?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -129869,6 +129881,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 	friend_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ResolverInputTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -130053,6 +130066,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 	friend_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	game_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
 	invited_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_in_another_match?: ResolverInputTypes["order_by"] | undefined | null,
 	language?: ResolverInputTypes["order_by"] | undefined | null,
 	last_presence_state?: ResolverInputTypes["order_by"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -130106,6 +130120,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 	friend_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ResolverInputTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -130229,6 +130244,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 	friend_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ResolverInputTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -145246,6 +145262,8 @@ invited_players_aggregate?: [{	/** distinct select on columns */
 	is_admin_sanctioned?:boolean | `@${string}`,
 	/** A computed field, executes function "is_banned" */
 	is_banned?:boolean | `@${string}`,
+	/** A computed field, executes function "is_friend" */
+	is_friend?:boolean | `@${string}`,
 	/** A computed field, executes function "is_gagged" */
 	is_gagged?:boolean | `@${string}`,
 	/** A computed field, executes function "is_in_another_match" */
@@ -145738,6 +145756,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	invited_players_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	is_admin_sanctioned?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_banned?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_friend?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_gagged?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_another_match?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_draft?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -146147,6 +146166,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	invited_players_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_admin_sanctioned?: ResolverInputTypes["order_by"] | undefined | null,
 	is_banned?: ResolverInputTypes["order_by"] | undefined | null,
+	is_friend?: ResolverInputTypes["order_by"] | undefined | null,
 	is_gagged?: ResolverInputTypes["order_by"] | undefined | null,
 	is_in_another_match?: ResolverInputTypes["order_by"] | undefined | null,
 	is_in_draft?: ResolverInputTypes["order_by"] | undefined | null,
@@ -219981,6 +220001,7 @@ export type ModelTypes = {
 	friend_steam_id?: ModelTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ModelTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -220116,6 +220137,7 @@ export type ModelTypes = {
 	friend_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	game_ban_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	invited_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	is_in_another_match?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	language?: ModelTypes["String_comparison_exp"] | undefined | null,
 	last_presence_state?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -220185,6 +220207,7 @@ export type ModelTypes = {
 	friend_steam_id?: ModelTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ModelTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -220366,6 +220389,7 @@ export type ModelTypes = {
 	friend_steam_id?: ModelTypes["order_by"] | undefined | null,
 	game_ban_count?: ModelTypes["order_by"] | undefined | null,
 	invited_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	is_in_another_match?: ModelTypes["order_by"] | undefined | null,
 	language?: ModelTypes["order_by"] | undefined | null,
 	last_presence_state?: ModelTypes["order_by"] | undefined | null,
 	last_read_news_at?: ModelTypes["order_by"] | undefined | null,
@@ -220416,6 +220440,7 @@ export type ModelTypes = {
 	friend_steam_id?: ModelTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ModelTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -220536,6 +220561,7 @@ export type ModelTypes = {
 	friend_steam_id?: ModelTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: ModelTypes["jsonb"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -234795,6 +234821,8 @@ export type ModelTypes = {
 	is_admin_sanctioned?: boolean | undefined | null,
 	/** A computed field, executes function "is_banned" */
 	is_banned?: boolean | undefined | null,
+	/** A computed field, executes function "is_friend" */
+	is_friend?: boolean | undefined | null,
 	/** A computed field, executes function "is_gagged" */
 	is_gagged?: boolean | undefined | null,
 	/** A computed field, executes function "is_in_another_match" */
@@ -235087,6 +235115,7 @@ export type ModelTypes = {
 	invited_players_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	is_admin_sanctioned?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_banned?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	is_friend?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_gagged?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_another_match?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_draft?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -235492,6 +235521,7 @@ export type ModelTypes = {
 	invited_players_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_admin_sanctioned?: ModelTypes["order_by"] | undefined | null,
 	is_banned?: ModelTypes["order_by"] | undefined | null,
+	is_friend?: ModelTypes["order_by"] | undefined | null,
 	is_gagged?: ModelTypes["order_by"] | undefined | null,
 	is_in_another_match?: ModelTypes["order_by"] | undefined | null,
 	is_in_draft?: ModelTypes["order_by"] | undefined | null,
@@ -304445,6 +304475,7 @@ export type GraphQLTypes = {
 	friend_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: GraphQLTypes["jsonb"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -304583,6 +304614,7 @@ export type GraphQLTypes = {
 	friend_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	game_ban_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	invited_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	is_in_another_match?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	language?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	last_presence_state?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -304652,6 +304684,7 @@ export type GraphQLTypes = {
 	friend_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: GraphQLTypes["jsonb"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -304836,6 +304869,7 @@ export type GraphQLTypes = {
 	friend_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	game_ban_count?: GraphQLTypes["order_by"] | undefined | null,
 	invited_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	is_in_another_match?: GraphQLTypes["order_by"] | undefined | null,
 	language?: GraphQLTypes["order_by"] | undefined | null,
 	last_presence_state?: GraphQLTypes["order_by"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -304889,6 +304923,7 @@ export type GraphQLTypes = {
 	friend_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: GraphQLTypes["jsonb"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -305012,6 +305047,7 @@ export type GraphQLTypes = {
 	friend_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	game_ban_count?: number | undefined | null,
 	invited_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	is_in_another_match?: boolean | undefined | null,
 	language?: string | undefined | null,
 	last_presence_state?: GraphQLTypes["jsonb"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -319870,6 +319906,8 @@ export type GraphQLTypes = {
 	is_admin_sanctioned?: boolean | undefined | null,
 	/** A computed field, executes function "is_banned" */
 	is_banned?: boolean | undefined | null,
+	/** A computed field, executes function "is_friend" */
+	is_friend?: boolean | undefined | null,
 	/** A computed field, executes function "is_gagged" */
 	is_gagged?: boolean | undefined | null,
 	/** A computed field, executes function "is_in_another_match" */
@@ -320165,6 +320203,7 @@ export type GraphQLTypes = {
 	invited_players_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	is_admin_sanctioned?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_banned?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	is_friend?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_gagged?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_another_match?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_draft?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -320574,6 +320613,7 @@ export type GraphQLTypes = {
 	invited_players_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_admin_sanctioned?: GraphQLTypes["order_by"] | undefined | null,
 	is_banned?: GraphQLTypes["order_by"] | undefined | null,
+	is_friend?: GraphQLTypes["order_by"] | undefined | null,
 	is_gagged?: GraphQLTypes["order_by"] | undefined | null,
 	is_in_another_match?: GraphQLTypes["order_by"] | undefined | null,
 	is_in_draft?: GraphQLTypes["order_by"] | undefined | null,
@@ -361851,6 +361891,7 @@ export enum my_friends_select_column {
 	friend_steam_id = "friend_steam_id",
 	game_ban_count = "game_ban_count",
 	invited_by_steam_id = "invited_by_steam_id",
+	is_in_another_match = "is_in_another_match",
 	language = "language",
 	last_presence_state = "last_presence_state",
 	last_read_news_at = "last_read_news_at",
@@ -361876,6 +361917,7 @@ export enum my_friends_select_column {
 /** select "my_friends_aggregate_bool_exp_bool_and_arguments_columns" columns of table "v_my_friends" */
 export enum my_friends_select_column_my_friends_aggregate_bool_exp_bool_and_arguments_columns {
 	allow_message_requests = "allow_message_requests",
+	is_in_another_match = "is_in_another_match",
 	name_registered = "name_registered",
 	show_match_ready_modal = "show_match_ready_modal",
 	vac_banned = "vac_banned"
@@ -361883,6 +361925,7 @@ export enum my_friends_select_column_my_friends_aggregate_bool_exp_bool_and_argu
 /** select "my_friends_aggregate_bool_exp_bool_or_arguments_columns" columns of table "v_my_friends" */
 export enum my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns {
 	allow_message_requests = "allow_message_requests",
+	is_in_another_match = "is_in_another_match",
 	name_registered = "name_registered",
 	show_match_ready_modal = "show_match_ready_modal",
 	vac_banned = "vac_banned"

@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "Join server",
+    "watch_gotv": "Se med på GOTV",
+    "copy_gotv": "Kopiér GOTV connect-kommando",
     "form": {
       "where_it_runs": "Hvor den kører",
       "what_it_plays": "Hvad den spiller",
@@ -12562,6 +12564,9 @@
       "tv_port": "TV-port",
       "max_players": "Maks. spillere",
       "max_players_description": "Det maksimale antal spillere, der kan forbinde til serveren",
+      "gotv": "GOTV",
+      "gotv_description": "Alle, der kan joine, kan se med via TV-porten.",
+      "gotv_external_description": "Viser TV-porten for alle, der kan joine. Selve GOTV slås til i serverens egen config.",
       "edit_mode_link": "Rediger tilstand"
     },
     "rcon": {

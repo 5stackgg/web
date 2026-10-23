@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from "vue";
-import { ExternalLink, Pin, PinOff, Settings2 } from "lucide-vue-next";
+import { ExternalLink, Pin, PinOff, Settings2, Tv } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
 import type { PublicServerView } from "~/components/public-servers/types";
@@ -40,6 +40,9 @@ const sizeClasses = computed(
 // Amber is the one loud thing on the page, so it is spent only on a server
 // you can walk straight into.
 const quiet = computed(() => props.server.hibernating || props.server.isFull);
+
+// A hibernating server has nobody on it to watch.
+const watchable = computed(() => !props.server.hibernating);
 </script>
 
 <template>
@@ -51,6 +54,33 @@ const quiet = computed(() => props.server.hibernating || props.server.isFull);
       :title="$t('pages.public_servers.copy_connect')"
       :aria-label="$t('pages.public_servers.copy_connect')"
     />
+
+    <Button
+      v-if="watchable && server.tv_connection_link"
+      as-child
+      variant="outline"
+      size="icon"
+      :class="['shrink-0 [@media(pointer:coarse)]:hidden', sizeClasses.icon]"
+      :title="$t('server.watch_gotv')"
+    >
+      <a
+        :href="server.tv_connection_link"
+        :aria-label="$t('server.watch_gotv')"
+        data-testid="watch-gotv"
+      >
+        <Tv class="h-4 w-4" />
+      </a>
+    </Button>
+    <ClipBoard
+      v-else-if="watchable && server.tv_connection_string"
+      :data="server.tv_connection_string"
+      :class="['shrink-0', sizeClasses.icon]"
+      :title="$t('server.copy_gotv')"
+      :aria-label="$t('server.copy_gotv')"
+      data-testid="copy-gotv"
+    >
+      <Tv class="h-4 w-4" />
+    </ClipBoard>
 
     <!-- A phone cannot launch CS2, so touch devices keep the copy and lose
          the join. -->

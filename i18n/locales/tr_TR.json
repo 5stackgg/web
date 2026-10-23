@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "Sunucuya katıl",
+    "watch_gotv": "GOTV ile izle",
+    "copy_gotv": "GOTV bağlantı komutunu kopyala",
     "form": {
       "where_it_runs": "Nerede Çalışır",
       "what_it_plays": "Ne Oynanır",
@@ -12562,6 +12564,9 @@
       "tv_port": "TV Portu",
       "max_players": "Maksimum Oyuncu",
       "max_players_description": "Sunucuya bağlanabilecek maksimum oyuncu sayısı",
+      "gotv": "GOTV",
+      "gotv_description": "Katılabilen herkes TV portundan izleyebilir.",
+      "gotv_external_description": "TV portunu katılabilen herkese gösterir. GOTV'nin kendisi sunucunun kendi yapılandırmasında açılır.",
       "edit_mode_link": "Modu düzenle"
     },
     "rcon": {

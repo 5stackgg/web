@@ -105,7 +105,10 @@ function mockQueries(you: Record<string, unknown> | null) {
   });
 }
 
-async function mountPage(you: Record<string, unknown> | null) {
+async function mountPage(
+  you: Record<string, unknown> | null,
+  server: Record<string, unknown> = {},
+) {
   useAuthStore().me = { steam_id: ME, role: "user" } as any;
   state.server = {
     id: "server-1",
@@ -118,6 +121,7 @@ async function mountPage(you: Record<string, unknown> | null) {
     connection_string: null,
     max_players: 12,
     game_mode: null,
+    ...server,
   };
   mockQueries(you);
 
@@ -145,6 +149,22 @@ describe("dedicated server page for a player", () => {
     expect(wrapper.find('[role="tablist"]').exists()).toBe(false);
     expect(wrapper.find(".lucide-ellipsis-vertical").exists()).toBe(false);
     expect(wrapper.text()).toContain("Public Servers");
+  });
+
+  it("links the server's GOTV beside its join", async () => {
+    const wrapper = await mountPage(null, {
+      connection_link: "steam://run/730//+connect 10.0.0.1:27015",
+      connection_string: "connect 10.0.0.1:27015",
+      tv_connection_link: "steam://run/730//+connect 10.0.0.1:27020",
+      tv_connection_string: "connect 10.0.0.1:27020",
+    });
+
+    expect(
+      wrapper
+        .find('[data-testid="watch-gotv"]')
+        .element.closest("a")
+        ?.getAttribute("href"),
+    ).toBe("steam://run/730//+connect 10.0.0.1:27020");
   });
 
   it("shows the server, its weekly tiles and the activity chart", async () => {

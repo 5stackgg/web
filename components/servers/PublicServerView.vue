@@ -27,6 +27,8 @@ type PublicServer = {
   connected: boolean;
   connection_link: string | null;
   connection_string: string | null;
+  tv_connection_link: string | null;
+  tv_connection_string: string | null;
   max_players: number | null;
   game_mode: { slug: string; name: string } | null;
 };

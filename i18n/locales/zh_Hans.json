@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "加入服务器",
+    "watch_gotv": "通过 GOTV 观战",
+    "copy_gotv": "复制 GOTV 连接命令",
     "form": {
       "where_it_runs": "运行位置",
       "what_it_plays": "游戏内容",
@@ -12562,6 +12564,9 @@
       "tv_port": "TV 端口",
       "max_players": "最大玩家数",
       "max_players_description": "可以连接到服务器的最大玩家数",
+      "gotv": "GOTV",
+      "gotv_description": "能加入的人都可以通过 TV 端口观战。",
+      "gotv_external_description": "向能加入的人显示 TV 端口。GOTV 本身需在服务器自己的配置中开启。",
       "edit_mode_link": "编辑模式"
     },
     "rcon": {

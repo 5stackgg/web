@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "서버 참가",
+    "watch_gotv": "GOTV로 관전",
+    "copy_gotv": "GOTV 접속 명령어 복사",
     "form": {
       "where_it_runs": "실행 위치",
       "what_it_plays": "플레이 내용",
@@ -12562,6 +12564,9 @@
       "tv_port": "TV 포트",
       "max_players": "최대 인원",
       "max_players_description": "서버에 접속할 수 있는 최대 플레이어 수",
+      "gotv": "GOTV",
+      "gotv_description": "참가할 수 있는 사람은 누구나 TV 포트로 관전할 수 있습니다.",
+      "gotv_external_description": "참가할 수 있는 사람에게 TV 포트를 보여 줍니다. GOTV는 서버 자체 설정에서 켜세요.",
       "edit_mode_link": "모드 편집"
     },
     "rcon": {

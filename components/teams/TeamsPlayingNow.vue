@@ -118,7 +118,7 @@ const linkClasses =
       <div v-if="rest" class="flex shrink-0 snap-start">
         <NuxtLink
           to="/watch"
-          class="flex h-[6.875rem] w-44 flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border px-3 text-center text-[13px] text-muted-foreground transition-colors duration-150 hover:border-foreground/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+          class="flex h-[5.5rem] w-44 flex-col items-center justify-center gap-0.5 rounded-lg border border-dashed border-border px-3 text-center text-[13px] text-muted-foreground transition-colors duration-150 hover:border-foreground/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
         >
           <span class="text-xl font-bold tabular-nums text-foreground"
             >+{{ rest }}</span

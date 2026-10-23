@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { computed, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
 import gql from "graphql-tag";
 import {
   CirclePlus,
@@ -197,10 +197,14 @@ const orderedImpacts = computed(() =>
   [...resetImpacts.value].sort((a, b) => a.depth - b.depth),
 );
 
+// A showcase bracket (the welcome page's) has nothing to manage.
+const readonly = inject("bracket-readonly", false);
+
 const canManageBracketReset = computed(
   () =>
-    !!props.tournament?.is_organizer ||
-    authStore.isRoleAbove(e_player_roles_enum.administrator),
+    !readonly &&
+    (!!props.tournament?.is_organizer ||
+      authStore.isRoleAbove(e_player_roles_enum.administrator)),
 );
 
 // A match waiting for a server is past its veto; it moves region from its

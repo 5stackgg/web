@@ -21,12 +21,14 @@ import type {
 
 const props = defineProps<{
   lineupId: string;
+  // Handed in where the panel is only a picture: the pattern is a query.
+  pattern?: UtilityMissPatternView | null;
 }>();
 
 const { t } = useI18n();
 
-const pattern = ref<UtilityMissPatternView | null>(null);
-const loading = ref(true);
+const pattern = ref<UtilityMissPatternView | null>(props.pattern ?? null);
+const loading = ref(props.pattern === undefined);
 
 let loadGen = 0;
 
@@ -60,7 +62,15 @@ async function load() {
   }
 }
 
-watch(() => props.lineupId, () => void load(), { immediate: true });
+watch(
+  () => props.lineupId,
+  () => {
+    if (props.pattern === undefined) {
+      void load();
+    }
+  },
+  { immediate: true },
+);
 
 const biasKey = computed(() => utilityMissBiasKey(pattern.value?.bias));
 

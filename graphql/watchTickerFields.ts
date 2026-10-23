@@ -8,7 +8,16 @@ const watchLineupFields = Selector("match_lineups")({
     short_name: true,
     avatar_url: true,
   },
-  lineup_players: [{}, { checked_in: true, captain: true }],
+  lineup_players: [
+    {},
+    {
+      steam_id: true,
+      checked_in: true,
+      captain: true,
+      placeholder_name: true,
+      player: { name: true, avatar_url: true, custom_avatar_url: true },
+    },
+  ],
 });
 
 // What a /watch ticker cell shows. Kept slim (not simpleMatchFields): the

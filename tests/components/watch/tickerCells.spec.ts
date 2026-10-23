@@ -295,6 +295,72 @@ describe("ticker cell", () => {
     expect(tickerCell(match({ is_in_lineup: true }), ctx).you).toBe(true);
     expect(tickerCell(match(), ctx).you).toBe(false);
   });
+
+  const lineupPlayer = (steamId: string, name: string, extra = {}) => ({
+    steam_id: steamId,
+    checked_in: false,
+    captain: false,
+    placeholder_name: null,
+    player: { name, avatar_url: `avatars/${steamId}.jpg`, custom_avatar_url: null },
+    ...extra,
+  });
+  const pickup = (id: string, players: any[]) => ({
+    id,
+    name: id === "l1" ? "Team 1" : "Team 2",
+    team: null,
+    lineup_players: players,
+  });
+
+  it("shows a pickup lineup's players, captain first, in place of its placeholder name", () => {
+    const cell = tickerCell(
+      match({
+        lineup_1: pickup("l1", [
+          lineupPlayer("1", "kuro"),
+          lineupPlayer("2", "vexa", { captain: true }),
+          lineupPlayer("3", "", { player: null, placeholder_name: "Guest" }),
+        ]),
+      }),
+      ctx,
+    );
+    expect(cell.teams[0].monogram).toBe("T1");
+    expect(cell.teams[0].players?.map((p) => p.name)).toEqual(["vexa", "kuro", "Guest"]);
+    expect(cell.teams[0].players?.[0].avatar).toBe("avatars/2.jpg");
+    expect(cell.teams[0].players?.[2].avatar).toBeNull();
+    // A team keeps its crest and name.
+    expect(cell.teams[1].players).toBeNull();
+  });
+
+  it("keeps a tournament lineup's name even without a team", () => {
+    const cell = tickerCell(
+      match({
+        lineup_1: pickup("l1", [lineupPlayer("1", "kuro")]),
+        tournament_brackets: [{ stage: { tournament: { id: "t", name: "Fall Cup" } } }],
+      }),
+      ctx,
+    );
+    expect(cell.teams[0].players).toBeNull();
+  });
+
+  it("dims players still to check in and leaves open seats before the match", () => {
+    const cell = tickerCell(
+      match({
+        status: "WaitingForCheckIn",
+        min_players_per_lineup: 5,
+        options: { best_of: 1, mr: 12, type: "Competitive", check_in_setting: "Players" },
+        lineup_1: pickup("l1", [
+          lineupPlayer("1", "vexa", { checked_in: true }),
+          lineupPlayer("2", "kuro"),
+          lineupPlayer("3", "Pip", { checked_in: true }),
+        ]),
+      }),
+      ctx,
+    );
+    expect(cell.teams[0].players?.map((p) => p.waiting)).toEqual([false, true, false]);
+    expect(cell.teams[0].openSeats).toBe(2);
+    const live = tickerCell(match({ min_players_per_lineup: 5, lineup_1: pickup("l1", [lineupPlayer("1", "vexa")]) }), ctx);
+    expect(live.teams[0].openSeats).toBe(0);
+    expect(live.teams[0].players?.[0].waiting).toBe(false);
+  });
 });
 
 describe("ticker ordering and filters", () => {

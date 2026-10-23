@@ -9,12 +9,16 @@ const props = withDefaults(
     size?: "sm" | "md";
     // No pill chrome, for placing inside another badge (the LIVE tag).
     bare?: boolean;
+    // A count already in hand (the welcome page's demo): nothing is polled.
+    count?: number | null;
   }>(),
-  { size: "sm", bare: false },
+  { size: "sm", bare: false, count: null },
 );
 
-const { getCount } = useStreamViewers();
-const count = getCount(props.matchId);
+const count =
+  props.count !== null
+    ? computed(() => props.count)
+    : useStreamViewers().getCount(props.matchId);
 
 const formatted = computed(() => {
   const n = count.value;

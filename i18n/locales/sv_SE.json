@@ -8235,6 +8235,281 @@
         "last_match": "Senaste match här",
         "matches_after_steam": "{count} match efter Steam-banen | {count} matcher efter Steam-banen"
       }
+    },
+    "welcome": {
+      "meta_title": "Välkommen",
+      "meta_description": "Spela CS2 på {name}: matchmaking, draftrum, turneringar och ligor, med livematcher, repriser i webbläsaren och automatiska höjdpunkter.",
+      "nav": {
+        "label": "Sektioner",
+        "play": "Spela",
+        "compete": "Tävla",
+        "watch": "Titta",
+        "utility": "Utility",
+        "community": "Community",
+        "watch_live": "Titta live",
+        "open_play": "Öppna Spela"
+      },
+      "hero": {
+        "eyebrow": "Counter-Strike 2 på {name}",
+        "title": "Ditt hem för CS2-matcher, cuper och ligor.",
+        "lede": "Köa till balanserade matcher, drafta lag med kaptener, gå med i turneringar och se om varje rond i webbläsaren. Dina bästa plays klipps åt dig.",
+        "lede_draft": "Drafta lag med kaptener, gå med i turneringar och ligor och se om varje rond i webbläsaren. Dina bästa plays klipps åt dig."
+      },
+      "now": {
+        "live": "Live nu",
+        "recent": "Senaste matcher",
+        "open_watch": "Öppna Titta"
+      },
+      "play": {
+        "eyebrow": "Spela",
+        "title": "Hitta en match med ett klick, eller ta med dina egna tio.",
+        "lede": "Matchmaking parar ihop dig efter region och latens, och du kan köa med din grupp. Vill du hellre välja lag själv öppnar du ett draftrum.",
+        "points": {
+          "matchmaking": {
+            "title": "Matchmaking.",
+            "body": "Competitive, Wingman, Duel och Rush, solo eller med din grupp."
+          },
+          "draft": {
+            "title": "Draftrum.",
+            "body": "Öppna ett rum, låt spelare fylla det, och kaptenerna draftar lagen."
+          },
+          "scrims": {
+            "title": "Scrimsökare.",
+            "body": "Bläddra bland lag som är öppna för scrims, filtrera på region och kartor och skicka sedan en förfrågan."
+          },
+          "servers": {
+            "title": "Communityservrar.",
+            "body": "Hoppa in med ping, karta och antal spelare synliga direkt."
+          },
+          "check_in": {
+            "title": "Incheckning.",
+            "body": "Alla bekräftar innan en server reserveras, så ingen behöver vänta på någon som inte dyker upp."
+          }
+        },
+        "link": "Öppna Spela",
+        "modes_label": "Matchlägen",
+        "party_line": "Köa solo eller med din grupp. De bärnstensfärgade platserna är dina.",
+        "lede_draft": "Öppna ett draftrum och låt kaptenerna välja lagen, hitta ett lag att scrimma mot eller hoppa in på en communityserver."
+      },
+      "match": {
+        "eyebrow": "Varje match",
+        "title": "Veto, server, kör. Ingen väntar på en admin.",
+        "lede": "Kaptenerna bannar kartor på tavlan tills en återstår. Servern startar av sig själv i regionen närmast spelarna, och Anslut till server dyker upp så fort den är redo.",
+        "points": {
+          "veto": {
+            "title": "Kart- och regionveto.",
+            "body": "Varje tur går på tid, med scouting av varje lags karthistorik."
+          },
+          "servers": {
+            "title": "Servrar startar av sig själva.",
+            "body": "Ingen behöver starta en för hand."
+          },
+          "fix": {
+            "title": "Lös ett problem.",
+            "body": "Admins kan ångra ett felval, agera åt ett lag som har fastnat, pausa eller återställa en rond."
+          },
+          "voice": {
+            "title": "Röst och kameror.",
+            "body": "Röstchatt i matchen är inbyggd, och webbkameror kan krävas."
+          }
+        },
+        "link": "Testa demodraften",
+        "replay_veto": "Spela upp vetot igen"
+      },
+      "compete": {
+        "eyebrow": "Tävla",
+        "title": "Cuper, ligor och LAN-helger, skötta från början till slut.",
+        "lede": "Anmälan, incheckning, slutspelsträd och resultat på ett ställe. Matcherna startar av sig själva i takt med att slutspelsträdet går framåt.",
+        "points": {
+          "tournaments": {
+            "title": "Turneringar.",
+            "body": "Enkel- och dubbelutslagning, round robin och Schweizersystem, kedjade i faser. Free agents draftas in i balanserade lag."
+          },
+          "leagues": {
+            "title": "Ligor.",
+            "body": "Säsongsbaserad round robin över divisioner efter skicklighet, med veckovisa matchfönster, slutspel samt uppflyttning och nedflyttning."
+          },
+          "events": {
+            "title": "Event.",
+            "body": "En helgs turneringar, tabeller och bilder på ett ställe."
+          },
+          "awards": {
+            "title": "Utmärkelser.",
+            "body": "Arrangörer delar ut utmärkelser till spelare och lag, plus en MVP för varje turnering."
+          }
+        },
+        "link": "Bläddra bland turneringar"
+      },
+      "watch": {
+        "eyebrow": "Titta",
+        "title": "Varje livematch, med ställningen på skärmen.",
+        "lede": "Titta visar det som är live först, sedan det som är på gång och de senaste resultaten. Matcher kan sändas som en stream med en sändningsscorebug.",
+        "points": {
+          "streams": {
+            "title": "Livestreams.",
+            "body": "Matcher sänds från kontrollrummet, med GOTV som alternativ."
+          },
+          "match_pages": {
+            "title": "Matchsidor.",
+            "body": "Liveresultattavlan, ekonomi, clutcher och öppningsdueller."
+          },
+          "povs": {
+            "title": "Twitch-POV:er och spelarkameror.",
+            "body": "Titta genom en spelares ögon, direkt bredvid matchen."
+          },
+          "news": {
+            "title": "Nyheter.",
+            "body": "Patchanteckningar, resultat och meddelanden, med kommentarer."
+          }
+        },
+        "link": "Öppna Titta",
+        "sign_in_note": "Livestreams är för inloggade spelare."
+      },
+      "rewatch": {
+        "eyebrow": "Se om",
+        "title": "Varje rond i webbläsaren. Dina bästa, redan klippta.",
+        "lede": "Varje match får en 2D-radarrepris och en 3D-genomflygning med rondtidslinje, ekonomi och killfeed. Multikills, clutcher och knivronder klipps ut när matchen är slut.",
+        "points": {
+          "replays": {
+            "title": "2D- och 3D-repriser.",
+            "body": "Ingen nedladdning behövs. Demofilen finns kvar om du vill ha den."
+          },
+          "highlights": {
+            "title": "Automatiska höjdpunkter.",
+            "body": "Aces, 4K, clutcher och knivronder, renderade åt dig."
+          },
+          "editor": {
+            "title": "Klippredigerare.",
+            "body": "Klipp dina egna från vilken match som helst och dela dem."
+          }
+        },
+        "link": "Bläddra bland höjdpunkter",
+        "example_caption": "En riktig höjdpunkt: fyra kills och en knivkill på Mirage, hittad och klippt när matchen tog slut."
+      },
+      "utility": {
+        "eyebrow": "Utility",
+        "title": "Uppställningar för varje karta: var du står, var du siktar, var den landar.",
+        "lede": "Lär dig smokes, flashes och molotovs från ett delat bibliotek. Se varje kast, se exakt var du ska sikta och gå sedan in på din egen träningsserver och kasta den själv.",
+        "points": {
+          "previews": {
+            "title": "Renderade förhandsvisningar.",
+            "body": "Varje uppställning får ett klipp av kastet och närbilder på var du ska stå och sikta."
+          },
+          "library": {
+            "title": "Delade, lagets och privata uppställningar.",
+            "body": "Rösta, förgrena och samla de du använder."
+          },
+          "executes": {
+            "title": "Executes och playbooks.",
+            "body": "Lägg upp ett helt take, med timing."
+          },
+          "practice": {
+            "title": "Träningsservrar.",
+            "body": "Valfri karta, laddad med uppställningen du tittar på."
+          },
+          "solver": {
+            "title": "Kastlösare.",
+            "body": "Hitta ett kast för platsen du vill täcka."
+          }
+        },
+        "link": "Öppna Utility"
+      },
+      "community": {
+        "eyebrow": "Community",
+        "title": "Dina vänner, ditt lag och din chatt, direkt bredvid dina matcher.",
+        "lede": "Se vem som är online och vad de spelar, bilda en grupp och prata i text eller röst utan att öppna en annan app.",
+        "points": {
+          "chat": {
+            "title": "Chatt.",
+            "body": "Direktmeddelanden, GIF:ar, reaktioner, bilagor och omnämnanden."
+          },
+          "voice": {
+            "title": "Röst och video.",
+            "body": "I lobbyer och matcher, plus samtal, och din telefon kan vara din kamera."
+          },
+          "teams": {
+            "title": "Lag.",
+            "body": "En lagsida, en vetosimulator, en scrimhanterare och en kalender du kan prenumerera på."
+          },
+          "notifications": {
+            "title": "Notiser.",
+            "body": "På telefonen när du har installerat appen, plus koppling till Discord och Twitch."
+          },
+          "bans": {
+            "title": "Bans i öppen dager.",
+            "body": "Senaste Steam- och sajtbans visas för alla."
+          }
+        }
+      },
+      "cta": {
+        "title": "Din nästa match är bara ett klick bort."
+      },
+      "footer": {
+        "run_own": "Vill du köra din egen?",
+        "contact": "Kontakt",
+        "tagline": "Ditt hem för CS2-matcher, cuper och ligor.",
+        "legal": "Juridiskt",
+        "cookies": "Cookies",
+        "valve": "{name} är inte anknutet till Valve Corporation. Counter-Strike och Steam är varumärken som tillhör Valve Corporation."
+      },
+      "match_page": {
+        "eyebrow": "Matchsidor",
+        "title": "Varje rond, varje duell, varje dollar, på en sida.",
+        "lede": "Varje match får en sida med resultattavlan och allt demon kan berätta, från ekonomin till vem som vann öppningsduellerna.",
+        "points": {
+          "scoreboard": {
+            "title": "Resultattavla.",
+            "body": "Kills, deaths, ADR, KAST och rating för varje spelare på varje karta."
+          },
+          "economy": {
+            "title": "Ekonomi, clutcher och dueller.",
+            "body": "Köp rond för rond, varje clutch och vem som vinner första duellen."
+          },
+          "head_to_head": {
+            "title": "Head to head.",
+            "body": "Vem som slog vem, spelare mot spelare."
+          },
+          "utility": {
+            "title": "Utility.",
+            "body": "Varje granat varje spelare kastade, och vad den gjorde."
+          }
+        },
+        "link": "Testa demomatchen"
+      },
+      "network": {
+        "label": "5Stack-nätverket",
+        "matches": "matcher spelade på 5Stack*",
+        "players": "spelare inloggade på 5Stack*",
+        "caption": "* Över alla 5Stack-paneler."
+      },
+      "inventory": {
+        "eyebrow": "Inventarie",
+        "title": "Bygg inventariet du alltid velat ha.",
+        "lede": "Crafta vilket skin, vilken kniv, handske eller agent som helst, sätt ihop en loadout för varje sida och visa upp den.",
+        "points": {
+          "craft": {
+            "title": "Crafta vad som helst.",
+            "body": "Skins, knivar, handskar, agenter, stickers, charms och mer, med wear, mönster och StatTrak™ som du själv väljer."
+          },
+          "loadouts": {
+            "title": "Loadouts för båda sidor.",
+            "body": "Ställ in CT och T, och ha mer än en loadout."
+          },
+          "inspect": {
+            "title": "Inspektera i 3D.",
+            "body": "Vrid på vilket föremål som helst på nära håll, stickers och charms inräknade."
+          },
+          "value": {
+            "title": "Se vad det är värt.",
+            "body": "Marknadspriser på varje föremål och en totalsumma för din loadout."
+          },
+          "profile": {
+            "title": "Visa upp det.",
+            "body": "Ditt inventarie visas på din profil, och alla föremål och loadouts kan delas med en länk."
+          }
+        },
+        "link": "Öppna Inventarie"
+      }
     }
   },
   "layouts": {

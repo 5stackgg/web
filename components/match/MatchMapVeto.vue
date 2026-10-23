@@ -67,10 +67,13 @@ import {
 import { unfoldHome } from "~/utilities/vetoHandoff";
 import { useVetoHandoff, vetoHandoffPhase } from "~/composables/useVetoHandoff";
 import { loadVetoScouting } from "~/utilities/loadVetoScouting";
+import type { PropType } from "vue";
 import type { ScoutLineup } from "~/utilities/vetoScouting";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
+  // A showcase veto (the welcome page's) plays without its sounds.
+  inject: { silent: { from: "veto-silent", default: false } },
   props: {
     match: {
       type: Object,
@@ -101,6 +104,14 @@ export default {
     // draft); otherwise they, and the teams' veto history, are fetched.
     picks: {
       type: Array,
+      default: undefined,
+    },
+    // Each lineup's veto history when the caller already has it (the
+    // welcome page's demo); it is drawn as is, even with `picks`.
+    scouts: {
+      type: Array as unknown as PropType<
+        [ScoutLineup | null, ScoutLineup | null]
+      >,
       default: undefined,
     },
   },
@@ -166,7 +177,7 @@ export default {
     isPicking: {
       immediate: true,
       handler(isPicking) {
-        if (!isPicking) {
+        if (!isPicking || this.silent) {
           return;
         }
 
@@ -203,7 +214,7 @@ export default {
     vetoPicks: {
       handler(currentPicks, oldPicks) {
         if (oldPicks && currentPicks.length > oldPicks.length) {
-          this.playTickSound();
+          if (!this.silent) this.playTickSound();
           this.finishSubmitting();
         }
       },
@@ -367,6 +378,9 @@ export default {
     // On from the first frame, so the board keeps its height while the
     // history loads; dropped only when there turns out to be none.
     scoutingView() {
+      if (this.scouts) {
+        return { lineups: this.scouts, viewer: this.viewerLineup };
+      }
       if (!this.scoutingKey) {
         return null;
       }

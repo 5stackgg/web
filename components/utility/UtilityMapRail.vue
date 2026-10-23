@@ -1,25 +1,34 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { LayoutGrid } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useUtilityMaps } from "~/composables/useUtilityMaps";
+import type { UtilityMapTile } from "~/composables/useUtilityMaps";
 
 const props = defineProps<{
   // Null on the maps index, where no map is picked and the grid entry is lit.
   mapName: string | null;
   /** A strip across the top of the page on narrow screens, a rail beside the map otherwise. */
   horizontal?: boolean;
+  // Handed in where the rail is only a picture: the maps and their counts are
+  // queries.
+  maps?: { tiles: UtilityMapTile[]; counts: Record<string, number> } | null;
 }>();
 
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
-const { tiles, counts, privateCounts, loadCounts } = useUtilityMaps();
+const live = useUtilityMaps();
+const { privateCounts } = live;
+const tiles = computed(() => props.maps?.tiles ?? live.tiles.value);
+const counts = computed(() => props.maps?.counts ?? live.counts.value);
 
 onMounted(() => {
-  void loadCounts();
+  if (!props.maps) {
+    void live.loadCounts();
+  }
 });
 
 function tally(name: string) {

@@ -47,6 +47,9 @@ const props = withDefaults(
     // Fill the parent's box (bento cells size tiles themselves) instead of
     // holding 16:9.
     fill?: boolean;
+    // A muted loop drawn in place of the thumbnail (the welcome page's
+    // example clip, which lives in the repo rather than on the api).
+    preview?: string | null;
   }>(),
   { variant: "tile" },
 );
@@ -264,8 +267,20 @@ const actionClasses = `${actionBase} w-8`;
       class="absolute inset-x-0 bottom-0 isolate overflow-hidden rounded-lg border border-white/[0.07] bg-card transition-colors duration-150 group-focus-within/clip:border-[hsl(var(--tac-amber)/0.45)] group-hover/clip:border-[hsl(var(--tac-amber)/0.45)]"
       :class="isGroup ? 'top-2.5' : 'top-0'"
     >
+      <video
+        v-if="preview"
+        :src="preview"
+        :poster="thumbSrc ?? undefined"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-hidden="true"
+        class="absolute inset-0 -z-20 h-full w-full object-cover"
+      />
       <NuxtImg
-        v-if="thumbSrc"
+        v-else-if="thumbSrc"
         :src="thumbSrc"
         sizes="400px lg:640px"
         alt=""

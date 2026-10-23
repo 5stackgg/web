@@ -81,9 +81,11 @@ import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlig
 import { useAuthStore } from "~/stores/AuthStore";
 import type {
   UtilityLineup,
+  UtilityMissPatternView,
   UtilityTeamRef,
   UtilityVisibility,
 } from "~/types/utility";
+import type { UtilityRunUp } from "~/utilities/utilityThrowGuide";
 import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 import { hasMeshForMap } from "~/utilities/mapAssets";
 
@@ -103,6 +105,16 @@ const props = defineProps<{
    * a collection, a step of an execute, the practice plan.
    */
   context?: UtilityLineupContext | null;
+  /**
+   * Set where the panel is only a picture (the landing page): what it would
+   * ask the api for is handed in -- the run-up, the miss pattern, whose
+   * record it is -- and nothing live is asked about or listened for.
+   */
+  snapshot?: {
+    viewer: string;
+    runUp: UtilityRunUp | null;
+    missPattern: UtilityMissPatternView | null;
+  } | null;
 }>();
 
 const open = defineModel<boolean>("open", { default: false });
@@ -213,7 +225,11 @@ function onKey(event: KeyboardEvent) {
   }
 }
 
-onMounted(() => window.addEventListener("keydown", onKey));
+onMounted(() => {
+  if (!props.snapshot) {
+    window.addEventListener("keydown", onKey);
+  }
+});
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKey);
   if (layers && onStage.value) {
@@ -223,13 +239,13 @@ onBeforeUnmount(() => {
 
 // Already standing on a practice server? Then "practice this" is not a booking
 // flow, it is one RCON away: stand them on it where they are.
-const load = useUtilityLoad();
+const load = props.snapshot ? null : useUtilityLoad();
 
 watch(
   () => open.value,
   (isOpen) => {
     if (isOpen) {
-      void load.check();
+      void load?.check();
     }
   },
   { immediate: true },
@@ -421,9 +437,9 @@ const canRerender = computed(
 
 // The api turns a second render down while one is under way, so the menu does
 // not offer it.
-const renders = useUtilityRendersInFlight();
+const renders = props.snapshot ? null : useUtilityRendersInFlight();
 const rendering = computed(
-  () => !!lineup.value && renders.isRendering(lineup.value.id),
+  () => !!lineup.value && !!renders?.isRendering(lineup.value.id),
 );
 
 const canEdit = computed(
@@ -449,7 +465,12 @@ const color = computed(
   () => UTILITY_TYPE_COLORS[lineup.value?.utility_type ?? "Smoke"] ?? "#ffffff",
 );
 
-const runUp = useUtilityRunUp(() => (open.value ? lineup.value?.id : null));
+const fetchedRunUp = useUtilityRunUp(() =>
+  open.value && !props.snapshot ? lineup.value?.id : null,
+);
+const runUp = computed(() =>
+  props.snapshot ? props.snapshot.runUp : fetchedRunUp.value,
+);
 
 const { copiedLineupId, shareLineup } = useUtilityLineupShare();
 const linkCopied = computed(
@@ -476,7 +497,8 @@ const meshCdn = useRuntimeConfig().public.mapMeshCdn as string;
 const hasMesh = ref(false);
 const threeD = ref(false);
 const layers = useUtilityCardViews();
-const { isMobile } = useSidebar();
+// The landing page has no sidebar.
+const { isMobile } = useSidebar(null) ?? { isMobile: ref(false) };
 const staged = computed(() => !!layers?.stage.value && !isMobile.value);
 const onStage = computed(
   () => threeD.value && staged.value && open.value && !!lineup.value,
@@ -517,7 +539,10 @@ watch(
 // subscription -- so the block it lives in has to know whether there is one.
 const hasRecord = computed(
   () =>
-    !!myUtilityProgress(lineup.value?.progress, useAuthStore().me?.steam_id),
+    !!myUtilityProgress(
+      lineup.value?.progress,
+      props.snapshot?.viewer ?? useAuthStore().me?.steam_id,
+    ),
 );
 
 const myVote = computed(() => Number(lineup.value?.my_vote ?? 0));
@@ -851,6 +876,7 @@ const stats = computed(() => {
             :trigger-class="tile()"
             :trigger-active-class="tile(true)"
             placement="below"
+            :live="!snapshot"
           />
 
           <FiveStackToolTip
@@ -1276,6 +1302,7 @@ const stats = computed(() => {
                 <UtilityProgressPanel
                   v-if="hasRecord"
                   :progress="lineup.progress"
+                  :steam-id="snapshot?.viewer"
                   class="mt-3.5"
                 />
               </Transition>
@@ -1284,6 +1311,7 @@ const stats = computed(() => {
                    as the lineup (the action is granted to guests). -->
               <UtilityMissPatternPanel
                 :lineup-id="lineup.id"
+                :pattern="snapshot?.missPattern"
                 class="mt-3.5"
               />
             </HeightGlide>

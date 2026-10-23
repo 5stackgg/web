@@ -8235,6 +8235,281 @@
         "last_match": "Ostatni mecz tutaj",
         "matches_after_steam": "{count} mecz po banie na Steam | {count} meczów po banie na Steam"
       }
+    },
+    "welcome": {
+      "meta_title": "Witaj",
+      "meta_description": "Graj w CS2 na {name}: matchmaking, pokoje draftu, turnieje i ligi, a do tego mecze na żywo, powtórki w przeglądarce i automatyczne highlighty.",
+      "nav": {
+        "label": "Sekcje",
+        "play": "Graj",
+        "compete": "Rywalizacja",
+        "watch": "Oglądaj",
+        "utility": "Utility",
+        "community": "Społeczność",
+        "watch_live": "Oglądaj na żywo",
+        "open_play": "Przejdź do „Graj”"
+      },
+      "hero": {
+        "eyebrow": "Counter-Strike 2 na {name}",
+        "title": "Twoje miejsce na mecze, puchary i ligi w CS2.",
+        "lede": "Wchodź do kolejki po zbalansowane mecze, draftuj drużyny z kapitanami, dołączaj do turniejów i oglądaj każdą rundę ponownie w przeglądarce. Z twoich najlepszych akcji robimy klipy.",
+        "lede_draft": "Draftuj drużyny z kapitanami, dołączaj do turniejów i lig, oglądaj każdą rundę ponownie w przeglądarce. Z twoich najlepszych akcji robimy klipy."
+      },
+      "now": {
+        "live": "Teraz na żywo",
+        "recent": "Ostatnie mecze",
+        "open_watch": "Przejdź do „Oglądaj”"
+      },
+      "play": {
+        "eyebrow": "Graj",
+        "title": "Znajdź grę jednym kliknięciem albo zbierz własną dziesiątkę.",
+        "lede": "Matchmaking dobiera cię według regionu i opóźnienia, a do kolejki możesz wejść z paczką. Jeśli wolisz wybrać drużyny, otwórz pokój draftu.",
+        "points": {
+          "matchmaking": {
+            "title": "Matchmaking.",
+            "body": "Competitive, Wingman, Duel i Rush, solo albo z paczką."
+          },
+          "draft": {
+            "title": "Pokoje draftu.",
+            "body": "Otwórz pokój, poczekaj, aż gracze go zapełnią, a kapitanowie draftują drużyny."
+          },
+          "scrims": {
+            "title": "Wyszukiwarka scrimów.",
+            "body": "Przeglądaj drużyny otwarte na scrimy, filtruj po regionie i mapach, a potem wyślij prośbę."
+          },
+          "servers": {
+            "title": "Serwery społeczności.",
+            "body": "Wskakuj, znając od razu ping, mapę i liczbę graczy."
+          },
+          "check_in": {
+            "title": "Potwierdzenie obecności.",
+            "body": "Wszyscy potwierdzają obecność, zanim serwer zostanie zarezerwowany, więc nikt nie czeka na nieobecnych."
+          }
+        },
+        "link": "Przejdź do „Graj”",
+        "modes_label": "Tryby meczu",
+        "party_line": "Wejdź do kolejki solo albo z paczką. Bursztynowe miejsca są twoje.",
+        "lede_draft": "Otwórz pokój draftu i pozwól kapitanom wybrać drużyny, znajdź drużynę na scrima albo wskocz na serwer społeczności."
+      },
+      "match": {
+        "eyebrow": "Każdy mecz",
+        "title": "Veto, serwer, gramy. Nikt nie czeka na admina.",
+        "lede": "Kapitanowie banują mapy na planszy, aż zostanie jedna. Serwer startuje sam w regionie najbliżej graczy, a „Dołącz do serwera” pojawia się, gdy tylko jest gotowy.",
+        "points": {
+          "veto": {
+            "title": "Veto map i regionu.",
+            "body": "Każda tura ma limit czasu, a scouting pokazuje historię map każdej drużyny."
+          },
+          "servers": {
+            "title": "Serwery startują same.",
+            "body": "Nikt nie musi stawiać ich ręcznie."
+          },
+          "fix": {
+            "title": "Rozwiąż problem.",
+            "body": "Admini mogą cofnąć błędny wybór, działać za drużynę, która utknęła, zapauzować albo przywrócić rundę."
+          },
+          "voice": {
+            "title": "Głos i kamery.",
+            "body": "Czat głosowy meczu jest wbudowany, a kamery mogą być wymagane."
+          }
+        },
+        "link": "Wypróbuj przykładowy draft",
+        "replay_veto": "Powtórz veto"
+      },
+      "compete": {
+        "eyebrow": "Rywalizacja",
+        "title": "Puchary, ligi i weekendy LAN, prowadzone od początku do końca.",
+        "lede": "Zapisy, potwierdzanie obecności, drabinki i wyniki są w jednym miejscu. Mecze startują same, gdy drabinka idzie dalej.",
+        "points": {
+          "tournaments": {
+            "title": "Turnieje.",
+            "body": "Pojedyncza i podwójna eliminacja, każdy z każdym i system szwajcarski, połączone w etapy. Wolni zawodnicy trafiają w drafcie do zbalansowanych drużyn."
+          },
+          "leagues": {
+            "title": "Ligi.",
+            "body": "Sezonowy system każdy z każdym w dywizjach według poziomu, z cotygodniowymi oknami meczowymi, playoffami, awansami i spadkami."
+          },
+          "events": {
+            "title": "Wydarzenia.",
+            "body": "Turnieje, tabele i zdjęcia z całego weekendu w jednym miejscu."
+          },
+          "awards": {
+            "title": "Nagrody.",
+            "body": "Organizatorzy przyznają nagrody graczom i drużynom, a do tego MVP każdego turnieju."
+          }
+        },
+        "link": "Przeglądaj turnieje"
+      },
+      "watch": {
+        "eyebrow": "Oglądaj",
+        "title": "Każdy mecz na żywo, z wynikiem na ekranie.",
+        "lede": "Sekcja „Oglądaj” pokazuje najpierw to, co jest na żywo, potem nadchodzące mecze i najnowsze wyniki. Mecze mogą trafić na stream z belką wyniku jak w transmisji.",
+        "points": {
+          "streams": {
+            "title": "Transmisje na żywo.",
+            "body": "Mecze idą na antenę z reżyserki, z opcją GOTV."
+          },
+          "match_pages": {
+            "title": "Strony meczów.",
+            "body": "Tablica wyników na żywo, ekonomia, clutche i otwierające pojedynki."
+          },
+          "povs": {
+            "title": "POV-y z Twitch i kamery graczy.",
+            "body": "Patrz oczami gracza, tuż obok meczu."
+          },
+          "news": {
+            "title": "Aktualności.",
+            "body": "Listy zmian, wyniki i ogłoszenia, z komentarzami."
+          }
+        },
+        "link": "Przejdź do „Oglądaj”",
+        "sign_in_note": "Transmisje na żywo są dla zalogowanych graczy."
+      },
+      "rewatch": {
+        "eyebrow": "Powtórki",
+        "title": "Każda runda w przeglądarce. Twoje najlepsze — już w klipach.",
+        "lede": "Każdy mecz dostaje powtórkę 2D na radarze i przelot 3D z osią czasu rund, ekonomią i killfeedem. Multikille, clutche i rundy nożowe są wycinane do klipów po zakończeniu meczu.",
+        "points": {
+          "replays": {
+            "title": "Powtórki 2D i 3D.",
+            "body": "Nie trzeba niczego pobierać. Plik demo nadal jest dostępny, jeśli go chcesz."
+          },
+          "highlights": {
+            "title": "Automatyczne highlighty.",
+            "body": "Ace'y, 4K, clutche i rundy nożowe, wyrenderowane za ciebie."
+          },
+          "editor": {
+            "title": "Edytor klipów.",
+            "body": "Wytnij własny klip z dowolnego meczu i udostępnij go."
+          }
+        },
+        "link": "Przeglądaj highlighty",
+        "example_caption": "Prawdziwy highlight: cztery zabójstwa i zabójstwo nożem na Mirage, znalezione i wycięte po zakończeniu meczu."
+      },
+      "utility": {
+        "eyebrow": "Utility",
+        "title": "Ustawki na każdą mapę: gdzie stanąć, gdzie celować, gdzie wyląduje.",
+        "lede": "Ucz się smoke'ów, flashy i molotovów ze wspólnej biblioteki. Obejrzyj każdy rzut, zobacz dokładnie, gdzie celować, a potem wejdź na własny serwer treningowy i rzuć sam.",
+        "points": {
+          "previews": {
+            "title": "Wyrenderowane podglądy.",
+            "body": "Każda ustawka dostaje klip z rzutem i zbliżenia na to, gdzie stanąć i celować."
+          },
+          "library": {
+            "title": "Ustawki wspólne, drużynowe i prywatne.",
+            "body": "Głosuj, rozgałęziaj i zbieraj w kolekcje te, których używasz."
+          },
+          "executes": {
+            "title": "Execute'y i playbooki.",
+            "body": "Rozpisz całe wejście z timingami."
+          },
+          "practice": {
+            "title": "Serwery treningowe.",
+            "body": "Dowolna mapa, wczytana z ustawką, którą właśnie oglądasz."
+          },
+          "solver": {
+            "title": "Solver rzutów.",
+            "body": "Znajdź rzut na miejsce, które chcesz zakryć."
+          }
+        },
+        "link": "Otwórz Utility"
+      },
+      "community": {
+        "eyebrow": "Społeczność",
+        "title": "Znajomi, drużyna i czat tuż obok twoich meczów.",
+        "lede": "Zobacz, kto jest online i w co gra, zbierz paczkę i rozmawiaj tekstowo lub głosowo bez otwierania innej aplikacji.",
+        "points": {
+          "chat": {
+            "title": "Czat.",
+            "body": "Wiadomości prywatne, GIF-y, reakcje, załączniki i wzmianki."
+          },
+          "voice": {
+            "title": "Głos i wideo.",
+            "body": "W lobby i meczach, do tego rozmowy, a telefon może być twoją kamerą."
+          },
+          "teams": {
+            "title": "Drużyny.",
+            "body": "Strona drużyny, symulator veto, menedżer scrimów i kalendarz, który możesz subskrybować."
+          },
+          "notifications": {
+            "title": "Powiadomienia.",
+            "body": "Na telefonie po zainstalowaniu aplikacji, do tego połączenie kont Discord i Twitch."
+          },
+          "bans": {
+            "title": "Jawne bany.",
+            "body": "Ostatnie bany na Steam i na stronie są widoczne dla wszystkich."
+          }
+        }
+      },
+      "cta": {
+        "title": "Twój następny mecz jest o jedno kliknięcie stąd."
+      },
+      "footer": {
+        "run_own": "Chcesz postawić własny?",
+        "contact": "Kontakt",
+        "tagline": "Twoje miejsce na mecze, puchary i ligi w CS2.",
+        "legal": "Informacje prawne",
+        "cookies": "Pliki cookie",
+        "valve": "{name} nie jest powiązany z Valve Corporation. Counter-Strike i Steam są znakami towarowymi Valve Corporation."
+      },
+      "match_page": {
+        "eyebrow": "Strony meczów",
+        "title": "Każda runda, każdy pojedynek, każdy dolar na jednej stronie.",
+        "lede": "Każdy mecz ma stronę z tablicą wyników i wszystkim, co może powiedzieć demo, od ekonomii po to, kto wygrał otwierające pojedynki.",
+        "points": {
+          "scoreboard": {
+            "title": "Tablica wyników.",
+            "body": "Zabójstwa, zgony, ADR, KAST i rating każdego gracza na każdej mapie."
+          },
+          "economy": {
+            "title": "Ekonomia, clutche i pojedynki.",
+            "body": "Zakupy runda po rundzie, każdy clutch i to, kto wygrywa pierwsze starcie."
+          },
+          "head_to_head": {
+            "title": "Bezpośrednie starcia.",
+            "body": "Kto kogo pokonał, gracz na gracza."
+          },
+          "utility": {
+            "title": "Utility.",
+            "body": "Każdy granat rzucony przez każdego gracza i to, co zdziałał."
+          }
+        },
+        "link": "Wypróbuj przykładowy mecz"
+      },
+      "network": {
+        "label": "Sieć 5Stack",
+        "matches": "meczów rozegranych na 5Stack*",
+        "players": "graczy zalogowanych na 5Stack*",
+        "caption": "* We wszystkich panelach 5Stack."
+      },
+      "inventory": {
+        "eyebrow": "Ekwipunek",
+        "title": "Zbuduj wymarzony ekwipunek.",
+        "lede": "Stwórz dowolny skin, nóż, rękawice czy agenta, złóż loadout dla każdej strony i pochwal się nim.",
+        "points": {
+          "craft": {
+            "title": "Stwórz cokolwiek.",
+            "body": "Skiny, noże, rękawice, agenci, naklejki, zawieszki i więcej, ze zużyciem, wzorem i StatTrak™, które wybierzesz."
+          },
+          "loadouts": {
+            "title": "Loadouty dla obu stron.",
+            "body": "Ustaw CT i T i trzymaj więcej niż jeden loadout."
+          },
+          "inspect": {
+            "title": "Obejrzyj w 3D.",
+            "body": "Obracaj dowolny przedmiot z bliska, razem z naklejkami i zawieszkami."
+          },
+          "value": {
+            "title": "Sprawdź, ile to jest warte.",
+            "body": "Ceny rynkowe każdego przedmiotu i suma dla twojego loadoutu."
+          },
+          "profile": {
+            "title": "Pochwal się.",
+            "body": "Twój ekwipunek widać na twoim profilu, a każdym przedmiotem lub loadoutem możesz podzielić się linkiem."
+          }
+        },
+        "link": "Otwórz ekwipunek"
+      }
     }
   },
   "layouts": {

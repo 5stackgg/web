@@ -154,7 +154,7 @@ function scrollResults(direction: "left" | "right") {
       <Skeleton
         v-for="i in 6"
         :key="i"
-        class="h-[6.875rem] w-56 shrink-0 rounded-lg"
+        class="h-[5.5rem] w-56 shrink-0 rounded-lg"
       />
     </div>
 
@@ -170,14 +170,14 @@ function scrollResults(direction: "left" | "right") {
         <Skeleton
           v-for="i in 3"
           :key="`sk-${i}`"
-          class="h-[6.875rem] w-56 shrink-0 rounded-lg"
+          class="h-[5.5rem] w-56 shrink-0 rounded-lg"
           :aria-label="$t('pages.watch.ticker.loading_older')"
         />
       </template>
       <button
         v-else-if="done"
         type="button"
-        class="flex h-[6.875rem] w-40 shrink-0 snap-start flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border text-xs font-semibold text-muted-foreground transition-colors duration-150 hover:border-foreground/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+        class="flex h-[5.5rem] w-40 shrink-0 snap-start flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border text-xs font-semibold text-muted-foreground transition-colors duration-150 hover:border-foreground/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
         @click="emit('all-matches')"
       >
         <List class="size-4" />

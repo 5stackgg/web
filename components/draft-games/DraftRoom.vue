@@ -80,6 +80,10 @@ const props = defineProps<{
   inviteCode?: string;
   // The map veto's picks, when the caller has them (the FAQ's demo draft).
   vetoPicks?: any[];
+  // Each side's veto history, when the caller has it (the welcome page).
+  vetoScouts?: any[];
+  // No chat or voice column beside the room (the welcome page's veto).
+  hideRail?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -1096,12 +1100,19 @@ const headerSides = computed<[DraftHeaderSide, DraftHeaderSide]>(
       const name = sideTitle(lineup);
       return {
         name,
-        // A pickup's sides are named after nobody, so the captain's face stands
-        // in for a crest, as on the match page.
-        crest:
-          isTeamsMode.value || !players[0]
-            ? null
-            : avatarOf(players[0].player, 128),
+        // A team's side wears its logo. A pickup's sides are named after
+        // nobody, so the captain's face stands in for a crest, as on the
+        // match page.
+        crest: isTeamsMode.value
+          ? resolveAvatarUrl(
+              (lineup === 1 ? props.room.team_1 : props.room.team_2)
+                ?.avatar_url,
+              apiDomain.value,
+              128,
+            )
+          : players[0]
+            ? avatarOf(players[0].player, 128)
+            : null,
         monogram: teamMonogram(name),
         seats: seatsFor(lineup, players),
         ordered: pickOrderShown.value,
@@ -1804,6 +1815,7 @@ const header = computed<DraftHeaderState>(() => {
                 :stage="false"
                 :status-line="false"
                 :picks="vetoPicks"
+                :scouts="vetoScouts"
               />
             </div>
 
@@ -2427,7 +2439,7 @@ const header = computed<DraftHeaderState>(() => {
       <!-- On a wide lobby the self-status banners live in this column rather
            than above the room: they appear and disappear as the lobby fills,
            and full width they shoved the whole roster down every time. -->
-      <div class="draft-rail flex flex-col">
+      <div v-if="!hideRail" class="draft-rail flex flex-col">
         <!-- Capped rather than left to fill the rail. The rail is a full
              viewport tall but starts well down the page, and the page is too
              short to scroll the remainder into view, so anything pinned to the

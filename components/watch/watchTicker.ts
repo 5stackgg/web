@@ -24,10 +24,23 @@ export type TickerKind = "live" | "pre" | "upcoming" | "result";
 
 export type TickerCheckIn = { checked: number; total: number };
 
+export type TickerPlayer = {
+  steamId: string;
+  name: string;
+  avatar: string | null;
+  // Still to check in, while the match waits on every player's check-in.
+  waiting: boolean;
+};
+
 export type TickerTeam = {
   name: string;
   monogram: string;
   avatar: string | null;
+  // A pickup lineup's players, shown in place of its placeholder name. Null
+  // for teams and tournament lineups, whose names mean something.
+  players: TickerPlayer[] | null;
+  // Empty starter slots before the match goes live.
+  openSeats: number;
   score: number | null;
   pips: { won: number; total: number } | null;
   // win = bold on a final; trail = muted while live.
@@ -141,6 +154,26 @@ function lineupCheckIn(match: any, lineup: any): TickerCheckIn | null {
     checked: Math.min(players.filter((p) => p.checked_in).length, total),
     total,
   };
+}
+
+// Captain first, then the rest as the lineup lists them.
+function lineupPlayers(match: any, lineup: any): TickerPlayer[] | null {
+  if (!lineup || lineup.team || match?.tournament_brackets?.length) {
+    return null;
+  }
+  const players: any[] = lineup.lineup_players ?? [];
+  if (!players.length) return null;
+  const perPlayer =
+    match?.status === "WaitingForCheckIn" &&
+    !["Admin", "Captains"].includes(match?.options?.check_in_setting);
+  return [...players]
+    .sort((a, b) => Number(!!b.captain) - Number(!!a.captain))
+    .map((p) => ({
+      steamId: p.steam_id,
+      name: p.player?.name ?? p.placeholder_name ?? "",
+      avatar: p.player?.custom_avatar_url || p.player?.avatar_url || null,
+      waiting: perPlayer && !p.checked_in,
+    }));
 }
 
 function totalCheckIn(teams: [TickerTeam, TickerTeam]): TickerCheckIn | null {
@@ -284,10 +317,16 @@ function teams(
     ) {
       emphasis = "trail";
     }
+    const players = lineupPlayers(match, lineup);
     return {
       name,
       monogram: lineup ? teamMonogram(name, lineup.team?.short_name) : "?",
       avatar: lineup?.team?.avatar_url ?? null,
+      players,
+      openSeats:
+        players && (kind === "upcoming" || kind === "pre")
+          ? Math.max(0, (match?.min_players_per_lineup ?? 0) - players.length)
+          : 0,
       score: scores[i],
       pips:
         kind === "live" && bestOf > 1

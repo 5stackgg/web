@@ -8,8 +8,10 @@ withDefaults(
     matchId: string;
     // Greyed out while the player has no picture.
     dim?: boolean;
+    // Skips polling for the count (StreamViewerBadge `count`).
+    viewers?: number | null;
   }>(),
-  { dim: false },
+  { dim: false, viewers: null },
 );
 </script>
 
@@ -28,7 +30,7 @@ withDefaults(
       {{ $t("common.live") }}
     </span>
     <span class="flex items-center bg-background/85 px-2 py-1.5 text-foreground">
-      <StreamViewerBadge :match-id="matchId" bare />
+      <StreamViewerBadge :match-id="matchId" :count="viewers" bare />
     </span>
   </div>
 </template>

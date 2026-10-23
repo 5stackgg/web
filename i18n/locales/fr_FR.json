@@ -8235,6 +8235,281 @@
         "last_match": "Dernier match ici",
         "matches_after_steam": "{count} match après le ban Steam | {count} matchs après le ban Steam"
       }
+    },
+    "welcome": {
+      "meta_title": "Bienvenue",
+      "meta_description": "Joue à CS2 sur {name} : matchmaking, drafts, tournois et ligues, avec des matchs en direct, des replays dans le navigateur et des highlights automatiques.",
+      "nav": {
+        "label": "Sections",
+        "play": "Jouer",
+        "compete": "Compétition",
+        "watch": "Regarder",
+        "utility": "Utilitaire",
+        "community": "Communauté",
+        "watch_live": "Regarder en direct",
+        "open_play": "Aller jouer"
+      },
+      "hero": {
+        "eyebrow": "Counter-Strike 2 sur {name}",
+        "title": "Ton QG pour les matchs, cups et ligues CS2.",
+        "lede": "Entre dans la file pour des matchs équilibrés, compose des équipes en draft avec des capitaines, rejoins des tournois et revois chaque round dans ton navigateur. Tes meilleures actions sont clippées pour toi.",
+        "lede_draft": "Compose des équipes en draft avec des capitaines, rejoins des tournois et des ligues, et revois chaque round dans ton navigateur. Tes meilleures actions sont clippées pour toi."
+      },
+      "now": {
+        "live": "En direct",
+        "recent": "Matchs récents",
+        "open_watch": "Aller regarder"
+      },
+      "play": {
+        "eyebrow": "Jouer",
+        "title": "Trouve une partie en un clic, ou viens avec tes dix joueurs.",
+        "lede": "Le matchmaking te place selon ta région et ta latence, et tu peux faire la file avec ton groupe. Si tu préfères choisir les équipes, ouvre une draft.",
+        "points": {
+          "matchmaking": {
+            "title": "Matchmaking.",
+            "body": "Compétitif, Wingman, Duel et Rush, en solo ou avec ton groupe."
+          },
+          "draft": {
+            "title": "Drafts.",
+            "body": "Ouvre une draft, laisse les joueurs la remplir, et les capitaines choisissent les équipes."
+          },
+          "scrims": {
+            "title": "Recherche de scrims.",
+            "body": "Parcours les équipes ouvertes aux scrims, filtre par région et par map, puis envoie une demande."
+          },
+          "servers": {
+            "title": "Serveurs communautaires.",
+            "body": "Rejoins-les en voyant d'emblée le ping, la map et le nombre de joueurs."
+          },
+          "check_in": {
+            "title": "Check-in.",
+            "body": "Tout le monde confirme avant qu'un serveur soit réservé, donc personne n'attend un absent."
+          }
+        },
+        "link": "Aller jouer",
+        "modes_label": "Modes de match",
+        "party_line": "Fais la file en solo ou avec ton groupe. Les places ambrées sont les tiennes.",
+        "lede_draft": "Ouvre une draft et laisse les capitaines choisir les équipes, trouve une équipe pour un scrim, ou rejoins un serveur communautaire."
+      },
+      "match": {
+        "eyebrow": "Chaque match",
+        "title": "Veto, serveur, c'est parti. Personne n'attend un admin.",
+        "lede": "Les capitaines bannissent des maps sur le tableau jusqu'à ce qu'il n'en reste qu'une. Le serveur démarre tout seul dans la région la plus proche des joueurs, et « Rejoindre le serveur » apparaît dès qu'il est prêt.",
+        "points": {
+          "veto": {
+            "title": "Veto des maps et de la région.",
+            "body": "Chaque tour est chronométré, avec le scouting de l'historique des maps de chaque équipe."
+          },
+          "servers": {
+            "title": "Les serveurs démarrent tout seuls.",
+            "body": "Personne n'a besoin d'en lancer un à la main."
+          },
+          "fix": {
+            "title": "Résoudre un problème.",
+            "body": "Les admins peuvent annuler un mauvais choix, agir pour une équipe bloquée, mettre en pause ou restaurer un round."
+          },
+          "voice": {
+            "title": "Voix et caméras.",
+            "body": "Le chat vocal du match est intégré, et les webcams peuvent être obligatoires."
+          }
+        },
+        "link": "Essayer la draft de démo",
+        "replay_veto": "Revoir le veto"
+      },
+      "compete": {
+        "eyebrow": "Compétition",
+        "title": "Cups, ligues et week-ends LAN, gérés de bout en bout.",
+        "lede": "Inscriptions, check-in, tableaux et résultats au même endroit. Les matchs démarrent d'eux-mêmes à mesure que le tableau avance.",
+        "points": {
+          "tournaments": {
+            "title": "Tournois.",
+            "body": "Élimination simple et double, round robin et Swiss, enchaînés en phases. Les agents libres sont répartis par draft dans des équipes équilibrées."
+          },
+          "leagues": {
+            "title": "Ligues.",
+            "body": "Round robin saisonnier par divisions de niveau, avec des créneaux de match hebdomadaires, des playoffs, et des promotions et relégations."
+          },
+          "events": {
+            "title": "Événements.",
+            "body": "Les tournois, classements et photos d'un week-end au même endroit."
+          },
+          "awards": {
+            "title": "Récompenses.",
+            "body": "Les organisateurs remettent des récompenses aux joueurs et aux équipes, plus un MVP pour chaque tournoi."
+          }
+        },
+        "link": "Parcourir les tournois"
+      },
+      "watch": {
+        "eyebrow": "Regarder",
+        "title": "Chaque match en direct, avec le score à l'écran.",
+        "lede": "La page Regarder affiche d'abord ce qui est en direct, puis ce qui arrive et les derniers résultats. Les matchs peuvent être diffusés en stream avec un scorebug de diffusion.",
+        "points": {
+          "streams": {
+            "title": "Streams en direct.",
+            "body": "Les matchs passent à l'antenne depuis la régie, avec une option GOTV."
+          },
+          "match_pages": {
+            "title": "Pages de match.",
+            "body": "Le scoreboard en direct, l'économie, les clutchs et les duels d'ouverture."
+          },
+          "povs": {
+            "title": "POV Twitch et caméras des joueurs.",
+            "body": "Regarde à travers les yeux d'un joueur, juste à côté du match."
+          },
+          "news": {
+            "title": "Actus.",
+            "body": "Notes de patch, résultats et annonces, avec commentaires."
+          }
+        },
+        "link": "Aller regarder",
+        "sign_in_note": "Les streams en direct sont réservés aux joueurs connectés."
+      },
+      "rewatch": {
+        "eyebrow": "Revoir",
+        "title": "Chaque round dans ton navigateur. Tes meilleurs, déjà clippés.",
+        "lede": "Chaque match a un replay radar 2D et un survol 3D avec la timeline des rounds, l'économie et le kill feed. Les multikills, clutchs et rounds au couteau sont découpés en clips à la fin du match.",
+        "points": {
+          "replays": {
+            "title": "Replays 2D et 3D.",
+            "body": "Aucun téléchargement nécessaire. Le fichier de démo reste disponible si tu le veux."
+          },
+          "highlights": {
+            "title": "Highlights automatiques.",
+            "body": "Aces, 4K, clutchs et rounds au couteau, rendus pour toi."
+          },
+          "editor": {
+            "title": "Éditeur de clips.",
+            "body": "Découpe les tiens dans n'importe quel match et partage-les."
+          }
+        },
+        "link": "Parcourir les highlights",
+        "example_caption": "Un vrai highlight : quatre kills et un kill au couteau sur Mirage, repérés et clippés à la fin du match."
+      },
+      "utility": {
+        "eyebrow": "Utilitaire",
+        "title": "Des lineups pour chaque map : où te placer, où viser, où ça atterrit.",
+        "lede": "Apprends les smokes, flashs et molotovs grâce à une bibliothèque partagée. Regarde chaque lancer, vois exactement où viser, puis rejoins ton propre serveur d'entraînement et refais-le toi-même.",
+        "points": {
+          "previews": {
+            "title": "Aperçus rendus.",
+            "body": "Chaque lineup a un clip du lancer et des gros plans sur où te placer et où viser."
+          },
+          "library": {
+            "title": "Lineups partagés, d'équipe et privés.",
+            "body": "Vote, duplique et collectionne ceux que tu utilises."
+          },
+          "executes": {
+            "title": "Exécutions et playbooks.",
+            "body": "Prépare une prise de site complète, avec les timings."
+          },
+          "practice": {
+            "title": "Serveurs d'entraînement.",
+            "body": "N'importe quelle map, chargée avec le lineup que tu regardes."
+          },
+          "solver": {
+            "title": "Solveur de lancers.",
+            "body": "Trouve un lancer pour l'endroit que tu veux couvrir."
+          }
+        },
+        "link": "Ouvrir l'utilitaire"
+      },
+      "community": {
+        "eyebrow": "Communauté",
+        "title": "Tes amis, ton équipe et ton chat, juste à côté de tes matchs.",
+        "lede": "Vois qui est en ligne et à quoi ils jouent, forme un groupe, et discute par écrit ou en vocal sans ouvrir une autre app.",
+        "points": {
+          "chat": {
+            "title": "Chat.",
+            "body": "Messages privés, GIF, réactions, pièces jointes et mentions."
+          },
+          "voice": {
+            "title": "Voix et vidéo.",
+            "body": "Dans les lobbys et les matchs, plus les appels, et ton téléphone peut servir de caméra."
+          },
+          "teams": {
+            "title": "Équipes.",
+            "body": "Une page d'équipe, un simulateur de veto, un gestionnaire de scrims et un calendrier auquel tu peux t'abonner."
+          },
+          "notifications": {
+            "title": "Notifications.",
+            "body": "Sur ton téléphone une fois l'app installée, plus la liaison avec Discord et Twitch."
+          },
+          "bans": {
+            "title": "Des bans en toute transparence.",
+            "body": "Les bans Steam et du site récents sont listés pour tout le monde."
+          }
+        }
+      },
+      "cta": {
+        "title": "Ton prochain match est à un clic."
+      },
+      "footer": {
+        "run_own": "Envie de lancer le tien ?",
+        "contact": "Contact",
+        "tagline": "Ton QG pour les matchs, cups et ligues CS2.",
+        "legal": "Informations légales",
+        "cookies": "Cookies",
+        "valve": "{name} n'est pas affilié à Valve Corporation. Counter-Strike et Steam sont des marques de Valve Corporation."
+      },
+      "match_page": {
+        "eyebrow": "Pages de match",
+        "title": "Chaque round, chaque duel, chaque dollar, sur une seule page.",
+        "lede": "Chaque match a sa page avec le scoreboard et tout ce que la démo peut t'apprendre, de l'économie à qui a gagné les duels d'ouverture.",
+        "points": {
+          "scoreboard": {
+            "title": "Scoreboard.",
+            "body": "Kills, morts, ADR, KAST et rating pour chaque joueur sur chaque map."
+          },
+          "economy": {
+            "title": "Économie, clutchs et duels.",
+            "body": "Les achats round par round, chaque clutch et qui gagne le premier duel."
+          },
+          "head_to_head": {
+            "title": "Face à face.",
+            "body": "Qui a battu qui, joueur contre joueur."
+          },
+          "utility": {
+            "title": "Utilitaires.",
+            "body": "Chaque grenade lancée par chaque joueur, et ce qu'elle a fait."
+          }
+        },
+        "link": "Essayer le match de démo"
+      },
+      "network": {
+        "label": "Le réseau 5Stack",
+        "matches": "matchs joués sur 5Stack*",
+        "players": "joueurs connectés à 5Stack*",
+        "caption": "* Sur l'ensemble des panels 5Stack."
+      },
+      "inventory": {
+        "eyebrow": "Inventaire",
+        "title": "Crée l'inventaire dont tu as toujours rêvé.",
+        "lede": "Crée n'importe quel skin, couteau, gant ou agent, compose un loadout pour chaque camp, et montre-le.",
+        "points": {
+          "craft": {
+            "title": "Crée tout ce que tu veux.",
+            "body": "Skins, couteaux, gants, agents, stickers, breloques et plus, avec l'usure, le motif et le StatTrak™ que tu choisis."
+          },
+          "loadouts": {
+            "title": "Des loadouts pour les deux camps.",
+            "body": "Configure CT et T, et garde plusieurs loadouts."
+          },
+          "inspect": {
+            "title": "Inspecte en 3D.",
+            "body": "Fais tourner n'importe quel objet de près, stickers et breloques compris."
+          },
+          "value": {
+            "title": "Vois ce que ça vaut.",
+            "body": "Les prix du marché pour chaque objet, et un total pour ton loadout."
+          },
+          "profile": {
+            "title": "Montre-le.",
+            "body": "Ton inventaire s'affiche sur ton profil, et chaque objet ou loadout peut être partagé avec un lien."
+          }
+        },
+        "link": "Ouvrir l'inventaire"
+      }
     }
   },
   "layouts": {

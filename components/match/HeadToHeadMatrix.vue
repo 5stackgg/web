@@ -25,6 +25,9 @@ const props = defineProps<{
   // Pair query still in flight — the stats card shows a matched-height
   // skeleton instead of popping in once the numbers land.
   loading?: boolean;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is subscribed to then.
+  views?: Record<string, any[]>;
 }>();
 
 // One player picked per side. Exposed via v-model so the radar comparison
@@ -58,9 +61,9 @@ watch(
   (id) => {
     killPairsSub?.unsubscribe();
     killPairsSub = null;
-    killPairRows.value = [];
+    killPairRows.value = props.views?.v_match_kill_pairs ?? [];
     killPairsReady.value = false;
-    if (!id) {
+    if (!id || props.views) {
       killPairsReady.value = true;
       return;
     }

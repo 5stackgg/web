@@ -16,16 +16,21 @@ const props = withDefaults(
     variant?: "panel" | "track";
     // Off where the card already prints the hit rate in its stat block.
     showRate?: boolean;
+    // Whose record; the viewer's unless handed in.
+    steamId?: string | null;
   }>(),
   {
     progress: null,
     compact: false,
     variant: "panel",
     showRate: true,
+    steamId: null,
   },
 );
 
-const mySteamId = computed(() => useAuthStore().me?.steam_id ?? null);
+const mySteamId = computed(
+  () => props.steamId ?? useAuthStore().me?.steam_id ?? null,
+);
 
 const mine = computed(() => myUtilityProgress(props.progress, mySteamId.value));
 

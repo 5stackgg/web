@@ -5478,6 +5478,9 @@ count?: [{	columns?: Array<ValueTypes["clip_render_jobs_select_column"]> | undef
 	["clone_league_season_args"]: {
 	_league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
+	["clone_tournament_bracket_options_args"]: {
+	_bracket_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
 	/** ordering argument of a cursor */
 ["cursor_ordering"]:cursor_ordering;
 	/** columns and relationships of "custom_pages" */
@@ -5491,6 +5494,7 @@ deployments?: [{	/** JSON select path */
 	id?:boolean | `@${string}`,
 	is_default?:boolean | `@${string}`,
 	manifest_url?:boolean | `@${string}`,
+	nav_featured?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
@@ -5546,6 +5550,7 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_default?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	manifest_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	nav_featured?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	nav_group?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	nav_order?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5585,6 +5590,7 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_default?: boolean | undefined | null | Variable<any, string>,
 	manifest_url?: string | undefined | null | Variable<any, string>,
+	nav_featured?: boolean | undefined | null | Variable<any, string>,
 	nav_group?: string | undefined | null | Variable<any, string>,
 	nav_order?: number | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
@@ -5656,6 +5662,7 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_default?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	manifest_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	nav_featured?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	nav_group?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	nav_order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -5687,6 +5694,7 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_default?: boolean | undefined | null | Variable<any, string>,
 	manifest_url?: string | undefined | null | Variable<any, string>,
+	nav_featured?: boolean | undefined | null | Variable<any, string>,
 	nav_group?: string | undefined | null | Variable<any, string>,
 	nav_order?: number | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
@@ -5730,6 +5738,7 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_default?: boolean | undefined | null | Variable<any, string>,
 	manifest_url?: string | undefined | null | Variable<any, string>,
+	nav_featured?: boolean | undefined | null | Variable<any, string>,
 	nav_group?: string | undefined | null | Variable<any, string>,
 	nav_order?: number | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
@@ -11753,7 +11762,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_scopes_select_column"]> | unde
 };
 	/** columns and relationships of "e_sanction_sources" */
 ["e_sanction_sources"]: AliasType<{
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?:boolean | `@${string}`,
 	default_enabled?:boolean | `@${string}`,
 	default_scope?:boolean | `@${string}`,
@@ -11763,7 +11771,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_scopes_select_column"]> | unde
 	/** An object relationship */
 	e_sanction_scope?:ValueTypes["e_sanction_scopes"],
 	value?:boolean | `@${string}`,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -11818,7 +11825,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 };
 	/** input type for inserting data into table "e_sanction_sources" */
 ["e_sanction_sources_insert_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null | Variable<any, string>,
 	default_enabled?: boolean | undefined | null | Variable<any, string>,
 	default_scope?: string | undefined | null | Variable<any, string>,
@@ -11827,12 +11833,10 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 	description?: string | undefined | null | Variable<any, string>,
 	e_sanction_scope?: ValueTypes["e_sanction_scopes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	value?: string | undefined | null | Variable<any, string>,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["e_sanction_sources_max_fields"]: AliasType<{
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?:boolean | `@${string}`,
 	default_scope?:boolean | `@${string}`,
 	default_threshold?:boolean | `@${string}`,
@@ -11843,7 +11847,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 }>;
 	/** aggregate min on columns */
 ["e_sanction_sources_min_fields"]: AliasType<{
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?:boolean | `@${string}`,
 	default_scope?:boolean | `@${string}`,
 	default_threshold?:boolean | `@${string}`,
@@ -11886,7 +11889,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 ["e_sanction_sources_select_column"]:e_sanction_sources_select_column;
 	/** input type for updating data in table "e_sanction_sources" */
 ["e_sanction_sources_set_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null | Variable<any, string>,
 	default_enabled?: boolean | undefined | null | Variable<any, string>,
 	default_scope?: string | undefined | null | Variable<any, string>,
@@ -11894,7 +11896,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 	default_window_days?: number | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
 	value?: string | undefined | null | Variable<any, string>,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
@@ -11924,7 +11925,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 };
 	/** Initial value of the column from where the streaming should start */
 ["e_sanction_sources_stream_cursor_value_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null | Variable<any, string>,
 	default_enabled?: boolean | undefined | null | Variable<any, string>,
 	default_scope?: string | undefined | null | Variable<any, string>,
@@ -11932,7 +11932,6 @@ count?: [{	columns?: Array<ValueTypes["e_sanction_sources_select_column"]> | und
 	default_window_days?: number | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
 	value?: string | undefined | null | Variable<any, string>,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
@@ -26047,7 +26046,7 @@ count?: [{	columns?: Array<ValueTypes["match_demo_sessions_select_column"]> | un
 ["match_demo_sessions_variance_order_by"]: {
 	watcher_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
-	/** relational table for assigning a players to a match and lineup */
+	/** columns and relationships of "match_lineup_players" */
 ["match_lineup_players"]: AliasType<{
 	captain?:boolean | `@${string}`,
 	checked_in?:boolean | `@${string}`,
@@ -26360,7 +26359,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 ["match_lineup_players_variance_order_by"]: {
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
-	/** relational table for assigning a team to a match and lineup */
+	/** columns and relationships of "match_lineups" */
 ["match_lineups"]: AliasType<{
 	/** A computed field, executes function "can_pick_map_veto" */
 	can_pick_map_veto?:boolean | `@${string}`,
@@ -31288,6 +31287,13 @@ clone_league_season?: [{	/** input parameters for function "clone_league_season"
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["league_seasons_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["league_seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["league_seasons"]],
+clone_tournament_bracket_options?: [{	/** input parameters for function "clone_tournament_bracket_options" */
+	args: ValueTypes["clone_tournament_bracket_options_args"] | Variable<any, string>,	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_brackets_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_brackets_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_brackets_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_brackets"]],
 continueTournamentCheckIn?: [{	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 counterScrimRequest?: [{	proposed_scheduled_at: ValueTypes["timestamptz"] | Variable<any, string>,	request_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 createApiKey?: [{	label: string | Variable<any, string>},ValueTypes["ApiKeyResponse"]],
@@ -33444,6 +33450,7 @@ refreshLiveHud?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueT
 registerName?: [{	name: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Re-mine one batch of demos after a miner change */
 	remineUtilityMeta?:ValueTypes["UtilityRemineOutput"],
+removeCs?: [{	game: string | Variable<any, string>,	game_server_node_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?:ValueTypes["SuccessOutput"],
 removeSteamPresenceBotAccount?: [{	account_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -33515,6 +33522,7 @@ setGameNodeSchedulingState?: [{	enabled: boolean | Variable<any, string>,	game_s
 setGamePluginAutoUpdate?: [{	enabled: boolean | Variable<any, string>,	slug: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setHudMode?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMapWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+setMatchPaused?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	paused: boolean | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setNewsCommentHidden?: [{	hidden: boolean | Variable<any, string>,	id: ValueTypes["uuid"] | Variable<any, string>,	reason?: string | undefined | null | Variable<any, string>},ValueTypes["NewsCommentOutput"]],
 setNewsPostStatus?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	status: string | Variable<any, string>},ValueTypes["NewsPost"]],
@@ -51284,6 +51292,9 @@ elo_history_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_player_elo_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_elo_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_elo_aggregate"]],
+	faceit_ban_ends_at?:boolean | `@${string}`,
+	faceit_banned_at?:boolean | `@${string}`,
+	faceit_bans_checked_at?:boolean | `@${string}`,
 	faceit_elo?:boolean | `@${string}`,
 	faceit_nickname?:boolean | `@${string}`,
 	faceit_player_id?:boolean | `@${string}`,
@@ -51406,8 +51417,10 @@ kills_by_weapons_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_kills_by_weapon_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_kills_by_weapon_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_kills_by_weapon_aggregate"]],
 	language?:boolean | `@${string}`,
+	last_game_ban_at?:boolean | `@${string}`,
 	last_read_news_at?:boolean | `@${string}`,
 	last_sign_in_at?:boolean | `@${string}`,
+	last_vac_ban_at?:boolean | `@${string}`,
 live_lineup?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_lineup_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -51840,6 +51853,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	elo?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	elo_history?: ValueTypes["v_player_elo_bool_exp"] | undefined | null | Variable<any, string>,
 	elo_history_aggregate?: ValueTypes["v_player_elo_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	faceit_elo?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	faceit_nickname?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	faceit_player_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -51873,8 +51889,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	kills_by_weapons?: ValueTypes["player_kills_by_weapon_bool_exp"] | undefined | null | Variable<any, string>,
 	kills_by_weapons_aggregate?: ValueTypes["player_kills_by_weapon_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	language?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	live_lineup?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>,
 	lobby_players?: ValueTypes["lobby_players_bool_exp"] | undefined | null | Variable<any, string>,
 	lobby_players_aggregate?: ValueTypes["lobby_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -51983,6 +52001,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	discord_id?: string | undefined | null | Variable<any, string>,
 	draft_game_players?: ValueTypes["draft_game_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	elo_history?: ValueTypes["v_player_elo_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	faceit_elo?: number | undefined | null | Variable<any, string>,
 	faceit_nickname?: string | undefined | null | Variable<any, string>,
 	faceit_player_id?: string | undefined | null | Variable<any, string>,
@@ -51999,8 +52020,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	kills?: ValueTypes["player_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	kills_by_weapons?: ValueTypes["player_kills_by_weapon_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	language?: string | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	lobby_players?: ValueTypes["lobby_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_map_hltv?: ValueTypes["v_player_match_map_hltv_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_map_stats?: ValueTypes["player_match_map_stats_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -52051,6 +52074,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	custom_avatar_url?:boolean | `@${string}`,
 	days_since_last_ban?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	faceit_ban_ends_at?:boolean | `@${string}`,
+	faceit_banned_at?:boolean | `@${string}`,
+	faceit_bans_checked_at?:boolean | `@${string}`,
 	faceit_elo?:boolean | `@${string}`,
 	faceit_nickname?:boolean | `@${string}`,
 	faceit_player_id?:boolean | `@${string}`,
@@ -52059,8 +52085,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	faceit_url?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
 	language?:boolean | `@${string}`,
+	last_game_ban_at?:boolean | `@${string}`,
 	last_read_news_at?:boolean | `@${string}`,
 	last_sign_in_at?:boolean | `@${string}`,
+	last_vac_ban_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -52106,6 +52134,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	custom_avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	days_since_last_ban?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_nickname?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_player_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -52114,8 +52145,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	faceit_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	language?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	notification_timezone?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	premier_rank?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -52138,6 +52171,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	custom_avatar_url?:boolean | `@${string}`,
 	days_since_last_ban?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	faceit_ban_ends_at?:boolean | `@${string}`,
+	faceit_banned_at?:boolean | `@${string}`,
+	faceit_bans_checked_at?:boolean | `@${string}`,
 	faceit_elo?:boolean | `@${string}`,
 	faceit_nickname?:boolean | `@${string}`,
 	faceit_player_id?:boolean | `@${string}`,
@@ -52146,8 +52182,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	faceit_url?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
 	language?:boolean | `@${string}`,
+	last_game_ban_at?:boolean | `@${string}`,
 	last_read_news_at?:boolean | `@${string}`,
 	last_sign_in_at?:boolean | `@${string}`,
+	last_vac_ban_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -52193,6 +52231,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	custom_avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	days_since_last_ban?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	discord_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_nickname?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_player_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -52201,8 +52242,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	faceit_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	language?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	notification_timezone?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	premier_rank?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -52256,6 +52299,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	draft_game_players_aggregate?: ValueTypes["draft_game_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	elo_history_aggregate?: ValueTypes["v_player_elo_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_nickname?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	faceit_player_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -52281,8 +52327,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	kills_by_weapons_aggregate?: ValueTypes["player_kills_by_weapon_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	language?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	live_lineup_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	lobby_players_aggregate?: ValueTypes["lobby_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	losses?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -52353,6 +52401,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	custom_avatar_url?: string | undefined | null | Variable<any, string>,
 	days_since_last_ban?: number | undefined | null | Variable<any, string>,
 	discord_id?: string | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	faceit_elo?: number | undefined | null | Variable<any, string>,
 	faceit_nickname?: string | undefined | null | Variable<any, string>,
 	faceit_player_id?: string | undefined | null | Variable<any, string>,
@@ -52361,8 +52412,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	faceit_url?: string | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
 	language?: string | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
 	notification_timezone?: string | undefined | null | Variable<any, string>,
@@ -52524,6 +52577,9 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	custom_avatar_url?: string | undefined | null | Variable<any, string>,
 	days_since_last_ban?: number | undefined | null | Variable<any, string>,
 	discord_id?: string | undefined | null | Variable<any, string>,
+	faceit_ban_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	faceit_banned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	faceit_bans_checked_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	faceit_elo?: number | undefined | null | Variable<any, string>,
 	faceit_nickname?: string | undefined | null | Variable<any, string>,
 	faceit_player_id?: string | undefined | null | Variable<any, string>,
@@ -52532,8 +52588,10 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	faceit_url?: string | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
 	language?: string | undefined | null | Variable<any, string>,
+	last_game_ban_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_read_news_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_vac_ban_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
 	notification_timezone?: string | undefined | null | Variable<any, string>,
@@ -56717,6 +56775,7 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 	banned_here?:boolean | `@${string}`,
 	first_match_at?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
+	game_banned_on?:boolean | `@${string}`,
 	last_match_at?:boolean | `@${string}`,
 	last_match_map?:boolean | `@${string}`,
 	matches_played?:boolean | `@${string}`,
@@ -56732,6 +56791,7 @@ shared_matches?: [{	/** JSON select path */
 	steam_banned_on?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	vac_ban_count?:boolean | `@${string}`,
+	vac_banned_on?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "recent_ban_entries" */
@@ -56779,6 +56839,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_here?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	first_match_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_ban_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	game_banned_on?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_match_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_match_map?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	matches_played?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -56790,7 +56851,8 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	shared_matches?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	steam_banned_on?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
-	vac_ban_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	vac_ban_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	vac_banned_on?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["recent_ban_entries_delete_at_path_input"]: {
@@ -56820,6 +56882,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_here?: boolean | undefined | null | Variable<any, string>,
 	first_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
+	game_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	last_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_match_map?: string | undefined | null | Variable<any, string>,
 	matches_played?: number | undefined | null | Variable<any, string>,
@@ -56831,7 +56894,8 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	steam_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	vac_ban_count?: number | undefined | null | Variable<any, string>
+	vac_ban_count?: number | undefined | null | Variable<any, string>,
+	vac_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["recent_ban_entries_max_fields"]: AliasType<{
@@ -56839,6 +56903,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_at_source?:boolean | `@${string}`,
 	first_match_at?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
+	game_banned_on?:boolean | `@${string}`,
 	last_match_at?:boolean | `@${string}`,
 	last_match_map?:boolean | `@${string}`,
 	matches_played?:boolean | `@${string}`,
@@ -56848,6 +56913,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	steam_banned_on?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	vac_ban_count?:boolean | `@${string}`,
+	vac_banned_on?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -56856,6 +56922,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_at_source?:boolean | `@${string}`,
 	first_match_at?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
+	game_banned_on?:boolean | `@${string}`,
 	last_match_at?:boolean | `@${string}`,
 	last_match_map?:boolean | `@${string}`,
 	matches_played?:boolean | `@${string}`,
@@ -56865,6 +56932,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	steam_banned_on?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	vac_ban_count?:boolean | `@${string}`,
+	vac_banned_on?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "recent_ban_entries" */
@@ -56883,6 +56951,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_here?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	first_match_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	game_banned_on?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_match_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_match_map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	matches_played?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -56894,7 +56963,8 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	shared_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_banned_on?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	vac_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	vac_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	vac_banned_on?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["recent_ban_entries_prepend_input"]: {
@@ -56910,6 +56980,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_here?: boolean | undefined | null | Variable<any, string>,
 	first_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
+	game_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	last_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_match_map?: string | undefined | null | Variable<any, string>,
 	matches_played?: number | undefined | null | Variable<any, string>,
@@ -56919,7 +56990,8 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	steam_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	vac_ban_count?: number | undefined | null | Variable<any, string>
+	vac_ban_count?: number | undefined | null | Variable<any, string>,
+	vac_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["recent_ban_entries_stddev_fields"]: AliasType<{
@@ -56963,6 +57035,7 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	banned_here?: boolean | undefined | null | Variable<any, string>,
 	first_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	game_ban_count?: number | undefined | null | Variable<any, string>,
+	game_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	last_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_match_map?: string | undefined | null | Variable<any, string>,
 	matches_played?: number | undefined | null | Variable<any, string>,
@@ -56972,7 +57045,8 @@ count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | und
 	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	steam_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	vac_ban_count?: number | undefined | null | Variable<any, string>
+	vac_ban_count?: number | undefined | null | Variable<any, string>,
+	vac_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["recent_ban_entries_sum_fields"]: AliasType<{
@@ -67640,7 +67714,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_request_proposals_select_colum
 	/** An object relationship */
 	match_options?:ValueTypes["match_options"],
 	match_options_id?:boolean | `@${string}`,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?:boolean | `@${string}`,
 proposals?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["team_scrim_request_proposals_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -67796,7 +67869,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_options?: ValueTypes["match_options_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null | Variable<any, string>,
 	proposals?: ValueTypes["team_scrim_request_proposals_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	proposed_scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -67819,7 +67891,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?:boolean | `@${string}`,
 	proposed_scheduled_at?:boolean | `@${string}`,
 	region?:boolean | `@${string}`,
@@ -67838,7 +67909,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	proposed_scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67856,7 +67926,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?:boolean | `@${string}`,
 	proposed_scheduled_at?:boolean | `@${string}`,
 	region?:boolean | `@${string}`,
@@ -67875,7 +67944,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	proposed_scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67955,7 +68023,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null | Variable<any, string>,
 	proposed_scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	region?: string | undefined | null | Variable<any, string>,
@@ -68012,7 +68079,6 @@ count?: [{	columns?: Array<ValueTypes["team_scrim_requests_select_column"]> | un
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null | Variable<any, string>,
 	proposed_scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	region?: string | undefined | null | Variable<any, string>,
@@ -69999,7 +70065,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_categories_select_column"]> | 
 	/** columns and relationships of "tournament_free_agents" */
 ["tournament_free_agents"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
-	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_tournament_free_agent_status?:ValueTypes["e_tournament_free_agent_statuses"],
@@ -70101,7 +70166,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** input type for inserting data into table "tournament_free_agents" */
 ["tournament_free_agents_insert_input"]: {
 	checked_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	e_tournament_free_agent_status?: ValueTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -70116,7 +70180,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** aggregate max on columns */
 ["tournament_free_agents_max_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
-	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
@@ -70127,7 +70190,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** order by max() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_max_order_by"]: {
 	checked_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -70137,7 +70199,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** aggregate min on columns */
 ["tournament_free_agents_min_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
-	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
@@ -70148,7 +70209,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** order by min() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_min_order_by"]: {
 	checked_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -70192,7 +70252,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** input type for updating data in table "tournament_free_agents" */
 ["tournament_free_agents_set_input"]: {
 	checked_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -70237,7 +70296,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Initial value of the column from where the streaming should start */
 ["tournament_free_agents_stream_cursor_value_input"]: {
 	checked_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -74371,7 +74429,6 @@ invites_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["tournament_team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_team_invites_aggregate"]],
 	/** A computed field, executes function "tournament_team_invites_join_team" */
 	invites_join_team?:boolean | `@${string}`,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
@@ -74528,7 +74585,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	free_agents?: ValueTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invites?: ValueTypes["tournament_team_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -74663,7 +74719,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	eligible_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -74725,7 +74780,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	eligible_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -74859,18 +74913,14 @@ categories_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["tournament_categories_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_categories_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_categories_aggregate"]],
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?:boolean | `@${string}`,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_check_in_open" */
 	check_in_open?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
 	check_in_required?:boolean | `@${string}`,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_check_in_started" */
 	check_in_started?:boolean | `@${string}`,
@@ -75047,7 +75097,6 @@ stages_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["tournament_stages_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_stages_aggregate"]],
 	start?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?:boolean | `@${string}`,
 teams?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournament_teams_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -75349,16 +75398,12 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
 	categories?: ValueTypes["tournament_categories_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: number | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: number | undefined | null | Variable<any, string>,
 	check_in_required?: boolean | undefined | null | Variable<any, string>,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
@@ -75411,19 +75456,15 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	stages?: ValueTypes["tournament_stages_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null | Variable<any, string>,
 	teams?: ValueTypes["tournament_teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?:boolean | `@${string}`,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -75458,12 +75499,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 	banner?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -75489,12 +75527,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** aggregate min on columns */
 ["tournaments_min_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?:boolean | `@${string}`,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -75529,12 +75564,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 	banner?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -75700,16 +75732,12 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	auto_start?: boolean | undefined | null | Variable<any, string>,
 	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: number | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: number | undefined | null | Variable<any, string>,
 	check_in_required?: boolean | undefined | null | Variable<any, string>,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
@@ -75750,7 +75778,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	scheduling_mode?: string | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
@@ -75852,16 +75879,12 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	auto_start?: boolean | undefined | null | Variable<any, string>,
 	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_closes_before_minutes?: number | undefined | null | Variable<any, string>,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	check_in_opens_before_minutes?: number | undefined | null | Variable<any, string>,
 	check_in_required?: boolean | undefined | null | Variable<any, string>,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
@@ -75902,7 +75925,6 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	scheduling_mode?: string | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
@@ -99397,6 +99419,9 @@ count?: [{	columns?: Array<ResolverInputTypes["clip_render_jobs_select_column"]>
 	["clone_league_season_args"]: {
 	_league_season_id?: ResolverInputTypes["uuid"] | undefined | null
 };
+	["clone_tournament_bracket_options_args"]: {
+	_bracket_id?: ResolverInputTypes["uuid"] | undefined | null
+};
 	/** ordering argument of a cursor */
 ["cursor_ordering"]:cursor_ordering;
 	/** columns and relationships of "custom_pages" */
@@ -99410,6 +99435,7 @@ deployments?: [{	/** JSON select path */
 	id?:boolean | `@${string}`,
 	is_default?:boolean | `@${string}`,
 	manifest_url?:boolean | `@${string}`,
+	nav_featured?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
@@ -99465,6 +99491,7 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_default?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	manifest_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	nav_featured?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	nav_group?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	nav_order?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -99504,6 +99531,7 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -99575,6 +99603,7 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_default?: ResolverInputTypes["order_by"] | undefined | null,
 	manifest_url?: ResolverInputTypes["order_by"] | undefined | null,
+	nav_featured?: ResolverInputTypes["order_by"] | undefined | null,
 	nav_group?: ResolverInputTypes["order_by"] | undefined | null,
 	nav_order?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
@@ -99606,6 +99635,7 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -99649,6 +99679,7 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -105672,7 +105703,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_scopes_select_column"]
 };
 	/** columns and relationships of "e_sanction_sources" */
 ["e_sanction_sources"]: AliasType<{
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?:boolean | `@${string}`,
 	default_enabled?:boolean | `@${string}`,
 	default_scope?:boolean | `@${string}`,
@@ -105682,7 +105712,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_scopes_select_column"]
 	/** An object relationship */
 	e_sanction_scope?:ResolverInputTypes["e_sanction_scopes"],
 	value?:boolean | `@${string}`,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -105737,7 +105766,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 };
 	/** input type for inserting data into table "e_sanction_sources" */
 ["e_sanction_sources_insert_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
@@ -105746,12 +105774,10 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 	description?: string | undefined | null,
 	e_sanction_scope?: ResolverInputTypes["e_sanction_scopes_obj_rel_insert_input"] | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate max on columns */
 ["e_sanction_sources_max_fields"]: AliasType<{
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?:boolean | `@${string}`,
 	default_scope?:boolean | `@${string}`,
 	default_threshold?:boolean | `@${string}`,
@@ -105762,7 +105788,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 }>;
 	/** aggregate min on columns */
 ["e_sanction_sources_min_fields"]: AliasType<{
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?:boolean | `@${string}`,
 	default_scope?:boolean | `@${string}`,
 	default_threshold?:boolean | `@${string}`,
@@ -105805,7 +105830,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 ["e_sanction_sources_select_column"]:e_sanction_sources_select_column;
 	/** input type for updating data in table "e_sanction_sources" */
 ["e_sanction_sources_set_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
@@ -105813,7 +105837,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 	default_window_days?: number | undefined | null,
 	description?: string | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -105843,7 +105866,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 };
 	/** Initial value of the column from where the streaming should start */
 ["e_sanction_sources_stream_cursor_value_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
@@ -105851,7 +105873,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sanction_sources_select_column"
 	default_window_days?: number | undefined | null,
 	description?: string | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate sum on columns */
@@ -119966,7 +119987,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_demo_sessions_select_column
 ["match_demo_sessions_variance_order_by"]: {
 	watcher_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
-	/** relational table for assigning a players to a match and lineup */
+	/** columns and relationships of "match_lineup_players" */
 ["match_lineup_players"]: AliasType<{
 	captain?:boolean | `@${string}`,
 	checked_in?:boolean | `@${string}`,
@@ -120279,7 +120300,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 ["match_lineup_players_variance_order_by"]: {
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
-	/** relational table for assigning a team to a match and lineup */
+	/** columns and relationships of "match_lineups" */
 ["match_lineups"]: AliasType<{
 	/** A computed field, executes function "can_pick_map_veto" */
 	can_pick_map_veto?:boolean | `@${string}`,
@@ -125207,6 +125228,13 @@ clone_league_season?: [{	/** input parameters for function "clone_league_season"
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["league_seasons_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["league_seasons_bool_exp"] | undefined | null},ResolverInputTypes["league_seasons"]],
+clone_tournament_bracket_options?: [{	/** input parameters for function "clone_tournament_bracket_options" */
+	args: ResolverInputTypes["clone_tournament_bracket_options_args"],	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_brackets_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_brackets_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_brackets_bool_exp"] | undefined | null},ResolverInputTypes["tournament_brackets"]],
 continueTournamentCheckIn?: [{	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 counterScrimRequest?: [{	proposed_scheduled_at: ResolverInputTypes["timestamptz"],	request_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 createApiKey?: [{	label: string},ResolverInputTypes["ApiKeyResponse"]],
@@ -127363,6 +127391,7 @@ refreshLiveHud?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Su
 registerName?: [{	name: string},ResolverInputTypes["SuccessOutput"]],
 	/** Re-mine one batch of demos after a miner change */
 	remineUtilityMeta?:ResolverInputTypes["UtilityRemineOutput"],
+removeCs?: [{	game: string,	game_server_node_id: string},ResolverInputTypes["SuccessOutput"]],
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?:ResolverInputTypes["SuccessOutput"],
 removeSteamPresenceBotAccount?: [{	account_id: string},ResolverInputTypes["SuccessOutput"]],
@@ -127434,6 +127463,7 @@ setGameNodeSchedulingState?: [{	enabled: boolean,	game_server_node_id: string},R
 setGamePluginAutoUpdate?: [{	enabled: boolean,	slug: string},ResolverInputTypes["SuccessOutput"]],
 setHudMode?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInputTypes["SuccessOutput"]],
 setMapWinner?: [{	match_id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+setMatchPaused?: [{	match_id: ResolverInputTypes["uuid"],	paused: boolean},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setNewsCommentHidden?: [{	hidden: boolean,	id: ResolverInputTypes["uuid"],	reason?: string | undefined | null},ResolverInputTypes["NewsCommentOutput"]],
 setNewsPostStatus?: [{	id: ResolverInputTypes["uuid"],	status: string},ResolverInputTypes["NewsPost"]],
@@ -145203,6 +145233,9 @@ elo_history_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_player_elo_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_elo_bool_exp"] | undefined | null},ResolverInputTypes["v_player_elo_aggregate"]],
+	faceit_ban_ends_at?:boolean | `@${string}`,
+	faceit_banned_at?:boolean | `@${string}`,
+	faceit_bans_checked_at?:boolean | `@${string}`,
 	faceit_elo?:boolean | `@${string}`,
 	faceit_nickname?:boolean | `@${string}`,
 	faceit_player_id?:boolean | `@${string}`,
@@ -145325,8 +145358,10 @@ kills_by_weapons_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_kills_by_weapon_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_kills_by_weapon_bool_exp"] | undefined | null},ResolverInputTypes["player_kills_by_weapon_aggregate"]],
 	language?:boolean | `@${string}`,
+	last_game_ban_at?:boolean | `@${string}`,
 	last_read_news_at?:boolean | `@${string}`,
 	last_sign_in_at?:boolean | `@${string}`,
+	last_vac_ban_at?:boolean | `@${string}`,
 live_lineup?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_lineup_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -145759,6 +145794,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	elo?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	elo_history?: ResolverInputTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_history_aggregate?: ResolverInputTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	faceit_elo?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	faceit_nickname?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	faceit_player_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -145792,8 +145830,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	kills_by_weapons?: ResolverInputTypes["player_kills_by_weapon_bool_exp"] | undefined | null,
 	kills_by_weapons_aggregate?: ResolverInputTypes["player_kills_by_weapon_aggregate_bool_exp"] | undefined | null,
 	language?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	live_lineup?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null,
 	lobby_players?: ResolverInputTypes["lobby_players_bool_exp"] | undefined | null,
 	lobby_players_aggregate?: ResolverInputTypes["lobby_players_aggregate_bool_exp"] | undefined | null,
@@ -145902,6 +145942,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	discord_id?: string | undefined | null,
 	draft_game_players?: ResolverInputTypes["draft_game_players_arr_rel_insert_input"] | undefined | null,
 	elo_history?: ResolverInputTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -145918,8 +145961,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	kills?: ResolverInputTypes["player_kills_arr_rel_insert_input"] | undefined | null,
 	kills_by_weapons?: ResolverInputTypes["player_kills_by_weapon_arr_rel_insert_input"] | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	lobby_players?: ResolverInputTypes["lobby_players_arr_rel_insert_input"] | undefined | null,
 	match_map_hltv?: ResolverInputTypes["v_player_match_map_hltv_arr_rel_insert_input"] | undefined | null,
 	match_map_stats?: ResolverInputTypes["player_match_map_stats_arr_rel_insert_input"] | undefined | null,
@@ -145970,6 +146015,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	custom_avatar_url?:boolean | `@${string}`,
 	days_since_last_ban?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	faceit_ban_ends_at?:boolean | `@${string}`,
+	faceit_banned_at?:boolean | `@${string}`,
+	faceit_bans_checked_at?:boolean | `@${string}`,
 	faceit_elo?:boolean | `@${string}`,
 	faceit_nickname?:boolean | `@${string}`,
 	faceit_player_id?:boolean | `@${string}`,
@@ -145978,8 +146026,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	faceit_url?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
 	language?:boolean | `@${string}`,
+	last_game_ban_at?:boolean | `@${string}`,
 	last_read_news_at?:boolean | `@${string}`,
 	last_sign_in_at?:boolean | `@${string}`,
+	last_vac_ban_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -146025,6 +146075,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	custom_avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
 	days_since_last_ban?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_id?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_nickname?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_player_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146033,8 +146086,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	faceit_url?: ResolverInputTypes["order_by"] | undefined | null,
 	game_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
 	language?: ResolverInputTypes["order_by"] | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	notification_timezone?: ResolverInputTypes["order_by"] | undefined | null,
 	premier_rank?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146057,6 +146112,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	custom_avatar_url?:boolean | `@${string}`,
 	days_since_last_ban?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	faceit_ban_ends_at?:boolean | `@${string}`,
+	faceit_banned_at?:boolean | `@${string}`,
+	faceit_bans_checked_at?:boolean | `@${string}`,
 	faceit_elo?:boolean | `@${string}`,
 	faceit_nickname?:boolean | `@${string}`,
 	faceit_player_id?:boolean | `@${string}`,
@@ -146065,8 +146123,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	faceit_url?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
 	language?:boolean | `@${string}`,
+	last_game_ban_at?:boolean | `@${string}`,
 	last_read_news_at?:boolean | `@${string}`,
 	last_sign_in_at?:boolean | `@${string}`,
+	last_vac_ban_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?:boolean | `@${string}`,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -146112,6 +146172,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	custom_avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
 	days_since_last_ban?: ResolverInputTypes["order_by"] | undefined | null,
 	discord_id?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_nickname?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_player_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146120,8 +146183,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	faceit_url?: ResolverInputTypes["order_by"] | undefined | null,
 	game_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
 	language?: ResolverInputTypes["order_by"] | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	notification_timezone?: ResolverInputTypes["order_by"] | undefined | null,
 	premier_rank?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146175,6 +146240,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	draft_game_players_aggregate?: ResolverInputTypes["draft_game_players_aggregate_order_by"] | undefined | null,
 	elo?: ResolverInputTypes["order_by"] | undefined | null,
 	elo_history_aggregate?: ResolverInputTypes["v_player_elo_aggregate_order_by"] | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_nickname?: ResolverInputTypes["order_by"] | undefined | null,
 	faceit_player_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146200,8 +146268,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
 	kills_by_weapons_aggregate?: ResolverInputTypes["player_kills_by_weapon_aggregate_order_by"] | undefined | null,
 	language?: ResolverInputTypes["order_by"] | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["order_by"] | undefined | null,
 	live_lineup_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	lobby_players_aggregate?: ResolverInputTypes["lobby_players_aggregate_order_by"] | undefined | null,
 	losses?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146272,6 +146342,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -146280,8 +146353,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
 	notification_timezone?: string | undefined | null,
@@ -146443,6 +146518,9 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -146451,8 +146529,10 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
 	notification_timezone?: string | undefined | null,
@@ -150636,6 +150716,7 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 	banned_here?:boolean | `@${string}`,
 	first_match_at?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
+	game_banned_on?:boolean | `@${string}`,
 	last_match_at?:boolean | `@${string}`,
 	last_match_map?:boolean | `@${string}`,
 	matches_played?:boolean | `@${string}`,
@@ -150651,6 +150732,7 @@ shared_matches?: [{	/** JSON select path */
 	steam_banned_on?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	vac_ban_count?:boolean | `@${string}`,
+	vac_banned_on?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "recent_ban_entries" */
@@ -150698,6 +150780,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_here?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	first_match_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	game_ban_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	game_banned_on?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
 	last_match_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_match_map?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	matches_played?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -150709,7 +150792,8 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	shared_matches?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	steam_banned_on?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
-	vac_ban_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	vac_ban_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	vac_banned_on?: ResolverInputTypes["date_comparison_exp"] | undefined | null
 };
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["recent_ban_entries_delete_at_path_input"]: {
@@ -150739,6 +150823,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_here?: boolean | undefined | null,
 	first_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ResolverInputTypes["date"] | undefined | null,
 	last_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -150750,7 +150835,8 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ResolverInputTypes["date"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ResolverInputTypes["date"] | undefined | null
 };
 	/** aggregate max on columns */
 ["recent_ban_entries_max_fields"]: AliasType<{
@@ -150758,6 +150844,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_at_source?:boolean | `@${string}`,
 	first_match_at?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
+	game_banned_on?:boolean | `@${string}`,
 	last_match_at?:boolean | `@${string}`,
 	last_match_map?:boolean | `@${string}`,
 	matches_played?:boolean | `@${string}`,
@@ -150767,6 +150854,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	steam_banned_on?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	vac_ban_count?:boolean | `@${string}`,
+	vac_banned_on?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -150775,6 +150863,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_at_source?:boolean | `@${string}`,
 	first_match_at?:boolean | `@${string}`,
 	game_ban_count?:boolean | `@${string}`,
+	game_banned_on?:boolean | `@${string}`,
 	last_match_at?:boolean | `@${string}`,
 	last_match_map?:boolean | `@${string}`,
 	matches_played?:boolean | `@${string}`,
@@ -150784,6 +150873,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	steam_banned_on?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	vac_ban_count?:boolean | `@${string}`,
+	vac_banned_on?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "recent_ban_entries" */
@@ -150802,6 +150892,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_here?: ResolverInputTypes["order_by"] | undefined | null,
 	first_match_at?: ResolverInputTypes["order_by"] | undefined | null,
 	game_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
+	game_banned_on?: ResolverInputTypes["order_by"] | undefined | null,
 	last_match_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_match_map?: ResolverInputTypes["order_by"] | undefined | null,
 	matches_played?: ResolverInputTypes["order_by"] | undefined | null,
@@ -150813,7 +150904,8 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	shared_matches?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_banned_on?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	vac_ban_count?: ResolverInputTypes["order_by"] | undefined | null
+	vac_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
+	vac_banned_on?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["recent_ban_entries_prepend_input"]: {
@@ -150829,6 +150921,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_here?: boolean | undefined | null,
 	first_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ResolverInputTypes["date"] | undefined | null,
 	last_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -150838,7 +150931,8 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ResolverInputTypes["date"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ResolverInputTypes["date"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["recent_ban_entries_stddev_fields"]: AliasType<{
@@ -150882,6 +150976,7 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	banned_here?: boolean | undefined | null,
 	first_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ResolverInputTypes["date"] | undefined | null,
 	last_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -150891,7 +150986,8 @@ count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"
 	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ResolverInputTypes["date"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ResolverInputTypes["date"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["recent_ban_entries_sum_fields"]: AliasType<{
@@ -161559,7 +161655,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_request_proposals_sele
 	/** An object relationship */
 	match_options?:ResolverInputTypes["match_options"],
 	match_options_id?:boolean | `@${string}`,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?:boolean | `@${string}`,
 proposals?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["team_scrim_request_proposals_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -161715,7 +161810,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_options?: ResolverInputTypes["match_options_obj_rel_insert_input"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposals?: ResolverInputTypes["team_scrim_request_proposals_arr_rel_insert_input"] | undefined | null,
 	proposed_scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -161738,7 +161832,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?:boolean | `@${string}`,
 	proposed_scheduled_at?:boolean | `@${string}`,
 	region?:boolean | `@${string}`,
@@ -161757,7 +161850,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_options_id?: ResolverInputTypes["order_by"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: ResolverInputTypes["order_by"] | undefined | null,
 	proposed_scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	region?: ResolverInputTypes["order_by"] | undefined | null,
@@ -161775,7 +161867,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?:boolean | `@${string}`,
 	proposed_scheduled_at?:boolean | `@${string}`,
 	region?:boolean | `@${string}`,
@@ -161794,7 +161885,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_options_id?: ResolverInputTypes["order_by"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: ResolverInputTypes["order_by"] | undefined | null,
 	proposed_scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	region?: ResolverInputTypes["order_by"] | undefined | null,
@@ -161874,7 +161964,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -161931,7 +162020,6 @@ count?: [{	columns?: Array<ResolverInputTypes["team_scrim_requests_select_column
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -163918,7 +164006,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_categories_select_colu
 	/** columns and relationships of "tournament_free_agents" */
 ["tournament_free_agents"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
-	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_tournament_free_agent_status?:ResolverInputTypes["e_tournament_free_agent_statuses"],
@@ -164020,7 +164107,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** input type for inserting data into table "tournament_free_agents" */
 ["tournament_free_agents_insert_input"]: {
 	checked_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	e_tournament_free_agent_status?: ResolverInputTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -164035,7 +164121,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** aggregate max on columns */
 ["tournament_free_agents_max_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
-	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
@@ -164046,7 +164131,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** order by max() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_max_order_by"]: {
 	checked_in_at?: ResolverInputTypes["order_by"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -164056,7 +164140,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** aggregate min on columns */
 ["tournament_free_agents_min_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
-	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
@@ -164067,7 +164150,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** order by min() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_min_order_by"]: {
 	checked_in_at?: ResolverInputTypes["order_by"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -164111,7 +164193,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** input type for updating data in table "tournament_free_agents" */
 ["tournament_free_agents_set_input"]: {
 	checked_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -164156,7 +164237,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Initial value of the column from where the streaming should start */
 ["tournament_free_agents_stream_cursor_value_input"]: {
 	checked_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -168290,7 +168370,6 @@ invites_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["tournament_team_invites_bool_exp"] | undefined | null},ResolverInputTypes["tournament_team_invites_aggregate"]],
 	/** A computed field, executes function "tournament_team_invites_join_team" */
 	invites_join_team?:boolean | `@${string}`,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
@@ -168447,7 +168526,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	free_agents?: ResolverInputTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invites?: ResolverInputTypes["tournament_team_invites_arr_rel_insert_input"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -168582,7 +168660,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	eligible_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -168644,7 +168721,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	eligible_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -168778,18 +168854,14 @@ categories_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["tournament_categories_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_categories_bool_exp"] | undefined | null},ResolverInputTypes["tournament_categories_aggregate"]],
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?:boolean | `@${string}`,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_check_in_open" */
 	check_in_open?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
 	check_in_required?:boolean | `@${string}`,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?:boolean | `@${string}`,
 	/** A computed field, executes function "tournament_check_in_started" */
 	check_in_started?:boolean | `@${string}`,
@@ -168966,7 +169038,6 @@ stages_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["tournament_stages_bool_exp"] | undefined | null},ResolverInputTypes["tournament_stages_aggregate"]],
 	start?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?:boolean | `@${string}`,
 teams?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournament_teams_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -169268,16 +169339,12 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: ResolverInputTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ResolverInputTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -169330,19 +169397,15 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	stages?: ResolverInputTypes["tournament_stages_arr_rel_insert_input"] | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null,
 	teams?: ResolverInputTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?:boolean | `@${string}`,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -169377,12 +169440,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 	banner?: ResolverInputTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ResolverInputTypes["order_by"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -169408,12 +169468,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** aggregate min on columns */
 ["tournaments_min_fields"]: AliasType<{
 	banner?:boolean | `@${string}`,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?:boolean | `@${string}`,
 	check_in_closes_before_minutes?:boolean | `@${string}`,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?:boolean | `@${string}`,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?:boolean | `@${string}`,
 	check_in_opens_before_minutes?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -169448,12 +169505,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 	banner?: ResolverInputTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ResolverInputTypes["order_by"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -169619,16 +169673,12 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ResolverInputTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -169669,7 +169719,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	scheduling_mode?: string | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -169771,16 +169820,12 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ResolverInputTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -169821,7 +169866,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	scheduling_mode?: string | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null
 };
 	/** aggregate sum on columns */
@@ -192948,6 +192992,9 @@ export type ModelTypes = {
 	["clone_league_season_args"]: {
 	_league_season_id?: ModelTypes["uuid"] | undefined | null
 };
+	["clone_tournament_bracket_options_args"]: {
+	_bracket_id?: ModelTypes["uuid"] | undefined | null
+};
 	["cursor_ordering"]:cursor_ordering;
 	/** columns and relationships of "custom_pages" */
 ["custom_pages"]: {
@@ -192959,6 +193006,7 @@ export type ModelTypes = {
 	id: ModelTypes["uuid"],
 	is_default: boolean,
 	manifest_url?: string | undefined | null,
+	nav_featured: boolean,
 	nav_group?: string | undefined | null,
 	nav_order: number,
 	plugin_slug?: string | undefined | null,
@@ -193010,6 +193058,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	is_default?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	manifest_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	nav_featured?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	nav_group?: ModelTypes["String_comparison_exp"] | undefined | null,
 	nav_order?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -193048,6 +193097,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -193116,6 +193166,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	is_default?: ModelTypes["order_by"] | undefined | null,
 	manifest_url?: ModelTypes["order_by"] | undefined | null,
+	nav_featured?: ModelTypes["order_by"] | undefined | null,
 	nav_group?: ModelTypes["order_by"] | undefined | null,
 	nav_order?: ModelTypes["order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
@@ -193146,6 +193197,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -193186,6 +193238,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -198698,8 +198751,7 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "e_sanction_sources" */
 ["e_sanction_sources"]: {
-		/** Comma separated ban durations in minutes, indexed by occurrence count */
-	default_durations: string,
+		default_durations: string,
 	default_enabled: boolean,
 	default_scope: string,
 	default_threshold: number,
@@ -198708,7 +198760,6 @@ export type ModelTypes = {
 	/** An object relationship */
 	e_sanction_scope: ModelTypes["e_sanction_scopes"],
 	value: string,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban: boolean
 };
 	/** aggregated selection of "e_sanction_sources" */
@@ -198758,7 +198809,6 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "e_sanction_sources" */
 ["e_sanction_sources_insert_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
@@ -198767,13 +198817,11 @@ export type ModelTypes = {
 	description?: string | undefined | null,
 	e_sanction_scope?: ModelTypes["e_sanction_scopes_obj_rel_insert_input"] | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate max on columns */
 ["e_sanction_sources_max_fields"]: {
-		/** Comma separated ban durations in minutes, indexed by occurrence count */
-	default_durations?: string | undefined | null,
+		default_durations?: string | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
 	default_window_days?: number | undefined | null,
@@ -198782,8 +198830,7 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["e_sanction_sources_min_fields"]: {
-		/** Comma separated ban durations in minutes, indexed by occurrence count */
-	default_durations?: string | undefined | null,
+		default_durations?: string | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
 	default_window_days?: number | undefined | null,
@@ -198822,7 +198869,6 @@ export type ModelTypes = {
 	["e_sanction_sources_select_column"]:e_sanction_sources_select_column;
 	/** input type for updating data in table "e_sanction_sources" */
 ["e_sanction_sources_set_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
@@ -198830,7 +198876,6 @@ export type ModelTypes = {
 	default_window_days?: number | undefined | null,
 	description?: string | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -198857,7 +198902,6 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["e_sanction_sources_stream_cursor_value_input"]: {
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
@@ -198865,7 +198909,6 @@ export type ModelTypes = {
 	default_window_days?: number | undefined | null,
 	description?: string | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate sum on columns */
@@ -211762,7 +211805,7 @@ export type ModelTypes = {
 ["match_demo_sessions_variance_order_by"]: {
 	watcher_steam_id?: ModelTypes["order_by"] | undefined | null
 };
-	/** relational table for assigning a players to a match and lineup */
+	/** columns and relationships of "match_lineup_players" */
 ["match_lineup_players"]: {
 		captain: boolean,
 	checked_in: boolean,
@@ -212056,7 +212099,7 @@ export type ModelTypes = {
 ["match_lineup_players_variance_order_by"]: {
 	steam_id?: ModelTypes["order_by"] | undefined | null
 };
-	/** relational table for assigning a team to a match and lineup */
+	/** columns and relationships of "match_lineups" */
 ["match_lineups"]: {
 		/** A computed field, executes function "can_pick_map_veto" */
 	can_pick_map_veto?: boolean | undefined | null,
@@ -216523,6 +216566,8 @@ export type ModelTypes = {
 	clearPendingMatchImport?: ModelTypes["PendingMatchImportActionOutput"] | undefined | null,
 	/** execute VOLATILE function "clone_league_season" which returns "league_seasons" */
 	clone_league_season: Array<ModelTypes["league_seasons"]>,
+	/** execute VOLATILE function "clone_tournament_bracket_options" which returns "tournament_brackets" */
+	clone_tournament_bracket_options: Array<ModelTypes["tournament_brackets"]>,
 	/** Organizer proceeds without the teams that missed check-in */
 	continueTournamentCheckIn?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** counterScrimRequest */
@@ -218495,6 +218540,7 @@ export type ModelTypes = {
 	registerName?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Re-mine one batch of demos after a miner change */
 	remineUtilityMeta?: ModelTypes["UtilityRemineOutput"] | undefined | null,
+	removeCs?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Remove a friends-role presence bot account */
@@ -218578,6 +218624,7 @@ export type ModelTypes = {
 	setHudMode?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** setMapWinner */
 	setMapWinner?: ModelTypes["SuccessOutput"] | undefined | null,
+	setMatchPaused?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** setMatchWinner */
 	setMatchWinner?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Hide or restore a news comment. Moderators and above. */
@@ -234834,6 +234881,9 @@ export type ModelTypes = {
 	elo_history: Array<ModelTypes["v_player_elo"]>,
 	/** An aggregate relationship */
 	elo_history_aggregate: ModelTypes["v_player_elo_aggregate"],
+	faceit_ban_ends_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -234892,8 +234942,10 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	kills_by_weapons_aggregate: ModelTypes["player_kills_by_weapon_aggregate"],
 	language?: string | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_player_live_lineup" */
 	live_lineup?: Array<ModelTypes["match_lineup_players"]> | undefined | null,
 	/** An array relationship */
@@ -235142,6 +235194,9 @@ export type ModelTypes = {
 	elo?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	elo_history?: ModelTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_history_aggregate?: ModelTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	faceit_elo?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	faceit_nickname?: ModelTypes["String_comparison_exp"] | undefined | null,
 	faceit_player_id?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -235175,8 +235230,10 @@ export type ModelTypes = {
 	kills_by_weapons?: ModelTypes["player_kills_by_weapon_bool_exp"] | undefined | null,
 	kills_by_weapons_aggregate?: ModelTypes["player_kills_by_weapon_aggregate_bool_exp"] | undefined | null,
 	language?: ModelTypes["String_comparison_exp"] | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	live_lineup?: ModelTypes["match_lineup_players_bool_exp"] | undefined | null,
 	lobby_players?: ModelTypes["lobby_players_bool_exp"] | undefined | null,
 	lobby_players_aggregate?: ModelTypes["lobby_players_aggregate_bool_exp"] | undefined | null,
@@ -235284,6 +235341,9 @@ export type ModelTypes = {
 	discord_id?: string | undefined | null,
 	draft_game_players?: ModelTypes["draft_game_players_arr_rel_insert_input"] | undefined | null,
 	elo_history?: ModelTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -235300,8 +235360,10 @@ export type ModelTypes = {
 	kills?: ModelTypes["player_kills_arr_rel_insert_input"] | undefined | null,
 	kills_by_weapons?: ModelTypes["player_kills_by_weapon_arr_rel_insert_input"] | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	lobby_players?: ModelTypes["lobby_players_arr_rel_insert_input"] | undefined | null,
 	match_map_hltv?: ModelTypes["v_player_match_map_hltv_arr_rel_insert_input"] | undefined | null,
 	match_map_stats?: ModelTypes["player_match_map_stats_arr_rel_insert_input"] | undefined | null,
@@ -235352,6 +235414,9 @@ export type ModelTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -235360,8 +235425,10 @@ export type ModelTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -235406,6 +235473,9 @@ export type ModelTypes = {
 	custom_avatar_url?: ModelTypes["order_by"] | undefined | null,
 	days_since_last_ban?: ModelTypes["order_by"] | undefined | null,
 	discord_id?: ModelTypes["order_by"] | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["order_by"] | undefined | null,
+	faceit_banned_at?: ModelTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["order_by"] | undefined | null,
 	faceit_elo?: ModelTypes["order_by"] | undefined | null,
 	faceit_nickname?: ModelTypes["order_by"] | undefined | null,
 	faceit_player_id?: ModelTypes["order_by"] | undefined | null,
@@ -235414,8 +235484,10 @@ export type ModelTypes = {
 	faceit_url?: ModelTypes["order_by"] | undefined | null,
 	game_ban_count?: ModelTypes["order_by"] | undefined | null,
 	language?: ModelTypes["order_by"] | undefined | null,
+	last_game_ban_at?: ModelTypes["order_by"] | undefined | null,
 	last_read_news_at?: ModelTypes["order_by"] | undefined | null,
 	last_sign_in_at?: ModelTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	notification_timezone?: ModelTypes["order_by"] | undefined | null,
 	premier_rank?: ModelTypes["order_by"] | undefined | null,
@@ -235438,6 +235510,9 @@ export type ModelTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -235446,8 +235521,10 @@ export type ModelTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -235492,6 +235569,9 @@ export type ModelTypes = {
 	custom_avatar_url?: ModelTypes["order_by"] | undefined | null,
 	days_since_last_ban?: ModelTypes["order_by"] | undefined | null,
 	discord_id?: ModelTypes["order_by"] | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["order_by"] | undefined | null,
+	faceit_banned_at?: ModelTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["order_by"] | undefined | null,
 	faceit_elo?: ModelTypes["order_by"] | undefined | null,
 	faceit_nickname?: ModelTypes["order_by"] | undefined | null,
 	faceit_player_id?: ModelTypes["order_by"] | undefined | null,
@@ -235500,8 +235580,10 @@ export type ModelTypes = {
 	faceit_url?: ModelTypes["order_by"] | undefined | null,
 	game_ban_count?: ModelTypes["order_by"] | undefined | null,
 	language?: ModelTypes["order_by"] | undefined | null,
+	last_game_ban_at?: ModelTypes["order_by"] | undefined | null,
 	last_read_news_at?: ModelTypes["order_by"] | undefined | null,
 	last_sign_in_at?: ModelTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	notification_timezone?: ModelTypes["order_by"] | undefined | null,
 	premier_rank?: ModelTypes["order_by"] | undefined | null,
@@ -235554,6 +235636,9 @@ export type ModelTypes = {
 	draft_game_players_aggregate?: ModelTypes["draft_game_players_aggregate_order_by"] | undefined | null,
 	elo?: ModelTypes["order_by"] | undefined | null,
 	elo_history_aggregate?: ModelTypes["v_player_elo_aggregate_order_by"] | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["order_by"] | undefined | null,
+	faceit_banned_at?: ModelTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["order_by"] | undefined | null,
 	faceit_elo?: ModelTypes["order_by"] | undefined | null,
 	faceit_nickname?: ModelTypes["order_by"] | undefined | null,
 	faceit_player_id?: ModelTypes["order_by"] | undefined | null,
@@ -235579,8 +235664,10 @@ export type ModelTypes = {
 	kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined | null,
 	kills_by_weapons_aggregate?: ModelTypes["player_kills_by_weapon_aggregate_order_by"] | undefined | null,
 	language?: ModelTypes["order_by"] | undefined | null,
+	last_game_ban_at?: ModelTypes["order_by"] | undefined | null,
 	last_read_news_at?: ModelTypes["order_by"] | undefined | null,
 	last_sign_in_at?: ModelTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["order_by"] | undefined | null,
 	live_lineup_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	lobby_players_aggregate?: ModelTypes["lobby_players_aggregate_order_by"] | undefined | null,
 	losses?: ModelTypes["order_by"] | undefined | null,
@@ -235650,6 +235737,9 @@ export type ModelTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -235658,8 +235748,10 @@ export type ModelTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
 	notification_timezone?: string | undefined | null,
@@ -235818,6 +235910,9 @@ export type ModelTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: ModelTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -235826,8 +235921,10 @@ export type ModelTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
 	notification_timezone?: string | undefined | null,
@@ -237996,6 +238093,7 @@ export type ModelTypes = {
 	banned_here: boolean,
 	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	game_ban_count: number,
+	game_banned_on?: ModelTypes["date"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played: number,
@@ -238009,7 +238107,8 @@ export type ModelTypes = {
 	shared_matches?: ModelTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ModelTypes["date"] | undefined | null,
 	steam_id: ModelTypes["bigint"],
-	vac_ban_count: number
+	vac_ban_count: number,
+	vac_banned_on?: ModelTypes["date"] | undefined | null
 };
 	/** aggregated selection of "recent_ban_entries" */
 ["recent_ban_entries_aggregate"]: {
@@ -238053,6 +238152,7 @@ export type ModelTypes = {
 	banned_here?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	first_match_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	game_ban_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	game_banned_on?: ModelTypes["date_comparison_exp"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_match_map?: ModelTypes["String_comparison_exp"] | undefined | null,
 	matches_played?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -238064,7 +238164,8 @@ export type ModelTypes = {
 	shared_matches?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	steam_banned_on?: ModelTypes["date_comparison_exp"] | undefined | null,
 	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
-	vac_ban_count?: ModelTypes["Int_comparison_exp"] | undefined | null
+	vac_ban_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	vac_banned_on?: ModelTypes["date_comparison_exp"] | undefined | null
 };
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["recent_ban_entries_delete_at_path_input"]: {
@@ -238094,6 +238195,7 @@ export type ModelTypes = {
 	banned_here?: boolean | undefined | null,
 	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ModelTypes["date"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -238105,7 +238207,8 @@ export type ModelTypes = {
 	shared_matches?: ModelTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ModelTypes["date"] | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ModelTypes["date"] | undefined | null
 };
 	/** aggregate max on columns */
 ["recent_ban_entries_max_fields"]: {
@@ -238113,6 +238216,7 @@ export type ModelTypes = {
 	banned_at_source?: string | undefined | null,
 	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ModelTypes["date"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -238121,7 +238225,8 @@ export type ModelTypes = {
 	sanction_kind?: string | undefined | null,
 	steam_banned_on?: ModelTypes["date"] | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ModelTypes["date"] | undefined | null
 };
 	/** aggregate min on columns */
 ["recent_ban_entries_min_fields"]: {
@@ -238129,6 +238234,7 @@ export type ModelTypes = {
 	banned_at_source?: string | undefined | null,
 	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ModelTypes["date"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -238137,7 +238243,8 @@ export type ModelTypes = {
 	sanction_kind?: string | undefined | null,
 	steam_banned_on?: ModelTypes["date"] | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ModelTypes["date"] | undefined | null
 };
 	/** response of any mutation on the table "recent_ban_entries" */
 ["recent_ban_entries_mutation_response"]: {
@@ -238154,6 +238261,7 @@ export type ModelTypes = {
 	banned_here?: ModelTypes["order_by"] | undefined | null,
 	first_match_at?: ModelTypes["order_by"] | undefined | null,
 	game_ban_count?: ModelTypes["order_by"] | undefined | null,
+	game_banned_on?: ModelTypes["order_by"] | undefined | null,
 	last_match_at?: ModelTypes["order_by"] | undefined | null,
 	last_match_map?: ModelTypes["order_by"] | undefined | null,
 	matches_played?: ModelTypes["order_by"] | undefined | null,
@@ -238165,7 +238273,8 @@ export type ModelTypes = {
 	shared_matches?: ModelTypes["order_by"] | undefined | null,
 	steam_banned_on?: ModelTypes["order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null,
-	vac_ban_count?: ModelTypes["order_by"] | undefined | null
+	vac_ban_count?: ModelTypes["order_by"] | undefined | null,
+	vac_banned_on?: ModelTypes["order_by"] | undefined | null
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["recent_ban_entries_prepend_input"]: {
@@ -238180,6 +238289,7 @@ export type ModelTypes = {
 	banned_here?: boolean | undefined | null,
 	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ModelTypes["date"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -238189,7 +238299,8 @@ export type ModelTypes = {
 	shared_matches?: ModelTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ModelTypes["date"] | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ModelTypes["date"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["recent_ban_entries_stddev_fields"]: {
@@ -238230,6 +238341,7 @@ export type ModelTypes = {
 	banned_here?: boolean | undefined | null,
 	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: ModelTypes["date"] | undefined | null,
 	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -238239,7 +238351,8 @@ export type ModelTypes = {
 	shared_matches?: ModelTypes["jsonb"] | undefined | null,
 	steam_banned_on?: ModelTypes["date"] | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: ModelTypes["date"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["recent_ban_entries_sum_fields"]: {
@@ -245926,7 +246039,6 @@ export type ModelTypes = {
 	/** An object relationship */
 	match_options?: ModelTypes["match_options"] | undefined | null,
 	match_options_id?: ModelTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	/** An array relationship */
 	proposals: Array<ModelTypes["team_scrim_request_proposals"]>,
@@ -246069,7 +246181,6 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_options?: ModelTypes["match_options_obj_rel_insert_input"] | undefined | null,
 	match_options_id?: ModelTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposals?: ModelTypes["team_scrim_request_proposals_arr_rel_insert_input"] | undefined | null,
 	proposed_scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -246092,7 +246203,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_options_id?: ModelTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -246110,7 +246220,6 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	match_id?: ModelTypes["order_by"] | undefined | null,
 	match_options_id?: ModelTypes["order_by"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: ModelTypes["order_by"] | undefined | null,
 	proposed_scheduled_at?: ModelTypes["order_by"] | undefined | null,
 	region?: ModelTypes["order_by"] | undefined | null,
@@ -246128,7 +246237,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_options_id?: ModelTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -246146,7 +246254,6 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	match_id?: ModelTypes["order_by"] | undefined | null,
 	match_options_id?: ModelTypes["order_by"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: ModelTypes["order_by"] | undefined | null,
 	proposed_scheduled_at?: ModelTypes["order_by"] | undefined | null,
 	region?: ModelTypes["order_by"] | undefined | null,
@@ -246222,7 +246329,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_options_id?: ModelTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -246276,7 +246382,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_options_id?: ModelTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -248096,7 +248201,6 @@ export type ModelTypes = {
 	/** columns and relationships of "tournament_free_agents" */
 ["tournament_free_agents"]: {
 		checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at: ModelTypes["timestamptz"],
 	/** An object relationship */
 	e_tournament_free_agent_status: ModelTypes["e_tournament_free_agent_statuses"],
@@ -248193,7 +248297,6 @@ export type ModelTypes = {
 	/** input type for inserting data into table "tournament_free_agents" */
 ["tournament_free_agents_insert_input"]: {
 	checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	e_tournament_free_agent_status?: ModelTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -248208,7 +248311,6 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["tournament_free_agents_max_fields"]: {
 		checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -248218,7 +248320,6 @@ export type ModelTypes = {
 	/** order by max() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_max_order_by"]: {
 	checked_in_at?: ModelTypes["order_by"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -248228,7 +248329,6 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["tournament_free_agents_min_fields"]: {
 		checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -248238,7 +248338,6 @@ export type ModelTypes = {
 	/** order by min() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_min_order_by"]: {
 	checked_in_at?: ModelTypes["order_by"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -248280,7 +248379,6 @@ export type ModelTypes = {
 	/** input type for updating data in table "tournament_free_agents" */
 ["tournament_free_agents_set_input"]: {
 	checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -248322,7 +248420,6 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["tournament_free_agents_stream_cursor_value_input"]: {
 	checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -252160,7 +252257,6 @@ export type ModelTypes = {
 	invites_aggregate: ModelTypes["tournament_team_invites_aggregate"],
 	/** A computed field, executes function "tournament_team_invites_join_team" */
 	invites_join_team?: boolean | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted: boolean,
 	name?: string | undefined | null,
 	owner_steam_id: ModelTypes["bigint"],
@@ -252304,7 +252400,6 @@ export type ModelTypes = {
 	free_agents?: ModelTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	invites?: ModelTypes["tournament_team_invites_arr_rel_insert_input"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -252433,7 +252528,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	eligible_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -252492,7 +252586,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	eligible_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -252597,18 +252690,14 @@ export type ModelTypes = {
 	categories: Array<ModelTypes["tournament_categories"]>,
 	/** An aggregate relationship */
 	categories_aggregate: ModelTypes["tournament_categories_aggregate"],
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes: number,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "tournament_check_in_open" */
 	check_in_open?: boolean | undefined | null,
 	check_in_opens_before_minutes: number,
 	check_in_required: boolean,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting: ModelTypes["e_check_in_settings_enum"],
 	/** A computed field, executes function "tournament_check_in_started" */
 	check_in_started?: boolean | undefined | null,
@@ -252713,7 +252802,6 @@ export type ModelTypes = {
 	stages_aggregate: ModelTypes["tournament_stages_aggregate"],
 	start: ModelTypes["timestamptz"],
 	status: ModelTypes["e_tournament_status_enum"],
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled: boolean,
 	/** An array relationship */
 	teams: Array<ModelTypes["tournament_teams"]>,
@@ -253002,16 +253090,12 @@ export type ModelTypes = {
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: ModelTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -253064,19 +253148,15 @@ export type ModelTypes = {
 	stages?: ModelTypes["tournament_stages_arr_rel_insert_input"] | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null,
 	teams?: ModelTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: {
 		banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -253110,12 +253190,9 @@ export type ModelTypes = {
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 	banner?: ModelTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ModelTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["order_by"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
@@ -253141,12 +253218,9 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["tournaments_min_fields"]: {
 		banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -253180,12 +253254,9 @@ export type ModelTypes = {
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 	banner?: ModelTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: ModelTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["order_by"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
@@ -253339,16 +253410,12 @@ export type ModelTypes = {
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -253389,7 +253456,6 @@ export type ModelTypes = {
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -253488,16 +253554,12 @@ export type ModelTypes = {
 	auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: ModelTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -253538,7 +253600,6 @@ export type ModelTypes = {
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null
 };
 	/** aggregate sum on columns */
@@ -276008,6 +276069,9 @@ export type GraphQLTypes = {
 	["clone_league_season_args"]: {
 		_league_season_id?: GraphQLTypes["uuid"] | undefined | null
 };
+	["clone_tournament_bracket_options_args"]: {
+		_bracket_id?: GraphQLTypes["uuid"] | undefined | null
+};
 	/** ordering argument of a cursor */
 ["cursor_ordering"]: cursor_ordering;
 	/** columns and relationships of "custom_pages" */
@@ -276021,6 +276085,7 @@ export type GraphQLTypes = {
 	id: GraphQLTypes["uuid"],
 	is_default: boolean,
 	manifest_url?: string | undefined | null,
+	nav_featured: boolean,
 	nav_group?: string | undefined | null,
 	nav_order: number,
 	plugin_slug?: string | undefined | null,
@@ -276075,6 +276140,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	is_default?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	manifest_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	nav_featured?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	nav_group?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	nav_order?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -276114,6 +276180,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -276185,6 +276252,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	is_default?: GraphQLTypes["order_by"] | undefined | null,
 	manifest_url?: GraphQLTypes["order_by"] | undefined | null,
+	nav_featured?: GraphQLTypes["order_by"] | undefined | null,
 	nav_group?: GraphQLTypes["order_by"] | undefined | null,
 	nav_order?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
@@ -276216,6 +276284,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -276259,6 +276328,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
 	manifest_url?: string | undefined | null,
+	nav_featured?: boolean | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
 	plugin_slug?: string | undefined | null,
@@ -282217,7 +282287,6 @@ export type GraphQLTypes = {
 	/** columns and relationships of "e_sanction_sources" */
 ["e_sanction_sources"]: {
 	__typename: "e_sanction_sources",
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations: string,
 	default_enabled: boolean,
 	default_scope: string,
@@ -282227,7 +282296,6 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	e_sanction_scope: GraphQLTypes["e_sanction_scopes"],
 	value: string,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban: boolean
 };
 	/** aggregated selection of "e_sanction_sources" */
@@ -282281,8 +282349,7 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "e_sanction_sources" */
 ["e_sanction_sources_insert_input"]: {
-		/** Comma separated ban durations in minutes, indexed by occurrence count */
-	default_durations?: string | undefined | null,
+		default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
@@ -282290,13 +282357,11 @@ export type GraphQLTypes = {
 	description?: string | undefined | null,
 	e_sanction_scope?: GraphQLTypes["e_sanction_scopes_obj_rel_insert_input"] | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate max on columns */
 ["e_sanction_sources_max_fields"]: {
 	__typename: "e_sanction_sources_max_fields",
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
@@ -282307,7 +282372,6 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["e_sanction_sources_min_fields"]: {
 	__typename: "e_sanction_sources_min_fields",
-	/** Comma separated ban durations in minutes, indexed by occurrence count */
 	default_durations?: string | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
@@ -282349,15 +282413,13 @@ export type GraphQLTypes = {
 ["e_sanction_sources_select_column"]: e_sanction_sources_select_column;
 	/** input type for updating data in table "e_sanction_sources" */
 ["e_sanction_sources_set_input"]: {
-		/** Comma separated ban durations in minutes, indexed by occurrence count */
-	default_durations?: string | undefined | null,
+		default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
 	default_window_days?: number | undefined | null,
 	description?: string | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -282387,15 +282449,13 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["e_sanction_sources_stream_cursor_value_input"]: {
-		/** Comma separated ban durations in minutes, indexed by occurrence count */
-	default_durations?: string | undefined | null,
+		default_durations?: string | undefined | null,
 	default_enabled?: boolean | undefined | null,
 	default_scope?: string | undefined | null,
 	default_threshold?: number | undefined | null,
 	default_window_days?: number | undefined | null,
 	description?: string | undefined | null,
 	value?: string | undefined | null,
-	/** Source issues a player_sanctions ban row instead of a scoped cooldown */
 	writes_platform_ban?: boolean | undefined | null
 };
 	/** aggregate sum on columns */
@@ -296056,7 +296116,7 @@ export type GraphQLTypes = {
 ["match_demo_sessions_variance_order_by"]: {
 		watcher_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
-	/** relational table for assigning a players to a match and lineup */
+	/** columns and relationships of "match_lineup_players" */
 ["match_lineup_players"]: {
 	__typename: "match_lineup_players",
 	captain: boolean,
@@ -296369,7 +296429,7 @@ export type GraphQLTypes = {
 ["match_lineup_players_variance_order_by"]: {
 		steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
-	/** relational table for assigning a team to a match and lineup */
+	/** columns and relationships of "match_lineups" */
 ["match_lineups"]: {
 	__typename: "match_lineups",
 	/** A computed field, executes function "can_pick_map_veto" */
@@ -301004,6 +301064,8 @@ export type GraphQLTypes = {
 	clearPendingMatchImport?: GraphQLTypes["PendingMatchImportActionOutput"] | undefined | null,
 	/** execute VOLATILE function "clone_league_season" which returns "league_seasons" */
 	clone_league_season: Array<GraphQLTypes["league_seasons"]>,
+	/** execute VOLATILE function "clone_tournament_bracket_options" which returns "tournament_brackets" */
+	clone_tournament_bracket_options: Array<GraphQLTypes["tournament_brackets"]>,
 	/** Organizer proceeds without the teams that missed check-in */
 	continueTournamentCheckIn?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** counterScrimRequest */
@@ -302976,6 +303038,7 @@ export type GraphQLTypes = {
 	registerName?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Re-mine one batch of demos after a miner change */
 	remineUtilityMeta?: GraphQLTypes["UtilityRemineOutput"] | undefined | null,
+	removeCs?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Remove a friends-role presence bot account */
@@ -303059,6 +303122,7 @@ export type GraphQLTypes = {
 	setHudMode?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** setMapWinner */
 	setMapWinner?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	setMatchPaused?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** setMatchWinner */
 	setMatchWinner?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Hide or restore a news comment. Moderators and above. */
@@ -319927,6 +319991,9 @@ export type GraphQLTypes = {
 	elo_history: Array<GraphQLTypes["v_player_elo"]>,
 	/** An aggregate relationship */
 	elo_history_aggregate: GraphQLTypes["v_player_elo_aggregate"],
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -319985,8 +320052,10 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	kills_by_weapons_aggregate: GraphQLTypes["player_kills_by_weapon_aggregate"],
 	language?: string | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_player_live_lineup" */
 	live_lineup?: Array<GraphQLTypes["match_lineup_players"]> | undefined | null,
 	/** An array relationship */
@@ -320238,6 +320307,9 @@ export type GraphQLTypes = {
 	elo?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	elo_history?: GraphQLTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_history_aggregate?: GraphQLTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	faceit_elo?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	faceit_nickname?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	faceit_player_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -320271,8 +320343,10 @@ export type GraphQLTypes = {
 	kills_by_weapons?: GraphQLTypes["player_kills_by_weapon_bool_exp"] | undefined | null,
 	kills_by_weapons_aggregate?: GraphQLTypes["player_kills_by_weapon_aggregate_bool_exp"] | undefined | null,
 	language?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	live_lineup?: GraphQLTypes["match_lineup_players_bool_exp"] | undefined | null,
 	lobby_players?: GraphQLTypes["lobby_players_bool_exp"] | undefined | null,
 	lobby_players_aggregate?: GraphQLTypes["lobby_players_aggregate_bool_exp"] | undefined | null,
@@ -320381,6 +320455,9 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined | null,
 	draft_game_players?: GraphQLTypes["draft_game_players_arr_rel_insert_input"] | undefined | null,
 	elo_history?: GraphQLTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -320397,8 +320474,10 @@ export type GraphQLTypes = {
 	kills?: GraphQLTypes["player_kills_arr_rel_insert_input"] | undefined | null,
 	kills_by_weapons?: GraphQLTypes["player_kills_by_weapon_arr_rel_insert_input"] | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	lobby_players?: GraphQLTypes["lobby_players_arr_rel_insert_input"] | undefined | null,
 	match_map_hltv?: GraphQLTypes["v_player_match_map_hltv_arr_rel_insert_input"] | undefined | null,
 	match_map_stats?: GraphQLTypes["player_match_map_stats_arr_rel_insert_input"] | undefined | null,
@@ -320450,6 +320529,9 @@ export type GraphQLTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -320458,8 +320540,10 @@ export type GraphQLTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -320504,6 +320588,9 @@ export type GraphQLTypes = {
 	custom_avatar_url?: GraphQLTypes["order_by"] | undefined | null,
 	days_since_last_ban?: GraphQLTypes["order_by"] | undefined | null,
 	discord_id?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_elo?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_nickname?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_player_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -320512,8 +320599,10 @@ export type GraphQLTypes = {
 	faceit_url?: GraphQLTypes["order_by"] | undefined | null,
 	game_ban_count?: GraphQLTypes["order_by"] | undefined | null,
 	language?: GraphQLTypes["order_by"] | undefined | null,
+	last_game_ban_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	notification_timezone?: GraphQLTypes["order_by"] | undefined | null,
 	premier_rank?: GraphQLTypes["order_by"] | undefined | null,
@@ -320537,6 +320626,9 @@ export type GraphQLTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -320545,8 +320637,10 @@ export type GraphQLTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_total_player_losses" */
 	losses?: number | undefined | null,
 	/** A computed field, executes function "get_total_player_losses_competitive" */
@@ -320591,6 +320685,9 @@ export type GraphQLTypes = {
 	custom_avatar_url?: GraphQLTypes["order_by"] | undefined | null,
 	days_since_last_ban?: GraphQLTypes["order_by"] | undefined | null,
 	discord_id?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_elo?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_nickname?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_player_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -320599,8 +320696,10 @@ export type GraphQLTypes = {
 	faceit_url?: GraphQLTypes["order_by"] | undefined | null,
 	game_ban_count?: GraphQLTypes["order_by"] | undefined | null,
 	language?: GraphQLTypes["order_by"] | undefined | null,
+	last_game_ban_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	notification_timezone?: GraphQLTypes["order_by"] | undefined | null,
 	premier_rank?: GraphQLTypes["order_by"] | undefined | null,
@@ -320654,6 +320753,9 @@ export type GraphQLTypes = {
 	draft_game_players_aggregate?: GraphQLTypes["draft_game_players_aggregate_order_by"] | undefined | null,
 	elo?: GraphQLTypes["order_by"] | undefined | null,
 	elo_history_aggregate?: GraphQLTypes["v_player_elo_aggregate_order_by"] | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["order_by"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_elo?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_nickname?: GraphQLTypes["order_by"] | undefined | null,
 	faceit_player_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -320679,8 +320781,10 @@ export type GraphQLTypes = {
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined | null,
 	kills_by_weapons_aggregate?: GraphQLTypes["player_kills_by_weapon_aggregate_order_by"] | undefined | null,
 	language?: GraphQLTypes["order_by"] | undefined | null,
+	last_game_ban_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["order_by"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["order_by"] | undefined | null,
 	live_lineup_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	lobby_players_aggregate?: GraphQLTypes["lobby_players_aggregate_order_by"] | undefined | null,
 	losses?: GraphQLTypes["order_by"] | undefined | null,
@@ -320751,6 +320855,9 @@ export type GraphQLTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -320759,8 +320866,10 @@ export type GraphQLTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
 	notification_timezone?: string | undefined | null,
@@ -320922,6 +321031,9 @@ export type GraphQLTypes = {
 	custom_avatar_url?: string | undefined | null,
 	days_since_last_ban?: number | undefined | null,
 	discord_id?: string | undefined | null,
+	faceit_ban_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	faceit_bans_checked_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	faceit_elo?: number | undefined | null,
 	faceit_nickname?: string | undefined | null,
 	faceit_player_id?: string | undefined | null,
@@ -320930,8 +321042,10 @@ export type GraphQLTypes = {
 	faceit_url?: string | undefined | null,
 	game_ban_count?: number | undefined | null,
 	language?: string | undefined | null,
+	last_game_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_read_news_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_vac_ban_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
 	notification_timezone?: string | undefined | null,
@@ -323141,6 +323255,7 @@ export type GraphQLTypes = {
 	banned_here: boolean,
 	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	game_ban_count: number,
+	game_banned_on?: GraphQLTypes["date"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played: number,
@@ -323154,7 +323269,8 @@ export type GraphQLTypes = {
 	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
 	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
 	steam_id: GraphQLTypes["bigint"],
-	vac_ban_count: number
+	vac_ban_count: number,
+	vac_banned_on?: GraphQLTypes["date"] | undefined | null
 };
 	/** aggregated selection of "recent_ban_entries" */
 ["recent_ban_entries_aggregate"]: {
@@ -323201,6 +323317,7 @@ export type GraphQLTypes = {
 	banned_here?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	first_match_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	game_ban_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	game_banned_on?: GraphQLTypes["date_comparison_exp"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_match_map?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	matches_played?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -323212,7 +323329,8 @@ export type GraphQLTypes = {
 	shared_matches?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	steam_banned_on?: GraphQLTypes["date_comparison_exp"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
-	vac_ban_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null
+	vac_ban_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	vac_banned_on?: GraphQLTypes["date_comparison_exp"] | undefined | null
 };
 	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 ["recent_ban_entries_delete_at_path_input"]: {
@@ -323242,6 +323360,7 @@ export type GraphQLTypes = {
 	banned_here?: boolean | undefined | null,
 	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: GraphQLTypes["date"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -323253,7 +323372,8 @@ export type GraphQLTypes = {
 	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
 	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: GraphQLTypes["date"] | undefined | null
 };
 	/** aggregate max on columns */
 ["recent_ban_entries_max_fields"]: {
@@ -323262,6 +323382,7 @@ export type GraphQLTypes = {
 	banned_at_source?: string | undefined | null,
 	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: GraphQLTypes["date"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -323270,7 +323391,8 @@ export type GraphQLTypes = {
 	sanction_kind?: string | undefined | null,
 	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: GraphQLTypes["date"] | undefined | null
 };
 	/** aggregate min on columns */
 ["recent_ban_entries_min_fields"]: {
@@ -323279,6 +323401,7 @@ export type GraphQLTypes = {
 	banned_at_source?: string | undefined | null,
 	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: GraphQLTypes["date"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -323287,7 +323410,8 @@ export type GraphQLTypes = {
 	sanction_kind?: string | undefined | null,
 	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: GraphQLTypes["date"] | undefined | null
 };
 	/** response of any mutation on the table "recent_ban_entries" */
 ["recent_ban_entries_mutation_response"]: {
@@ -323305,6 +323429,7 @@ export type GraphQLTypes = {
 	banned_here?: GraphQLTypes["order_by"] | undefined | null,
 	first_match_at?: GraphQLTypes["order_by"] | undefined | null,
 	game_ban_count?: GraphQLTypes["order_by"] | undefined | null,
+	game_banned_on?: GraphQLTypes["order_by"] | undefined | null,
 	last_match_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_match_map?: GraphQLTypes["order_by"] | undefined | null,
 	matches_played?: GraphQLTypes["order_by"] | undefined | null,
@@ -323316,7 +323441,8 @@ export type GraphQLTypes = {
 	shared_matches?: GraphQLTypes["order_by"] | undefined | null,
 	steam_banned_on?: GraphQLTypes["order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	vac_ban_count?: GraphQLTypes["order_by"] | undefined | null
+	vac_ban_count?: GraphQLTypes["order_by"] | undefined | null,
+	vac_banned_on?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** prepend existing jsonb value of filtered columns with new jsonb value */
 ["recent_ban_entries_prepend_input"]: {
@@ -323332,6 +323458,7 @@ export type GraphQLTypes = {
 	banned_here?: boolean | undefined | null,
 	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: GraphQLTypes["date"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -323341,7 +323468,8 @@ export type GraphQLTypes = {
 	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
 	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: GraphQLTypes["date"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["recent_ban_entries_stddev_fields"]: {
@@ -323385,6 +323513,7 @@ export type GraphQLTypes = {
 	banned_here?: boolean | undefined | null,
 	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	game_ban_count?: number | undefined | null,
+	game_banned_on?: GraphQLTypes["date"] | undefined | null,
 	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_match_map?: string | undefined | null,
 	matches_played?: number | undefined | null,
@@ -323394,7 +323523,8 @@ export type GraphQLTypes = {
 	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
 	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	vac_ban_count?: number | undefined | null
+	vac_ban_count?: number | undefined | null,
+	vac_banned_on?: GraphQLTypes["date"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["recent_ban_entries_sum_fields"]: {
@@ -331421,7 +331551,6 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	match_options?: GraphQLTypes["match_options"] | undefined | null,
 	match_options_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	/** An array relationship */
 	proposals: Array<GraphQLTypes["team_scrim_request_proposals"]>,
@@ -331568,7 +331697,6 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_options?: GraphQLTypes["match_options_obj_rel_insert_input"] | undefined | null,
 	match_options_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposals?: GraphQLTypes["team_scrim_request_proposals_arr_rel_insert_input"] | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -331592,7 +331720,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_options_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -331610,7 +331737,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
 	match_options_id?: GraphQLTypes["order_by"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: GraphQLTypes["order_by"] | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["order_by"] | undefined | null,
 	region?: GraphQLTypes["order_by"] | undefined | null,
@@ -331629,7 +331755,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_options_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -331647,7 +331772,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
 	match_options_id?: GraphQLTypes["order_by"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: GraphQLTypes["order_by"] | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["order_by"] | undefined | null,
 	region?: GraphQLTypes["order_by"] | undefined | null,
@@ -331727,7 +331851,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_options_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -331784,7 +331907,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_options_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Terminal match status captured by tbd_match_cancel_scrim before the match row is deleted, so v_team_reputation survives canceled-match GC. */
 	match_outcome?: string | undefined | null,
 	proposed_scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	region?: string | undefined | null,
@@ -333708,7 +333830,6 @@ export type GraphQLTypes = {
 ["tournament_free_agents"]: {
 	__typename: "tournament_free_agents",
 	checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at: GraphQLTypes["timestamptz"],
 	/** An object relationship */
 	e_tournament_free_agent_status: GraphQLTypes["e_tournament_free_agent_statuses"],
@@ -333809,7 +333930,6 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "tournament_free_agents" */
 ["tournament_free_agents_insert_input"]: {
 		checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	e_tournament_free_agent_status?: GraphQLTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -333825,7 +333945,6 @@ export type GraphQLTypes = {
 ["tournament_free_agents_max_fields"]: {
 	__typename: "tournament_free_agents_max_fields",
 	checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -333835,7 +333954,6 @@ export type GraphQLTypes = {
 	/** order by max() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_max_order_by"]: {
 		checked_in_at?: GraphQLTypes["order_by"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -333846,7 +333964,6 @@ export type GraphQLTypes = {
 ["tournament_free_agents_min_fields"]: {
 	__typename: "tournament_free_agents_min_fields",
 	checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -333856,7 +333973,6 @@ export type GraphQLTypes = {
 	/** order by min() on columns of table "tournament_free_agents" */
 ["tournament_free_agents_min_order_by"]: {
 		checked_in_at?: GraphQLTypes["order_by"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -333900,7 +334016,6 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "tournament_free_agents" */
 ["tournament_free_agents_set_input"]: {
 		checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -333945,7 +334060,6 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["tournament_free_agents_stream_cursor_value_input"]: {
 		checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -338031,7 +338145,6 @@ export type GraphQLTypes = {
 	invites_aggregate: GraphQLTypes["tournament_team_invites_aggregate"],
 	/** A computed field, executes function "tournament_team_invites_join_team" */
 	invites_join_team?: boolean | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted: boolean,
 	name?: string | undefined | null,
 	owner_steam_id: GraphQLTypes["bigint"],
@@ -338179,7 +338292,6 @@ export type GraphQLTypes = {
 	free_agents?: GraphQLTypes["tournament_free_agents_arr_rel_insert_input"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invites?: GraphQLTypes["tournament_team_invites_arr_rel_insert_input"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -338314,7 +338426,6 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	eligible_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -338376,7 +338487,6 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	eligible_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	/** Created by draft_tournament_free_agent_teams rather than registered */
 	is_drafted?: boolean | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -338487,18 +338597,14 @@ export type GraphQLTypes = {
 	categories: Array<GraphQLTypes["tournament_categories"]>,
 	/** An aggregate relationship */
 	categories_aggregate: GraphQLTypes["tournament_categories_aggregate"],
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes: number,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "tournament_check_in_open" */
 	check_in_open?: boolean | undefined | null,
 	check_in_opens_before_minutes: number,
 	check_in_required: boolean,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting: GraphQLTypes["e_check_in_settings_enum"],
 	/** A computed field, executes function "tournament_check_in_started" */
 	check_in_started?: boolean | undefined | null,
@@ -338603,7 +338709,6 @@ export type GraphQLTypes = {
 	stages_aggregate: GraphQLTypes["tournament_stages_aggregate"],
 	start: GraphQLTypes["timestamptz"],
 	status: GraphQLTypes["e_tournament_status_enum"],
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled: boolean,
 	/** An array relationship */
 	teams: Array<GraphQLTypes["tournament_teams"]>,
@@ -338896,16 +339001,12 @@ export type GraphQLTypes = {
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: GraphQLTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -338958,7 +339059,6 @@ export type GraphQLTypes = {
 	stages?: GraphQLTypes["tournament_stages_arr_rel_insert_input"] | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null,
 	teams?: GraphQLTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
@@ -338966,12 +339066,9 @@ export type GraphQLTypes = {
 ["tournaments_max_fields"]: {
 	__typename: "tournaments_max_fields",
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -339005,12 +339102,9 @@ export type GraphQLTypes = {
 	/** order by max() on columns of table "tournaments" */
 ["tournaments_max_order_by"]: {
 		banner?: GraphQLTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["order_by"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -339037,12 +339131,9 @@ export type GraphQLTypes = {
 ["tournaments_min_fields"]: {
 	__typename: "tournaments_min_fields",
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -339076,12 +339167,9 @@ export type GraphQLTypes = {
 	/** order by min() on columns of table "tournaments" */
 ["tournaments_min_order_by"]: {
 		banner?: GraphQLTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_closes_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["order_by"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_opens_before_minutes?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -339247,16 +339335,12 @@ export type GraphQLTypes = {
 		auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -339297,7 +339381,6 @@ export type GraphQLTypes = {
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -339399,16 +339482,12 @@ export type GraphQLTypes = {
 		auto_start?: boolean | undefined | null,
 	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
-	/** The check_in_ends_at the close pass has already acted on */
 	check_in_closed_for?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_closes_before_minutes?: number | undefined | null,
-	/** The check_in_ends_at the closing reminder was sent for */
 	check_in_closing_notified_for?: GraphQLTypes["timestamptz"] | undefined | null,
-	/** When the check-in window closes; NULL until it opens */
 	check_in_ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	check_in_opens_before_minutes?: number | undefined | null,
 	check_in_required?: boolean | undefined | null,
-	/** Who confirms a team: Captains, every rostered Player, or the organizer (Admin) */
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -339449,7 +339528,6 @@ export type GraphQLTypes = {
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null,
-	/** Whether teams may roster and field substitutes beyond the starting lineup */
 	substitutes_enabled?: boolean | undefined | null
 };
 	/** aggregate sum on columns */
@@ -358649,6 +358727,7 @@ export enum custom_pages_select_column {
 	id = "id",
 	is_default = "is_default",
 	manifest_url = "manifest_url",
+	nav_featured = "nav_featured",
 	nav_group = "nav_group",
 	nav_order = "nav_order",
 	plugin_slug = "plugin_slug",
@@ -358670,6 +358749,7 @@ export enum custom_pages_update_column {
 	id = "id",
 	is_default = "is_default",
 	manifest_url = "manifest_url",
+	nav_featured = "nav_featured",
 	nav_group = "nav_group",
 	nav_order = "nav_order",
 	plugin_slug = "plugin_slug",
@@ -363250,6 +363330,9 @@ export enum players_select_column {
 	custom_avatar_url = "custom_avatar_url",
 	days_since_last_ban = "days_since_last_ban",
 	discord_id = "discord_id",
+	faceit_ban_ends_at = "faceit_ban_ends_at",
+	faceit_banned_at = "faceit_banned_at",
+	faceit_bans_checked_at = "faceit_bans_checked_at",
 	faceit_elo = "faceit_elo",
 	faceit_nickname = "faceit_nickname",
 	faceit_player_id = "faceit_player_id",
@@ -363258,8 +363341,10 @@ export enum players_select_column {
 	faceit_url = "faceit_url",
 	game_ban_count = "game_ban_count",
 	language = "language",
+	last_game_ban_at = "last_game_ban_at",
 	last_read_news_at = "last_read_news_at",
 	last_sign_in_at = "last_sign_in_at",
+	last_vac_ban_at = "last_vac_ban_at",
 	name = "name",
 	name_registered = "name_registered",
 	notification_timezone = "notification_timezone",
@@ -363285,6 +363370,9 @@ export enum players_update_column {
 	custom_avatar_url = "custom_avatar_url",
 	days_since_last_ban = "days_since_last_ban",
 	discord_id = "discord_id",
+	faceit_ban_ends_at = "faceit_ban_ends_at",
+	faceit_banned_at = "faceit_banned_at",
+	faceit_bans_checked_at = "faceit_bans_checked_at",
 	faceit_elo = "faceit_elo",
 	faceit_nickname = "faceit_nickname",
 	faceit_player_id = "faceit_player_id",
@@ -363293,8 +363381,10 @@ export enum players_update_column {
 	faceit_url = "faceit_url",
 	game_ban_count = "game_ban_count",
 	language = "language",
+	last_game_ban_at = "last_game_ban_at",
 	last_read_news_at = "last_read_news_at",
 	last_sign_in_at = "last_sign_in_at",
+	last_vac_ban_at = "last_vac_ban_at",
 	name = "name",
 	name_registered = "name_registered",
 	notification_timezone = "notification_timezone",
@@ -363364,6 +363454,7 @@ export enum recent_ban_entries_select_column {
 	banned_here = "banned_here",
 	first_match_at = "first_match_at",
 	game_ban_count = "game_ban_count",
+	game_banned_on = "game_banned_on",
 	last_match_at = "last_match_at",
 	last_match_map = "last_match_map",
 	matches_played = "matches_played",
@@ -363373,7 +363464,8 @@ export enum recent_ban_entries_select_column {
 	shared_matches = "shared_matches",
 	steam_banned_on = "steam_banned_on",
 	steam_id = "steam_id",
-	vac_ban_count = "vac_ban_count"
+	vac_ban_count = "vac_ban_count",
+	vac_banned_on = "vac_banned_on"
 }
 /** select columns of table "v_role_permissions" */
 export enum role_permissions_select_column {
@@ -367273,6 +367365,7 @@ type ZEUS_VARIABLES = {
 	["clip_render_jobs_var_samp_order_by"]: ValueTypes["clip_render_jobs_var_samp_order_by"];
 	["clip_render_jobs_variance_order_by"]: ValueTypes["clip_render_jobs_variance_order_by"];
 	["clone_league_season_args"]: ValueTypes["clone_league_season_args"];
+	["clone_tournament_bracket_options_args"]: ValueTypes["clone_tournament_bracket_options_args"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
 	["custom_pages_append_input"]: ValueTypes["custom_pages_append_input"];
 	["custom_pages_bool_exp"]: ValueTypes["custom_pages_bool_exp"];

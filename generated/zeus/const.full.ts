@@ -1444,6 +1444,9 @@ export const AllTypesProps: Record<string,any> = {
 	clone_league_season_args:{
 		_league_season_id:"uuid"
 	},
+	clone_tournament_bracket_options_args:{
+		_bracket_id:"uuid"
+	},
 	cursor_ordering: "enum" as const,
 	custom_pages:{
 		deployments:{
@@ -1470,6 +1473,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		is_default:"Boolean_comparison_exp",
 		manifest_url:"String_comparison_exp",
+		nav_featured:"Boolean_comparison_exp",
 		nav_group:"String_comparison_exp",
 		nav_order:"Int_comparison_exp",
 		plugin_slug:"String_comparison_exp",
@@ -1515,6 +1519,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		is_default:"order_by",
 		manifest_url:"order_by",
+		nav_featured:"order_by",
 		nav_group:"order_by",
 		nav_order:"order_by",
 		plugin_slug:"order_by",
@@ -14782,6 +14787,12 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"league_seasons_order_by",
 			where:"league_seasons_bool_exp"
 		},
+		clone_tournament_bracket_options:{
+			args:"clone_tournament_bracket_options_args",
+			distinct_on:"tournament_brackets_select_column",
+			order_by:"tournament_brackets_order_by",
+			where:"tournament_brackets_bool_exp"
+		},
 		continueTournamentCheckIn:{
 			tournament_id:"uuid"
 		},
@@ -18256,6 +18267,9 @@ export const AllTypesProps: Record<string,any> = {
 		registerName:{
 
 		},
+		removeCs:{
+
+		},
 		removeSteamPresenceBotAccount:{
 
 		},
@@ -18412,6 +18426,9 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			match_map_id:"uuid",
 			winning_lineup_id:"uuid"
+		},
+		setMatchPaused:{
+			match_id:"uuid"
 		},
 		setMatchWinner:{
 			match_id:"uuid",
@@ -28910,6 +28927,9 @@ export const AllTypesProps: Record<string,any> = {
 		elo:"jsonb_comparison_exp",
 		elo_history:"v_player_elo_bool_exp",
 		elo_history_aggregate:"v_player_elo_aggregate_bool_exp",
+		faceit_ban_ends_at:"timestamptz_comparison_exp",
+		faceit_banned_at:"timestamptz_comparison_exp",
+		faceit_bans_checked_at:"timestamptz_comparison_exp",
 		faceit_elo:"Int_comparison_exp",
 		faceit_nickname:"String_comparison_exp",
 		faceit_player_id:"String_comparison_exp",
@@ -28943,8 +28963,10 @@ export const AllTypesProps: Record<string,any> = {
 		kills_by_weapons:"player_kills_by_weapon_bool_exp",
 		kills_by_weapons_aggregate:"player_kills_by_weapon_aggregate_bool_exp",
 		language:"String_comparison_exp",
+		last_game_ban_at:"timestamptz_comparison_exp",
 		last_read_news_at:"timestamptz_comparison_exp",
 		last_sign_in_at:"timestamptz_comparison_exp",
+		last_vac_ban_at:"timestamptz_comparison_exp",
 		live_lineup:"match_lineup_players_bool_exp",
 		lobby_players:"lobby_players_bool_exp",
 		lobby_players_aggregate:"lobby_players_aggregate_bool_exp",
@@ -29038,6 +29060,9 @@ export const AllTypesProps: Record<string,any> = {
 		deaths:"player_kills_arr_rel_insert_input",
 		draft_game_players:"draft_game_players_arr_rel_insert_input",
 		elo_history:"v_player_elo_arr_rel_insert_input",
+		faceit_ban_ends_at:"timestamptz",
+		faceit_banned_at:"timestamptz",
+		faceit_bans_checked_at:"timestamptz",
 		faceit_rank_history:"player_faceit_rank_history_arr_rel_insert_input",
 		faceit_updated_at:"timestamptz",
 		flashed_by_players:"player_flashes_arr_rel_insert_input",
@@ -29047,8 +29072,10 @@ export const AllTypesProps: Record<string,any> = {
 		invited_players:"team_invites_arr_rel_insert_input",
 		kills:"player_kills_arr_rel_insert_input",
 		kills_by_weapons:"player_kills_by_weapon_arr_rel_insert_input",
+		last_game_ban_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		last_vac_ban_at:"timestamptz",
 		lobby_players:"lobby_players_arr_rel_insert_input",
 		match_map_hltv:"v_player_match_map_hltv_arr_rel_insert_input",
 		match_map_stats:"player_match_map_stats_arr_rel_insert_input",
@@ -29085,6 +29112,9 @@ export const AllTypesProps: Record<string,any> = {
 		custom_avatar_url:"order_by",
 		days_since_last_ban:"order_by",
 		discord_id:"order_by",
+		faceit_ban_ends_at:"order_by",
+		faceit_banned_at:"order_by",
+		faceit_bans_checked_at:"order_by",
 		faceit_elo:"order_by",
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
@@ -29093,8 +29123,10 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_url:"order_by",
 		game_ban_count:"order_by",
 		language:"order_by",
+		last_game_ban_at:"order_by",
 		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
+		last_vac_ban_at:"order_by",
 		name:"order_by",
 		notification_timezone:"order_by",
 		premier_rank:"order_by",
@@ -29112,6 +29144,9 @@ export const AllTypesProps: Record<string,any> = {
 		custom_avatar_url:"order_by",
 		days_since_last_ban:"order_by",
 		discord_id:"order_by",
+		faceit_ban_ends_at:"order_by",
+		faceit_banned_at:"order_by",
+		faceit_bans_checked_at:"order_by",
 		faceit_elo:"order_by",
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
@@ -29120,8 +29155,10 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_url:"order_by",
 		game_ban_count:"order_by",
 		language:"order_by",
+		last_game_ban_at:"order_by",
 		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
+		last_vac_ban_at:"order_by",
 		name:"order_by",
 		notification_timezone:"order_by",
 		premier_rank:"order_by",
@@ -29163,6 +29200,9 @@ export const AllTypesProps: Record<string,any> = {
 		draft_game_players_aggregate:"draft_game_players_aggregate_order_by",
 		elo:"order_by",
 		elo_history_aggregate:"v_player_elo_aggregate_order_by",
+		faceit_ban_ends_at:"order_by",
+		faceit_banned_at:"order_by",
+		faceit_bans_checked_at:"order_by",
 		faceit_elo:"order_by",
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
@@ -29188,8 +29228,10 @@ export const AllTypesProps: Record<string,any> = {
 		kills_aggregate:"player_kills_aggregate_order_by",
 		kills_by_weapons_aggregate:"player_kills_by_weapon_aggregate_order_by",
 		language:"order_by",
+		last_game_ban_at:"order_by",
 		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
+		last_vac_ban_at:"order_by",
 		live_lineup_aggregate:"match_lineup_players_aggregate_order_by",
 		lobby_players_aggregate:"lobby_players_aggregate_order_by",
 		losses:"order_by",
@@ -29251,9 +29293,14 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
+		faceit_ban_ends_at:"timestamptz",
+		faceit_banned_at:"timestamptz",
+		faceit_bans_checked_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
+		last_game_ban_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		last_vac_ban_at:"timestamptz",
 		premier_rank_updated_at:"timestamptz",
 		quiet_hours_end:"time",
 		quiet_hours_start:"time",
@@ -29294,9 +29341,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		faceit_ban_ends_at:"timestamptz",
+		faceit_banned_at:"timestamptz",
+		faceit_bans_checked_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
+		last_game_ban_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		last_vac_ban_at:"timestamptz",
 		premier_rank_updated_at:"timestamptz",
 		quiet_hours_end:"time",
 		quiet_hours_start:"time",
@@ -33081,6 +33133,7 @@ export const AllTypesProps: Record<string,any> = {
 		banned_here:"Boolean_comparison_exp",
 		first_match_at:"timestamptz_comparison_exp",
 		game_ban_count:"Int_comparison_exp",
+		game_banned_on:"date_comparison_exp",
 		last_match_at:"timestamptz_comparison_exp",
 		last_match_map:"String_comparison_exp",
 		matches_played:"Int_comparison_exp",
@@ -33092,7 +33145,8 @@ export const AllTypesProps: Record<string,any> = {
 		shared_matches:"jsonb_comparison_exp",
 		steam_banned_on:"date_comparison_exp",
 		steam_id:"bigint_comparison_exp",
-		vac_ban_count:"Int_comparison_exp"
+		vac_ban_count:"Int_comparison_exp",
+		vac_banned_on:"date_comparison_exp"
 	},
 	recent_ban_entries_delete_at_path_input:{
 
@@ -33109,13 +33163,15 @@ export const AllTypesProps: Record<string,any> = {
 	recent_ban_entries_insert_input:{
 		banned_at:"timestamptz",
 		first_match_at:"timestamptz",
+		game_banned_on:"date",
 		last_match_at:"timestamptz",
 		player:"players_obj_rel_insert_input",
 		sanction:"player_sanctions_obj_rel_insert_input",
 		sanction_id:"uuid",
 		shared_matches:"jsonb",
 		steam_banned_on:"date",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		vac_banned_on:"date"
 	},
 	recent_ban_entries_order_by:{
 		arrived_banned:"order_by",
@@ -33124,6 +33180,7 @@ export const AllTypesProps: Record<string,any> = {
 		banned_here:"order_by",
 		first_match_at:"order_by",
 		game_ban_count:"order_by",
+		game_banned_on:"order_by",
 		last_match_at:"order_by",
 		last_match_map:"order_by",
 		matches_played:"order_by",
@@ -33135,7 +33192,8 @@ export const AllTypesProps: Record<string,any> = {
 		shared_matches:"order_by",
 		steam_banned_on:"order_by",
 		steam_id:"order_by",
-		vac_ban_count:"order_by"
+		vac_ban_count:"order_by",
+		vac_banned_on:"order_by"
 	},
 	recent_ban_entries_prepend_input:{
 		shared_matches:"jsonb"
@@ -33144,11 +33202,13 @@ export const AllTypesProps: Record<string,any> = {
 	recent_ban_entries_set_input:{
 		banned_at:"timestamptz",
 		first_match_at:"timestamptz",
+		game_banned_on:"date",
 		last_match_at:"timestamptz",
 		sanction_id:"uuid",
 		shared_matches:"jsonb",
 		steam_banned_on:"date",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		vac_banned_on:"date"
 	},
 	recent_ban_entries_stream_cursor_input:{
 		initial_value:"recent_ban_entries_stream_cursor_value_input",
@@ -33157,11 +33217,13 @@ export const AllTypesProps: Record<string,any> = {
 	recent_ban_entries_stream_cursor_value_input:{
 		banned_at:"timestamptz",
 		first_match_at:"timestamptz",
+		game_banned_on:"date",
 		last_match_at:"timestamptz",
 		sanction_id:"uuid",
 		shared_matches:"jsonb",
 		steam_banned_on:"date",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		vac_banned_on:"date"
 	},
 	recent_ban_entries_updates:{
 		_append:"recent_ban_entries_append_input",
@@ -55655,6 +55717,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		is_default:"Boolean",
 		manifest_url:"String",
+		nav_featured:"Boolean",
 		nav_group:"String",
 		nav_order:"Int",
 		plugin_slug:"String",
@@ -62374,6 +62437,7 @@ export const ReturnTypes: Record<string,any> = {
 		clearFinishedUtilityLineupRenders:"UtilityRenderClearOutput",
 		clearPendingMatchImport:"PendingMatchImportActionOutput",
 		clone_league_season:"league_seasons",
+		clone_tournament_bracket_options:"tournament_brackets",
 		continueTournamentCheckIn:"SuccessOutput",
 		counterScrimRequest:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
@@ -63370,6 +63434,7 @@ export const ReturnTypes: Record<string,any> = {
 		refreshLiveHud:"SuccessOutput",
 		registerName:"SuccessOutput",
 		remineUtilityMeta:"UtilityRemineOutput",
+		removeCs:"SuccessOutput",
 		removeFixtures:"SuccessOutput",
 		removeSteamPresenceBotAccount:"SuccessOutput",
 		removeTournamentFreeAgent:"SuccessOutput",
@@ -63418,6 +63483,7 @@ export const ReturnTypes: Record<string,any> = {
 		setGamePluginAutoUpdate:"SuccessOutput",
 		setHudMode:"SuccessOutput",
 		setMapWinner:"SuccessOutput",
+		setMatchPaused:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setNewsCommentHidden:"NewsCommentOutput",
 		setNewsPostStatus:"NewsPost",
@@ -70054,6 +70120,9 @@ export const ReturnTypes: Record<string,any> = {
 		elo:"jsonb",
 		elo_history:"v_player_elo",
 		elo_history_aggregate:"v_player_elo_aggregate",
+		faceit_ban_ends_at:"timestamptz",
+		faceit_banned_at:"timestamptz",
+		faceit_bans_checked_at:"timestamptz",
 		faceit_elo:"Int",
 		faceit_nickname:"String",
 		faceit_player_id:"String",
@@ -70087,8 +70156,10 @@ export const ReturnTypes: Record<string,any> = {
 		kills_by_weapons:"player_kills_by_weapon",
 		kills_by_weapons_aggregate:"player_kills_by_weapon_aggregate",
 		language:"String",
+		last_game_ban_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		last_vac_ban_at:"timestamptz",
 		live_lineup:"match_lineup_players",
 		lobby_players:"lobby_players",
 		lobby_players_aggregate:"lobby_players_aggregate",
@@ -70211,6 +70282,9 @@ export const ReturnTypes: Record<string,any> = {
 		custom_avatar_url:"String",
 		days_since_last_ban:"Int",
 		discord_id:"String",
+		faceit_ban_ends_at:"timestamptz",
+		faceit_banned_at:"timestamptz",
+		faceit_bans_checked_at:"timestamptz",
 		faceit_elo:"Int",
 		faceit_nickname:"String",
 		faceit_player_id:"String",
@@ -70219,8 +70293,10 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_url:"String",
 		game_ban_count:"Int",
 		language:"String",
+		last_game_ban_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		last_vac_ban_at:"timestamptz",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -70253,6 +70329,9 @@ export const ReturnTypes: Record<string,any> = {
 		custom_avatar_url:"String",
 		days_since_last_ban:"Int",
 		discord_id:"String",
+		faceit_ban_ends_at:"timestamptz",
+		faceit_banned_at:"timestamptz",
+		faceit_bans_checked_at:"timestamptz",
 		faceit_elo:"Int",
 		faceit_nickname:"String",
 		faceit_player_id:"String",
@@ -70261,8 +70340,10 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_url:"String",
 		game_ban_count:"Int",
 		language:"String",
+		last_game_ban_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		last_vac_ban_at:"timestamptz",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -71397,6 +71478,7 @@ export const ReturnTypes: Record<string,any> = {
 		banned_here:"Boolean",
 		first_match_at:"timestamptz",
 		game_ban_count:"Int",
+		game_banned_on:"date",
 		last_match_at:"timestamptz",
 		last_match_map:"String",
 		matches_played:"Int",
@@ -71408,7 +71490,8 @@ export const ReturnTypes: Record<string,any> = {
 		shared_matches:"jsonb",
 		steam_banned_on:"date",
 		steam_id:"bigint",
-		vac_ban_count:"Int"
+		vac_ban_count:"Int",
+		vac_banned_on:"date"
 	},
 	recent_ban_entries_aggregate:{
 		aggregate:"recent_ban_entries_aggregate_fields",
@@ -71439,6 +71522,7 @@ export const ReturnTypes: Record<string,any> = {
 		banned_at_source:"String",
 		first_match_at:"timestamptz",
 		game_ban_count:"Int",
+		game_banned_on:"date",
 		last_match_at:"timestamptz",
 		last_match_map:"String",
 		matches_played:"Int",
@@ -71447,13 +71531,15 @@ export const ReturnTypes: Record<string,any> = {
 		sanction_kind:"String",
 		steam_banned_on:"date",
 		steam_id:"bigint",
-		vac_ban_count:"Int"
+		vac_ban_count:"Int",
+		vac_banned_on:"date"
 	},
 	recent_ban_entries_min_fields:{
 		banned_at:"timestamptz",
 		banned_at_source:"String",
 		first_match_at:"timestamptz",
 		game_ban_count:"Int",
+		game_banned_on:"date",
 		last_match_at:"timestamptz",
 		last_match_map:"String",
 		matches_played:"Int",
@@ -71462,7 +71548,8 @@ export const ReturnTypes: Record<string,any> = {
 		sanction_kind:"String",
 		steam_banned_on:"date",
 		steam_id:"bigint",
-		vac_ban_count:"Int"
+		vac_ban_count:"Int",
+		vac_banned_on:"date"
 	},
 	recent_ban_entries_mutation_response:{
 		affected_rows:"Int",

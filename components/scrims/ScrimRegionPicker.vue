@@ -3,7 +3,9 @@ import { computed } from "vue";
 import { Check } from "lucide-vue-next";
 import RegionLatency from "~/components/matchmaking/RegionLatency.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 const model = defineModel<string[]>({ required: true });
 
@@ -15,9 +17,17 @@ const ping = (value: string) => {
   return Number.isFinite(latency) ? latency : null;
 };
 
+// The api refuses a LAN region below match organizer unless the LAN probe put
+// you on it; one already listed stays so it can be taken off.
+const canList = (region: { value: string; is_lan: boolean }) =>
+  !region.is_lan ||
+  model.value.includes(region.value) ||
+  useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer) ||
+  matchmaking.lanRegions.some((lan) => lan.value === region.value);
+
 // Closest first; offline regions sink to the bottom.
 const regions = computed(() =>
-  [...(settings.availableRegions ?? [])].sort(
+  (settings.availableRegions ?? []).filter(canList).sort(
     (a, b) =>
       Number(a.status === "Offline") - Number(b.status === "Offline") ||
       (ping(a.value) ?? Infinity) - (ping(b.value) ?? Infinity) ||

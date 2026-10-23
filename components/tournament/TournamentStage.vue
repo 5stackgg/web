@@ -45,6 +45,7 @@ import {
         v-for="division in stage.groups"
         :key="`content-${division}`"
         :value="`group-${division}`"
+        class="tab-panel-in"
       >
         <StageStandings
           v-if="shouldShowStandings"

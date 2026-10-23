@@ -215,6 +215,26 @@ const effectiveZoom = computed(() =>
   autoFit.value ? fitZoom.value : manualZoom.value,
 );
 
+// The bracket lands at its fitted size and zoom: its tab's entrance is the
+// arrival. Only a zoom the viewer asks for glides, on the app's enter clock.
+const ZOOM_GLIDE = "240ms cubic-bezier(0.16, 1, 0.3, 1)";
+const zoomGliding = ref(false);
+let zoomGlideTimer: ReturnType<typeof setTimeout> | null = null;
+
+watch([autoFit, manualZoom], () => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  zoomGliding.value = true;
+  if (zoomGlideTimer) clearTimeout(zoomGlideTimer);
+  zoomGlideTimer = setTimeout(() => {
+    zoomGliding.value = false;
+  }, 280);
+});
+
+const glide = (...properties: string[]) =>
+  zoomGliding.value
+    ? properties.map((property) => `${property} ${ZOOM_GLIDE}`).join(", ")
+    : undefined;
+
 const scaledContentHeight = computed(
   () => naturalSize.value.height * effectiveZoom.value,
 );
@@ -255,10 +275,16 @@ const needsVerticalScroll = computed(
   () => scaledContentHeight.value > availableSize.value.height + 1,
 );
 
+let linesSvg: SVGElement | null = null;
+let linesFrame: number | null = null;
+
+// Calls landing in the same frame (mount, rounds, resize) share one drawing,
+// which swaps the old lines out in the same frame so they never blink.
 const redrawLines = () => {
-  clearConnectingLines();
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
+  if (linesFrame) return;
+  linesFrame = requestAnimationFrame(() => {
+    linesFrame = requestAnimationFrame(() => {
+      linesFrame = null;
       drawConnectingLines();
     });
   });
@@ -363,6 +389,8 @@ onUnmounted(() => {
   window.removeEventListener("mouseup", onBracketPointerUp);
   window.removeEventListener("touchend", onBracketPointerUp);
   if (momentumFrame) cancelAnimationFrame(momentumFrame);
+  if (linesFrame) cancelAnimationFrame(linesFrame);
+  if (zoomGlideTimer) clearTimeout(zoomGlideTimer);
   contentResizeObserver?.disconnect();
   containerResizeObserver?.disconnect();
 });
@@ -378,9 +406,8 @@ watch(
   { deep: true, immediate: true },
 );
 
-watch([effectiveZoom, followTeamId], () => {
-  nextTick(redrawLines);
-});
+// Zoom is a transform over unscaled coordinates, so the lines ride it as drawn.
+watch(followTeamId, redrawLines);
 
 watch(
   [
@@ -430,22 +457,14 @@ const resolveVisibleTargetId = (id?: string): string | undefined => {
   return undefined;
 };
 
-const clearConnectingLines = () => {
-  if (bracketContentWrapper.value) {
-    const wrapper = bracketContentWrapper.value as HTMLElement;
-    const existingSvg = wrapper.querySelector("svg");
-    if (existingSvg) {
-      existingSvg.remove();
-    }
-  }
-};
-
 const drawConnectingLines = () => {
   if (!bracketContainer.value || !bracketContentWrapper.value) {
     return;
   }
 
   const wrapper = bracketContentWrapper.value as HTMLElement;
+  // Out before measuring, or the old lines hold the wrapper's scroll size open.
+  linesSvg?.remove();
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
   const fullWidth = wrapper.scrollWidth;
@@ -497,6 +516,7 @@ const drawConnectingLines = () => {
   }
 
   wrapper.appendChild(svg);
+  linesSvg = svg;
 };
 
 const COLUMN_GAP = 48;
@@ -539,8 +559,8 @@ const drawLine = (
     onPath
       ? "hsl(var(--tac-amber))"
       : type === "winner"
-        ? "hsl(var(--muted-foreground) / 0.35)"
-        : "hsl(0 72% 64% / 0.35)",
+        ? "hsl(var(--muted-foreground) / 0.8)"
+        : "hsl(0 72% 64% / 0.8)",
   );
   path.setAttribute("stroke-width", onPath ? "2" : "1.5");
   if (type === "loser") path.setAttribute("stroke-dasharray", "4 4");
@@ -679,8 +699,7 @@ function startMomentum() {
                 ? `${clampedContainerHeight}px`
                 : 'auto',
               padding: '8px',
-              transition:
-                'height 250ms cubic-bezier(0.4, 0, 0.2, 1), max-height 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+              transition: glide('height', 'max-height'),
             }
       "
       ref="bracketContainer"
@@ -694,7 +713,6 @@ function startMomentum() {
                 width: 'auto',
                 height: 'auto',
                 opacity: naturalSize.width ? 1 : 0,
-                transition: 'opacity 150ms ease-out',
               }
             : {
                 width: scaledContentWidth ? `${scaledContentWidth}px` : 'auto',
@@ -702,8 +720,7 @@ function startMomentum() {
                   ? `${scaledContentHeight}px`
                   : 'auto',
                 opacity: naturalSize.width ? 1 : 0,
-                transition:
-                  'opacity 150ms ease-out, width 250ms cubic-bezier(0.4, 0, 0.2, 1), height 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: glide('width', 'height'),
               }
         "
         :class="['relative', 'overflow-visible']"
@@ -720,7 +737,7 @@ function startMomentum() {
               : {
                   transform: `scale(${effectiveZoom})`,
                   transformOrigin: 'top left',
-                  transition: 'transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition: glide('transform'),
                 }
           "
         >

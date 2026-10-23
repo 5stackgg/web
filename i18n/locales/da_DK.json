@@ -8455,10 +8455,6 @@
         "pin": "Fastgør {page}",
         "unpin": "Frigør {page}"
       },
-      "live": {
-        "signups_open": "Tilmelding åben",
-        "count": "{count} live"
-      },
       "sign_in": {
         "prompt": "Log ind for at stå i kø til kampe, følge dine statistikker og deltage i turneringer."
       }

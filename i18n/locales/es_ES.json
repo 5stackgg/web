@@ -8455,10 +8455,6 @@
         "pin": "Fijar {page}",
         "unpin": "Dejar de fijar {page}"
       },
-      "live": {
-        "signups_open": "Inscripciones abiertas",
-        "count": "{count} en directo"
-      },
       "sign_in": {
         "prompt": "Inicia sesión para buscar partidas, seguir tus estadísticas y unirte a torneos."
       }

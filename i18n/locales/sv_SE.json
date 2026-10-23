@@ -8455,10 +8455,6 @@
         "pin": "Fäst {page}",
         "unpin": "Lossa {page}"
       },
-      "live": {
-        "signups_open": "Anmälan öppen",
-        "count": "{count} live"
-      },
       "sign_in": {
         "prompt": "Logga in för att köa till matcher, följa din statistik och gå med i turneringar."
       }

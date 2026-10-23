@@ -8455,10 +8455,6 @@
         "pin": "{page} sayfasını sabitle",
         "unpin": "{page} sabitlemesini kaldır"
       },
-      "live": {
-        "signups_open": "Kayıtlar açık",
-        "count": "{count} canlı"
-      },
       "sign_in": {
         "prompt": "Maç sırasına girmek, istatistiklerini takip etmek ve turnuvalara katılmak için giriş yap."
       }

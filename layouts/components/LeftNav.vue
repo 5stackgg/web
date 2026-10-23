@@ -43,7 +43,7 @@ import { signInWithSteam } from "~/utilities/loginLinks";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { useNavMode } from "~/composables/useNavMode";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
-import SmokePlumesIcon from "~/components/icons/SmokePlumesIcon.vue";
+import LineupIcon from "~/components/icons/LineupIcon.vue";
 import PodiumIcon from "~/components/icons/PodiumIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -120,8 +120,7 @@ const isNamed = (name: string) => {
 };
 
 // Play and Watch are the two doors at the top. Below them four sections fold
-// on their own: organised competition, practice, media and the community; a section's line beside its name says what is on right now,
-// so a folded section still reports it.
+// on their own: organised competition, practice, media and the community.
 const doors = computed<LeftNavItem[]>(() => [
   {
     key: "play",
@@ -182,7 +181,7 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
     {
       key: "utility",
       label: t("layouts.app_nav.navigation.utility"),
-      icon: SmokePlumesIcon,
+      icon: LineupIcon,
       to: { name: "utility" },
       active: isNamed("utility"),
     },
@@ -279,10 +278,6 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
       label: t("layouts.app_nav.groups.compete"),
       icon: BracketIcon,
       items: compete,
-      live:
-        matchLobbyStore.openRegistrationTournamentsCount > 0
-          ? { text: t("layouts.app_nav.live.signups_open") }
-          : null,
     },
     {
       id: "practice",

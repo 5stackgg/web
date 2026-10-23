@@ -8455,10 +8455,6 @@
         "pin": "固定{page}",
         "unpin": "取消固定{page}"
       },
-      "live": {
-        "signups_open": "报名中",
-        "count": "{count} 场直播"
-      },
       "sign_in": {
         "prompt": "登录后即可排队匹配、查看你的数据并参加锦标赛。"
       }

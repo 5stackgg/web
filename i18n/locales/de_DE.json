@@ -8455,10 +8455,6 @@
         "pin": "{page} anheften",
         "unpin": "{page} lösen"
       },
-      "live": {
-        "signups_open": "Anmeldung offen",
-        "count": "{count} live"
-      },
       "sign_in": {
         "prompt": "Melde dich an, um dich für Matches anzustellen, deine Statistiken zu verfolgen und an Turnieren teilzunehmen."
       }

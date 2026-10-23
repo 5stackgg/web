@@ -8455,10 +8455,6 @@
         "pin": "Pin {page}",
         "unpin": "Unpin {page}"
       },
-      "live": {
-        "signups_open": "Sign-ups open",
-        "count": "{count} live"
-      },
       "sign_in": {
         "prompt": "Sign in to queue for matches, track your stats and join tournaments."
       }

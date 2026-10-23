@@ -8455,10 +8455,6 @@
         "pin": "Przypnij {page}",
         "unpin": "Odepnij {page}"
       },
-      "live": {
-        "signups_open": "Zapisy otwarte",
-        "count": "{count} na żywo"
-      },
       "sign_in": {
         "prompt": "Zaloguj się, aby dołączać do kolejki meczów, śledzić statystyki i brać udział w turniejach."
       }

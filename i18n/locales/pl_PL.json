@@ -2803,7 +2803,9 @@
           "assets_section": "Logo i favicon",
           "assets_section_description": "Wgraj logo (używane w całej aplikacji i do generowania ikony instalacji PWA) oraz opcjonalny favicon.",
           "upload_failed": "Przesyłanie nie powiodło się: {status}",
-          "delete_failed": "Usuwanie nie powiodło się: {status}"
+          "delete_failed": "Usuwanie nie powiodło się: {status}",
+          "banner": "Baner menu",
+          "banner_description": "Wyświetlany u góry menu bocznego dla graczy i odwiedzających. Bez banera menu pokazuje Twoje logo i nazwę."
         },
         "language": {
           "title": "Język",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "Nazwa kontenera Federation pluginu (pole `name` w konfiguracji vite federation).",
             "exposed_module_hint": "Ścieżka udostępnianego modułu, np. ./App.",
             "nav_group_placeholder": "Aplikacje",
-            "nav_group_hint": "Opcjonalny nagłówek, pod którym pojawi się w sidebarze. Zostaw puste, aby użyć domyślnej grupy Aplikacje.",
-            "nav_order_hint": "Niższe liczby pojawiają się wyżej. Zostaw 0, jeśli to bez znaczenia.",
+            "nav_group_hint": "Sekcja menu bocznego, w której się pojawi: compete, practice, media lub community. Każda inna nazwa tworzy osobną sekcję; zostaw puste dla Apps.",
+            "nav_order_hint": "Pozycja w sekcji: 1 umieszcza ją po pierwszej stronie, 2 po drugiej. Zostaw 0, aby była na końcu.",
             "profile_tab_label": "Zakładka na profilu gracza",
             "profile_tab_label_placeholder": "Ekwipunek",
             "profile_tab_label_hint": "Pokaż ten plugin jako zakładkę na profilach graczy, pod tą etykietą. Zostaw puste, by nie pokazywać zakładki. Plugin otrzyma SteamID profilu.",
             "deployments": "Wdrożenia",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Nazwy wdrożeń Kubernetes do śledzenia aktualizacji obrazów. Rozdziel przecinkami. Aktualizacje pojawią się w nagłówku obok własnych usług 5stack."
+            "deployments_hint": "Nazwy wdrożeń Kubernetes do śledzenia aktualizacji obrazów. Rozdziel przecinkami. Aktualizacje pojawią się w nagłówku obok własnych usług 5stack.",
+            "nav_featured": "Wyróżniona",
+            "nav_featured_hint": "Pokaż jako przycisk pod Graj i Oglądaj u góry menu, zamiast w sekcji."
           },
           "detect_label": "Wykryj automatycznie z adresu URL",
           "detect": "Wykryj",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "Administracja",
         "plugin_directory": "Katalog wtyczek"
+      },
+      "pins": {
+        "title": "Przypięte",
+        "pin": "Przypnij {page}",
+        "unpin": "Odepnij {page}",
+        "hint": "Oznacz dowolną stronę gwiazdką, aby mieć ją tutaj, i przeciągnij, aby zmienić kolejność."
+      },
+      "sign_in": {
+        "prompt": "Zaloguj się, aby dołączać do kolejki meczów, śledzić statystyki i brać udział w turniejach."
       }
     },
     "top_nav": {

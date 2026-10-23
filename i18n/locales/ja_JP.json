@@ -2803,7 +2803,9 @@
           "assets_section": "ロゴ・Favicon",
           "assets_section_description": "ロゴ（アプリ全体とPWAインストールアイコンの生成に使用）と、任意のfaviconをアップロードします。",
           "upload_failed": "アップロードに失敗しました: {status}",
-          "delete_failed": "削除に失敗しました: {status}"
+          "delete_failed": "削除に失敗しました: {status}",
+          "banner": "ナビバナー",
+          "banner_description": "プレイヤーと訪問者のサイドナビ上部に表示されます。未設定の場合はロゴと名前が表示されます。"
         },
         "language": {
           "title": "言語",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "プラグインのFederationコンテナ名です（vite federation設定内の`name`）。",
             "exposed_module_hint": "公開モジュールのパスです（例：./App）。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "サイドバーでこのプラグインをまとめる見出し（任意）。空欄の場合はデフォルトのAppsグループに入ります。",
-            "nav_order_hint": "数値が小さいほど先頭に表示されます。気にしない場合は0のままにしてください。",
+            "nav_group_hint": "サイドナビのどのセクションに表示するか: compete、practice、media、community。それ以外の名前は独自のセクションになります。空欄なら Apps に入ります。",
+            "nav_order_hint": "セクション内の位置: 1 なら最初のページの後、2 なら 2 番目の後。0 のままなら末尾です。",
             "profile_tab_label": "プレイヤープロフィールタブ",
             "profile_tab_label_placeholder": "Inventory",
             "profile_tab_label_hint": "このラベルでプレイヤープロフィールにタブとして表示します。空欄の場合はタブを表示しません。プラグインにはプロフィールのSteam IDが渡されます。",
             "deployments": "デプロイメント",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "イメージ更新を監視するKubernetesデプロイメント名です。カンマ区切り。更新は5stack自身のサービスと並んでヘッダーに表示されます。"
+            "deployments_hint": "イメージ更新を監視するKubernetesデプロイメント名です。カンマ区切り。更新は5stack自身のサービスと並んでヘッダーに表示されます。",
+            "nav_featured": "注目",
+            "nav_featured_hint": "セクション内ではなく、ナビの上部の「プレイ」と「観戦」の下にボタンとして表示します。"
           },
           "detect_label": "URLから自動検出",
           "detect": "検出",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "管理",
         "plugin_directory": "プラグインディレクトリ"
+      },
+      "pins": {
+        "title": "ピン留め",
+        "pin": "{page} をピン留め",
+        "unpin": "{page} のピン留めを外す",
+        "hint": "ページにスターを付けるとここに表示されます。ドラッグで並べ替えできます。"
+      },
+      "sign_in": {
+        "prompt": "サインインすると、マッチのキューに参加し、戦績を記録し、トーナメントに参加できます。"
       }
     },
     "top_nav": {

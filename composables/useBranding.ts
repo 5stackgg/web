@@ -91,6 +91,16 @@ export function useBranding() {
     return null;
   });
 
+  // The image across the top of the left nav; null shows the logo and name.
+  const bannerUrl = computed(() => {
+    const setting = store.settings.find(
+      (s: { name: string }) => s.name === "public.banner_url",
+    );
+    return setting?.value
+      ? `https://${useRuntimeConfig().public.apiDomain}/branding/banner?v=${encodeURIComponent(setting.value)}`
+      : null;
+  });
+
   // Apply custom branding CSS variables
   watch(
     () => store.settings,
@@ -210,6 +220,7 @@ export function useBranding() {
   return {
     brandName,
     logoUrl,
+    bannerUrl,
     loginFooterText,
     loginFooterUrl,
     loginShowFooter,

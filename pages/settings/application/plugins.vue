@@ -63,9 +63,7 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
         <SettingsSection
           id="plugins"
           :title="$t('pages.settings.application.plugins.section')"
-          :description="
-            $t('pages.settings.application.plugins.description')
-          "
+          :description="$t('pages.settings.application.plugins.description')"
           clickable-header
           @header-click="toggleEnabled"
         >
@@ -98,7 +96,12 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                     {{ $t("pages.settings.application.plugins.browse") }}
                   </Button>
                 </NuxtLink>
-                <Button variant="tactical" size="sm" class="h-9" @click="openCreate">
+                <Button
+                  variant="tactical"
+                  size="sm"
+                  class="h-9"
+                  @click="openCreate"
+                >
                   <Plus class="h-4 w-4" />
                   {{ $t("pages.settings.application.plugins.add") }}
                 </Button>
@@ -117,7 +120,9 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
               >
                 <div
                   class="flex size-10 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/40"
-                  :class="plugin.enabled ? 'text-primary' : 'text-muted-foreground'"
+                  :class="
+                    plugin.enabled ? 'text-primary' : 'text-muted-foreground'
+                  "
                 >
                   <PluginIcon :name="plugin.icon" class="size-5" />
                 </div>
@@ -139,7 +144,9 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                   <div
                     class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground"
                   >
-                    <span class="truncate font-mono">/apps/{{ plugin.slug }}</span>
+                    <span class="truncate font-mono"
+                      >/apps/{{ plugin.slug }}</span
+                    >
                     <span class="text-border">•</span>
                     <span>
                       {{
@@ -268,7 +275,9 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
         </DialogHeader>
 
         <form class="space-y-4" @submit.prevent="save">
-          <div class="space-y-2 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3">
+          <div
+            class="space-y-2 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3"
+          >
             <Label class="flex items-center gap-2">
               <Wand2 class="h-4 w-4 text-primary" />
               {{ $t("pages.settings.application.plugins.detect_label") }}
@@ -322,15 +331,9 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="public">
-                    {{
-                      $t("pages.settings.application.plugins.public")
-                    }}
+                    {{ $t("pages.settings.application.plugins.public") }}
                   </SelectItem>
-                  <SelectItem
-                    v-for="role in roles"
-                    :key="role"
-                    :value="role"
-                  >
+                  <SelectItem v-for="role in roles" :key="role" :value="role">
                     {{ roleLabel(role) }}
                   </SelectItem>
                 </SelectGroup>
@@ -387,9 +390,7 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <Label>{{
-                    $t(
-                      "pages.settings.application.plugins.fields.remote_scope",
-                    )
+                    $t("pages.settings.application.plugins.fields.remote_scope")
                   }}</Label>
                   <Input
                     v-model="form.remote_scope"
@@ -438,12 +439,16 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                   <Input
                     v-model="form.nav_group"
                     :placeholder="
-                      $t('pages.settings.application.plugins.fields.nav_group_placeholder')
+                      $t(
+                        'pages.settings.application.plugins.fields.nav_group_placeholder',
+                      )
                     "
                   />
                   <p class="text-xs text-muted-foreground">
                     {{
-                      $t("pages.settings.application.plugins.fields.nav_group_hint")
+                      $t(
+                        "pages.settings.application.plugins.fields.nav_group_hint",
+                      )
                     }}
                   </p>
                 </div>
@@ -463,7 +468,9 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                   />
                   <p class="text-xs text-muted-foreground">
                     {{
-                      $t("pages.settings.application.plugins.fields.nav_order_hint")
+                      $t(
+                        "pages.settings.application.plugins.fields.nav_order_hint",
+                      )
                     }}
                   </p>
                 </div>
@@ -509,12 +516,16 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                 <Input
                   v-model="form.deployments"
                   :placeholder="
-                    $t('pages.settings.application.plugins.fields.deployments_placeholder')
+                    $t(
+                      'pages.settings.application.plugins.fields.deployments_placeholder',
+                    )
                   "
                 />
                 <p class="text-xs text-muted-foreground">
                   {{
-                    $t("pages.settings.application.plugins.fields.deployments_hint")
+                    $t(
+                      "pages.settings.application.plugins.fields.deployments_hint",
+                    )
                   }}
                 </p>
               </div>
@@ -534,14 +545,29 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                 $t("pages.settings.application.plugins.fields.is_default")
               }}</Label>
               <p class="text-xs text-muted-foreground">
+                {{ $t("pages.settings.application.plugins.is_default_hint") }}
+              </p>
+            </div>
+            <Switch v-model="form.is_default" />
+          </div>
+
+          <div
+            v-if="supportsFeatured"
+            class="flex items-center justify-between"
+          >
+            <div>
+              <Label>{{
+                $t("pages.settings.application.plugins.fields.nav_featured")
+              }}</Label>
+              <p class="text-xs text-muted-foreground">
                 {{
                   $t(
-                    "pages.settings.application.plugins.is_default_hint",
+                    "pages.settings.application.plugins.fields.nav_featured_hint",
                   )
                 }}
               </p>
             </div>
-            <Switch v-model="form.is_default" />
+            <Switch v-model="form.nav_featured" />
           </div>
 
           <DialogFooter>
@@ -564,6 +590,8 @@ import {
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import type { Plugin } from "~/stores/Plugins";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { schemaHasField } from "~/utilities/schemaHasType";
 
 // reka-ui Select forbids an empty-string value, so "public" is the in-form
 // sentinel for "no required role"; it maps to a null column on save.
@@ -582,6 +610,7 @@ interface PluginForm {
   is_default: boolean;
   nav_group: string;
   nav_order: number;
+  nav_featured: boolean;
   profile_tab_label: string;
   deployments: string;
 }
@@ -599,6 +628,7 @@ const emptyForm = (): PluginForm => ({
   is_default: false,
   nav_group: "",
   nav_order: 0,
+  nav_featured: false,
   profile_tab_label: "",
   deployments: "",
 });
@@ -618,10 +648,17 @@ export default {
       // selecting it there would error the subscription and kill plugin nav for
       // everyone below admin.
       deploymentsByPlugin: {} as Record<string, string[]>,
+      // The Featured switch waits for the API's nav_featured column.
+      supportsFeatured: false,
     };
   },
   mounted() {
     void this.fetchDeployments();
+    void schemaHasField(
+      getGraphqlClient(),
+      "custom_pages",
+      "nav_featured",
+    ).then((supported) => (this.supportsFeatured = supported));
   },
   computed: {
     pluginsEnabled() {
@@ -682,6 +719,7 @@ export default {
         is_default: plugin.is_default,
         nav_group: plugin.nav_group ?? "",
         nav_order: plugin.nav_order,
+        nav_featured: plugin.nav_featured ?? false,
         profile_tab_label: plugin.profile_tab_label ?? "",
         deployments: (this.deploymentsByPlugin[plugin.id] ?? []).join(", "),
       };
@@ -720,8 +758,7 @@ export default {
         this.form.remote_entry_url =
           manifest.remoteEntry ?? this.form.remote_entry_url;
         this.form.remote_scope = manifest.scope ?? this.form.remote_scope;
-        this.form.exposed_module =
-          manifest.module ?? this.form.exposed_module;
+        this.form.exposed_module = manifest.module ?? this.form.exposed_module;
         if (manifest.requiredRole) {
           this.form.required_role = manifest.requiredRole;
         }
@@ -772,9 +809,7 @@ export default {
         await this.fetchDeployments();
         this.dialogOpen = false;
         toast({
-          title: this.$t(
-            "pages.settings.application.update_success",
-          ) as string,
+          title: this.$t("pages.settings.application.update_success") as string,
         });
       } finally {
         this.submitting = false;
@@ -802,6 +837,10 @@ export default {
           .map((name) => name.trim())
           .filter(Boolean),
       };
+      if (this.supportsFeatured) {
+        (object as Record<string, unknown>).nav_featured =
+          this.form.nav_featured;
+      }
 
       // The DB allows only one is_default row (partial unique index); clear any
       // other default before this write so the upsert can't collide.

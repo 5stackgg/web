@@ -12,7 +12,6 @@ import {
 } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
-import { e_player_roles_enum } from "~/generated/zeus";
 import { useGtm } from "@/layouts/composables/useGtm";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
 import { useChatPresence } from "~/composables/useChatPresence";
@@ -23,9 +22,6 @@ const AppSidebar = defineAsyncComponent(
 );
 const MainContent = defineAsyncComponent(
   () => import("@/layouts/components/MainContent.vue"),
-);
-const TopNav = defineAsyncComponent(
-  () => import("@/layouts/components/TopNav.vue"),
 );
 const AppHeader = defineAsyncComponent(
   () => import("@/layouts/components/AppHeader.vue"),
@@ -98,16 +94,13 @@ useChatBlocks();
 const route = useRoute();
 const authStore = useAuthStore();
 
-// TopNav loads MatchLobbies lazily, and the root Suspense holds the pre-loader
-// until it arrives. Asking for it here, while TopNav's own chunk is still on
-// its way, keeps a signed-in boot from paying for the two one after the other.
+// AppHeader loads MatchLobbies lazily, and the root Suspense holds the
+// pre-loader until it arrives. Asking for it here, while AppHeader's own chunk
+// is still on its way, keeps a signed-in boot from paying for the two one after
+// the other.
 if (authStore.me) {
   void import("~/layouts/components/MatchLobbies.vue");
 }
-
-const showLeftNav = computed(() => {
-  return authStore.isRoleAbove(e_player_roles_enum.match_organizer);
-});
 
 // The route on screen, not the one being navigated to: a page leaving keeps
 // its own width while it fades, instead of being laid out again at the next
@@ -181,7 +174,6 @@ const isProfileSettings = computed(
 );
 
 // Provide values to MainContent
-provide("showLeftNav", showLeftNav);
 provide("containContent", containContent);
 provide("adminContent", adminContent);
 </script>
@@ -190,14 +182,13 @@ provide("adminContent", adminContent);
   <TopoBackground />
 
   <SidebarProvider class="relative z-10 !bg-transparent">
-    <AppSidebar v-if="showLeftNav" />
+    <AppSidebar />
 
     <SidebarInset
       class="flex flex-col overflow-y-auto overflow-x-hidden !bg-transparent"
       style="height: 100svh"
     >
-      <TopNav v-if="!showLeftNav" />
-      <AppHeader class="px-6" v-if="showLeftNav" />
+      <AppHeader class="pl-2 pr-6" />
 
       <MainContent class="flex-1">
         <ApplicationSettingsShell v-if="isApplicationSettings">

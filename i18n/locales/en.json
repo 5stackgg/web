@@ -2803,7 +2803,9 @@
           "assets_section": "Logo & favicon",
           "assets_section_description": "Upload a logo (used app-wide and to generate your PWA install icon) and an optional favicon.",
           "upload_failed": "Upload failed: {status}",
-          "delete_failed": "Delete failed: {status}"
+          "delete_failed": "Delete failed: {status}",
+          "banner": "Nav banner",
+          "banner_description": "Shown across the top of the left nav for players and visitors. Without one, the nav shows your logo and name."
         },
         "language": {
           "title": "Language",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "The plugin's Federation container name (its `name` in vite federation config).",
             "exposed_module_hint": "The exposed module path, e.g. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Optional heading to group this under in the sidebar. Leave blank for the default Apps group.",
-            "nav_order_hint": "Lower numbers appear first. Leave 0 if you don't care.",
+            "nav_group_hint": "Side nav section to show it in: compete, practice, media or community. Any other name gets a section of its own; leave blank for Apps.",
+            "nav_order_hint": "Where it sits in that section: 1 puts it after the first page, 2 after the second. Leave 0 for the end.",
             "profile_tab_label": "Player profile tab",
             "profile_tab_label_placeholder": "Inventory",
             "profile_tab_label_hint": "Show this plugin as a tab on player profiles, using this label. Leave blank for no tab. The plugin receives the profile's Steam ID.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Kubernetes deployment names to watch for image updates. Comma separated. Updates show in the header alongside 5stack's own services."
+            "deployments_hint": "Kubernetes deployment names to watch for image updates. Comma separated. Updates show in the header alongside 5stack's own services.",
+            "nav_featured": "Featured",
+            "nav_featured_hint": "Show it as a button under Play and Watch at the top of the nav, instead of in a section."
           },
           "detect_label": "Auto-detect from URL",
           "detect": "Detect",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "Platform",
         "plugin_directory": "Plugin Directory"
+      },
+      "pins": {
+        "title": "Pinned",
+        "pin": "Pin {page}",
+        "unpin": "Unpin {page}",
+        "hint": "Star any page to keep it here, and drag to reorder."
+      },
+      "sign_in": {
+        "prompt": "Sign in to queue for matches, track your stats and join tournaments."
       }
     },
     "top_nav": {

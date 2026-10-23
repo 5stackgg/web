@@ -2803,7 +2803,9 @@
           "assets_section": "Logo og favicon",
           "assets_section_description": "Upload et logo (bruges i hele appen og til at generere dit PWA-installationsikon) og et valgfrit favicon.",
           "upload_failed": "Upload mislykkedes: {status}",
-          "delete_failed": "Sletning mislykkedes: {status}"
+          "delete_failed": "Sletning mislykkedes: {status}",
+          "banner": "Menubanner",
+          "banner_description": "Vises øverst i sidemenuen for spillere og besøgende. Uden et banner viser menuen dit logo og navn."
         },
         "language": {
           "title": "Sprog",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "Pluginnets Federation-containernavn (dets `name` i vite federation-konfigurationen).",
             "exposed_module_hint": "Stien til det eksponerede modul, f.eks. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Valgfri overskrift at gruppere dette under i sidebaren. Lad stå tomt for standardgruppen Apps.",
-            "nav_order_hint": "Lavere tal vises først. Lad stå på 0, hvis det er lige meget.",
+            "nav_group_hint": "Sektion i sidemenuen, den vises i: compete, practice, media eller community. Ethvert andet navn får sin egen sektion; lad feltet stå tomt for Apps.",
+            "nav_order_hint": "Placering i sektionen: 1 sætter den efter den første side, 2 efter den anden. Lad 0 stå for at placere den sidst.",
             "profile_tab_label": "Fane på spillerprofil",
             "profile_tab_label_placeholder": "Inventar",
             "profile_tab_label_hint": "Vis dette plugin som en fane på spillerprofiler med denne tekst. Lad stå tomt for ingen fane. Pluginnet modtager profilens SteamID.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Navne på Kubernetes-deployments, der skal overvåges for image-opdateringer. Kommasepareret. Opdateringer vises i headeren sammen med 5Stacks egne tjenester."
+            "deployments_hint": "Navne på Kubernetes-deployments, der skal overvåges for image-opdateringer. Kommasepareret. Opdateringer vises i headeren sammen med 5Stacks egne tjenester.",
+            "nav_featured": "Fremhævet",
+            "nav_featured_hint": "Vis den som en knap under Spil og Se øverst i menuen i stedet for i en sektion."
           },
           "detect_label": "Find automatisk ud fra URL",
           "detect": "Find",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "Administration",
         "plugin_directory": "Plugin-katalog"
+      },
+      "pins": {
+        "title": "Fastgjort",
+        "pin": "Fastgør {page}",
+        "unpin": "Frigør {page}",
+        "hint": "Sæt stjerne ved en side for at beholde den her, og træk for at ændre rækkefølgen."
+      },
+      "sign_in": {
+        "prompt": "Log ind for at stå i kø til kampe, følge dine statistikker og deltage i turneringer."
       }
     },
     "top_nav": {

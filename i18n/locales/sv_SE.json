@@ -2803,7 +2803,9 @@
           "assets_section": "Logotyp och favicon",
           "assets_section_description": "Ladda upp en logotyp (används i hela appen och för att skapa din PWA-installationsikon) och en valfri favicon.",
           "upload_failed": "Uppladdningen misslyckades: {status}",
-          "delete_failed": "Raderingen misslyckades: {status}"
+          "delete_failed": "Raderingen misslyckades: {status}",
+          "banner": "Menybanner",
+          "banner_description": "Visas högst upp i sidomenyn för spelare och besökare. Utan banner visar menyn din logotyp och ditt namn."
         },
         "language": {
           "title": "Språk",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "Pluginets federation-containernamn (dess `name` i vite federation-konfigurationen).",
             "exposed_module_hint": "Sökvägen till den exponerade modulen, t.ex. ./App.",
             "nav_group_placeholder": "Appar",
-            "nav_group_hint": "Valfri rubrik att gruppera detta under i sidofältet. Lämna tomt för standardgruppen Appar.",
-            "nav_order_hint": "Lägre siffror visas först. Lämna 0 om det inte spelar någon roll.",
+            "nav_group_hint": "Avsnitt i sidomenyn där den visas: compete, practice, media eller community. Alla andra namn får ett eget avsnitt; lämna tomt för Apps.",
+            "nav_order_hint": "Plats i avsnittet: 1 lägger den efter första sidan, 2 efter den andra. Lämna 0 för att hamna sist.",
             "profile_tab_label": "Flik på spelarprofil",
             "profile_tab_label_placeholder": "Inventarie",
             "profile_tab_label_hint": "Visa detta plugin som en flik på spelarprofiler, med denna etikett. Lämna tomt för ingen flik. Pluginet får profilens SteamID.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Kubernetes deployment-namn att bevaka för imageuppdateringar. Kommaseparerade. Uppdateringar visas i sidhuvudet tillsammans med 5stacks egna tjänster."
+            "deployments_hint": "Kubernetes deployment-namn att bevaka för imageuppdateringar. Kommaseparerade. Uppdateringar visas i sidhuvudet tillsammans med 5stacks egna tjänster.",
+            "nav_featured": "Utvald",
+            "nav_featured_hint": "Visa den som en knapp under Spela och Titta högst upp i menyn i stället för i ett avsnitt."
           },
           "detect_label": "Identifiera automatiskt från URL",
           "detect": "Identifiera",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "Administration",
         "plugin_directory": "Tilläggskatalog"
+      },
+      "pins": {
+        "title": "Fästa",
+        "pin": "Fäst {page}",
+        "unpin": "Lossa {page}",
+        "hint": "Stjärnmärk en sida för att ha den här och dra för att ändra ordningen."
+      },
+      "sign_in": {
+        "prompt": "Logga in för att köa till matcher, följa din statistik och gå med i turneringar."
       }
     },
     "top_nav": {

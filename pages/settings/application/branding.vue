@@ -205,6 +205,32 @@ import {
                 :current-src="faviconPreview || '/favicon/64.png'"
               />
             </div>
+
+            <div
+              v-if="supportsBanner"
+              class="flex flex-col gap-2 sm:col-span-2"
+            >
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.banner")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t("pages.settings.application.branding.banner_description")
+                }}
+              </p>
+              <ImageUploadTile
+                class="mt-auto w-full max-w-[20rem]"
+                :aspect="280 / 76"
+                fit="cover"
+                crop
+                :crop-output="{ w: 840, h: 228 }"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                :upload-fn="(blob) => uploadBrandingFile('banner', blob)"
+                :delete-fn="() => deleteBrandingFile('banner')"
+                :has-custom="!!bannerPreview"
+                :current-src="bannerPreview"
+              />
+            </div>
           </div>
         </SettingsSection>
 
@@ -311,6 +337,8 @@ import {
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { schemaHasField } from "~/utilities/schemaHasType";
 
 interface ColorField {
   key: string;
@@ -573,7 +601,17 @@ export default {
       saving: false,
       exporting: false,
       baseline: null as string | null,
+      // The banner upload ships in the same API release as custom_pages'
+      // nav_featured column, so that column stands in for "the API takes it".
+      supportsBanner: false,
     };
+  },
+  mounted() {
+    void schemaHasField(
+      getGraphqlClient(),
+      "custom_pages",
+      "nav_featured",
+    ).then((supported) => (this.supportsBanner = supported));
   },
   computed: {
     settings() {
@@ -611,6 +649,14 @@ export default {
         (s: { name: string }) => s.name === "public.pwa_icon",
       )?.value;
       return `https://${this.apiDomain}/branding/logo?v=${encodeURIComponent(version || logo.value)}`;
+    },
+    bannerPreview() {
+      const setting = this.settings.find(
+        (s: { name: string }) => s.name === "public.banner_url",
+      );
+      return setting?.value
+        ? `https://${this.apiDomain}/branding/banner?v=${encodeURIComponent(setting.value)}`
+        : null;
     },
     faviconPreview() {
       const setting = this.settings.find(
@@ -747,7 +793,7 @@ export default {
     // Returns a truthy value on success — ImageUploadTile treats a falsy
     // result as a failed upload, and throws are surfaced by its own toast.
     async uploadBrandingFile(
-      type: "logo" | "favicon" | "pwa" | "icon",
+      type: "logo" | "favicon" | "pwa" | "icon" | "banner",
       file: Blob,
     ) {
       const formData = new FormData();
@@ -783,7 +829,9 @@ export default {
     async removeFavicon() {
       await this.deleteBrandingFile("favicon");
     },
-    async deleteBrandingFile(type: "logo" | "favicon" | "pwa" | "icon") {
+    async deleteBrandingFile(
+      type: "logo" | "favicon" | "pwa" | "icon" | "banner",
+    ) {
       const response = await fetch(
         `https://${this.apiDomain}/branding/${type}`,
         {

@@ -2803,7 +2803,9 @@
           "assets_section": "Logo ve favicon",
           "assets_section_description": "Bir logo (uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır) ve isteğe bağlı bir favicon yükle.",
           "upload_failed": "Yükleme başarısız: {status}",
-          "delete_failed": "Silme başarısız: {status}"
+          "delete_failed": "Silme başarısız: {status}",
+          "banner": "Menü afişi",
+          "banner_description": "Oyuncular ve ziyaretçiler için yan menünün üstünde gösterilir. Afiş yoksa menü logonu ve adını gösterir."
         },
         "language": {
           "title": "Dil",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "Eklentinin Federation container adı (vite federation yapılandırmasındaki `name` değeri).",
             "exposed_module_hint": "Açığa çıkan modül yolu, örn. ./App.",
             "nav_group_placeholder": "Uygulamalar",
-            "nav_group_hint": "Kenar çubuğunda bu eklentiyi gruplamak için isteğe bağlı başlık. Varsayılan Uygulamalar grubu için boş bırak.",
-            "nav_order_hint": "Düşük sayılar önce görünür. Önemli değilse 0 bırak.",
+            "nav_group_hint": "Yan menüde görüneceği bölüm: compete, practice, media veya community. Başka bir ad kendi bölümünü oluşturur; Apps için boş bırakın.",
+            "nav_order_hint": "Bölümdeki yeri: 1 ilk sayfadan sonra, 2 ikinci sayfadan sonra koyar. Sona koymak için 0 bırakın.",
             "profile_tab_label": "Oyuncu Profili Sekmesi",
             "profile_tab_label_placeholder": "Envanter",
             "profile_tab_label_hint": "Bu eklentiyi oyuncu profillerinde bu etiketle bir sekme olarak göster. Sekme istemiyorsan boş bırak. Eklenti profilin Steam ID'sini alır.",
             "deployments": "Dağıtımlar",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "İmaj güncellemeleri için izlenecek Kubernetes dağıtım adları. Virgülle ayır. Güncellemeler 5stack'in kendi servisleriyle birlikte üst kısımda görünür."
+            "deployments_hint": "İmaj güncellemeleri için izlenecek Kubernetes dağıtım adları. Virgülle ayır. Güncellemeler 5stack'in kendi servisleriyle birlikte üst kısımda görünür.",
+            "nav_featured": "Öne çıkan",
+            "nav_featured_hint": "Bir bölüm yerine menünün üstünde Oyna ve İzle'nin altında bir düğme olarak göster."
           },
           "detect_label": "URL'den otomatik algıla",
           "detect": "Algıla",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "Yönetim",
         "plugin_directory": "Eklenti Dizini"
+      },
+      "pins": {
+        "title": "Sabitlenenler",
+        "pin": "{page} sayfasını sabitle",
+        "unpin": "{page} sabitlemesini kaldır",
+        "hint": "Burada tutmak için herhangi bir sayfayı yıldızlayın ve sıralamak için sürükleyin."
+      },
+      "sign_in": {
+        "prompt": "Maç sırasına girmek, istatistiklerini takip etmek ve turnuvalara katılmak için giriş yap."
       }
     },
     "top_nav": {

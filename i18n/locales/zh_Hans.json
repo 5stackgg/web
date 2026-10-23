@@ -2803,7 +2803,9 @@
           "assets_section": "Logo 与网站图标",
           "assets_section_description": "上传 Logo（在整个应用中使用，并用于生成您的 PWA 安装图标）和可选的网站图标。",
           "upload_failed": "上传失败：{status}",
-          "delete_failed": "删除失败：{status}"
+          "delete_failed": "删除失败：{status}",
+          "banner": "导航横幅",
+          "banner_description": "显示在玩家和访客的侧边导航顶部。未设置时，导航显示你的徽标和名称。"
         },
         "language": {
           "title": "语言",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "插件的 Federation 容器名称（vite federation 配置中的 `name`）。",
             "exposed_module_hint": "暴露的模块路径，例如 ./App。",
             "nav_group_placeholder": "应用",
-            "nav_group_hint": "可选标题，用于在侧边栏中给它分组。留空则使用默认的「应用」分组。",
-            "nav_order_hint": "数字越小越靠前。不在意的话保持 0。",
+            "nav_group_hint": "显示在侧边导航的哪个分区：compete、practice、media 或 community。其他名称会单独成为一个分区；留空则放入 Apps。",
+            "nav_order_hint": "在分区中的位置：1 表示放在第一个页面之后，2 表示第二个之后。保留 0 则放在末尾。",
             "profile_tab_label": "玩家资料页标签",
             "profile_tab_label_placeholder": "库存",
             "profile_tab_label_hint": "以此标签在玩家资料页显示该插件。留空则不显示标签。插件会收到该资料页的 Steam ID。",
             "deployments": "部署",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "要监听镜像更新的 Kubernetes 部署名称，用逗号分隔。更新会与 5stack 自身的服务一起显示在页头。"
+            "deployments_hint": "要监听镜像更新的 Kubernetes 部署名称，用逗号分隔。更新会与 5stack 自身的服务一起显示在页头。",
+            "nav_featured": "精选",
+            "nav_featured_hint": "以按钮形式显示在导航顶部的“游戏”和“观看”下方，而不是放在某个分区里。"
           },
           "detect_label": "从 URL 自动检测",
           "detect": "检测",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "管理",
         "plugin_directory": "插件目录"
+      },
+      "pins": {
+        "title": "已固定",
+        "pin": "固定{page}",
+        "unpin": "取消固定{page}",
+        "hint": "为任意页面加星标即可固定在这里，拖动可调整顺序。"
+      },
+      "sign_in": {
+        "prompt": "登录后即可排队匹配、查看你的数据并参加锦标赛。"
       }
     },
     "top_nav": {

@@ -2803,7 +2803,9 @@
           "assets_section": "Logo & Favicon",
           "assets_section_description": "Lade ein Logo hoch (wird app-weit genutzt und für dein PWA-Installationssymbol verwendet) sowie optional ein Favicon.",
           "upload_failed": "Upload fehlgeschlagen: {status}",
-          "delete_failed": "Löschen fehlgeschlagen: {status}"
+          "delete_failed": "Löschen fehlgeschlagen: {status}",
+          "banner": "Navigationsbanner",
+          "banner_description": "Erscheint oben in der Seitenleiste für Spieler und Besucher. Ohne Banner zeigt die Navigation dein Logo und deinen Namen."
         },
         "language": {
           "title": "Sprache",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "Der Federation-Container-Name des Plugins (sein `name` in der Vite-Federation-Config).",
             "exposed_module_hint": "Der Pfad des exponierten Moduls, z. B. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Optionale Überschrift, unter der das in der Sidebar gruppiert wird. Leer lassen für die Standardgruppe Apps.",
-            "nav_order_hint": "Niedrigere Zahlen stehen weiter oben. Lass 0 stehen, wenn es dir egal ist.",
+            "nav_group_hint": "Bereich der Seitenleiste, in dem es erscheint: compete, practice, media oder community. Jeder andere Name erhält einen eigenen Bereich; leer lassen für Apps.",
+            "nav_order_hint": "Position im Bereich: 1 setzt es hinter die erste Seite, 2 hinter die zweite. Bei 0 kommt es ans Ende.",
             "profile_tab_label": "Tab im Spielerprofil",
             "profile_tab_label_placeholder": "Inventar",
             "profile_tab_label_hint": "Zeigt dieses Plugin als Tab in Spielerprofilen an, mit diesem Label. Leer lassen für keinen Tab. Das Plugin bekommt die SteamID des Profils.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Kubernetes-Deployment-Namen, die auf Image-Updates überwacht werden. Kommagetrennt. Updates erscheinen im Header neben den 5Stack-eigenen Diensten."
+            "deployments_hint": "Kubernetes-Deployment-Namen, die auf Image-Updates überwacht werden. Kommagetrennt. Updates erscheinen im Header neben den 5Stack-eigenen Diensten.",
+            "nav_featured": "Hervorgehoben",
+            "nav_featured_hint": "Als Schaltfläche unter Spielen und Zuschauen oben in der Navigation zeigen statt in einem Bereich."
           },
           "detect_label": "Automatisch aus URL erkennen",
           "detect": "Erkennen",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "Administration",
         "plugin_directory": "Plugin-Verzeichnis"
+      },
+      "pins": {
+        "title": "Angeheftet",
+        "pin": "{page} anheften",
+        "unpin": "{page} lösen",
+        "hint": "Markiere eine Seite mit einem Stern, um sie hier zu behalten, und ziehe sie, um die Reihenfolge zu ändern."
+      },
+      "sign_in": {
+        "prompt": "Melde dich an, um dich für Matches anzustellen, deine Statistiken zu verfolgen und an Turnieren teilzunehmen."
       }
     },
     "top_nav": {

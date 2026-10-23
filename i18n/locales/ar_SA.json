@@ -2803,7 +2803,9 @@
           "assets_section": "الشعار وأيقونة الموقع",
           "assets_section_description": "ارفع شعارًا (يُستخدم في التطبيق كله ولتوليد أيقونة تثبيت PWA) وأيقونة موقع اختيارية.",
           "upload_failed": "فشل الرفع: {status}",
-          "delete_failed": "فشل الحذف: {status}"
+          "delete_failed": "فشل الحذف: {status}",
+          "banner": "شعار القائمة",
+          "banner_description": "يظهر في أعلى القائمة الجانبية للاعبين والزوار. بدونه تعرض القائمة شعارك واسمك."
         },
         "language": {
           "title": "اللغة",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "اسم حاوية Federation للإضافة (قيمة `name` في إعداد vite federation).",
             "exposed_module_hint": "مسار الوحدة المكشوفة، مثل ‎./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "عنوان اختياري لتجميع هذه الإضافة تحته في الشريط الجانبي. اتركه فارغًا لاستخدام مجموعة Apps الافتراضية.",
-            "nav_order_hint": "الأرقام الأصغر تظهر أولًا. اترك 0 إذا لم يكن الترتيب مهمًا.",
+            "nav_group_hint": "قسم القائمة الجانبية الذي يظهر فيه: compete أو practice أو media أو community. أي اسم آخر يُنشئ قسمًا خاصًا به؛ اتركه فارغًا ليظهر في Apps.",
+            "nav_order_hint": "موضعه داخل القسم: 1 يضعه بعد الصفحة الأولى، و2 بعد الثانية. اترك 0 ليظهر في النهاية.",
             "profile_tab_label": "تبويب ملف اللاعب",
             "profile_tab_label_placeholder": "Inventory",
             "profile_tab_label_hint": "أظهر هذه الإضافة كتبويب في ملفات اللاعبين بهذا الاسم. اتركه فارغًا لعدم إظهار تبويب. تستقبل الإضافة SteamID الخاص بالملف.",
             "deployments": "عمليات النشر",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "أسماء عمليات النشر في Kubernetes التي تُراقب لتحديثات الصور، مفصولة بفواصل. تظهر التحديثات في الشريط العلوي بجانب خدمات 5Stack."
+            "deployments_hint": "أسماء عمليات النشر في Kubernetes التي تُراقب لتحديثات الصور، مفصولة بفواصل. تظهر التحديثات في الشريط العلوي بجانب خدمات 5Stack.",
+            "nav_featured": "مميّز",
+            "nav_featured_hint": "اعرضه كزر أسفل Play وWatch في أعلى القائمة بدلًا من داخل قسم."
           },
           "detect_label": "كشف تلقائي من الـ URL",
           "detect": "اكشف",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "الإدارة",
         "plugin_directory": "دليل الإضافات"
+      },
+      "pins": {
+        "title": "المثبّتة",
+        "pin": "تثبيت {page}",
+        "unpin": "إلغاء تثبيت {page}",
+        "hint": "ضع نجمة على أي صفحة لتبقيها هنا، واسحب لإعادة الترتيب."
+      },
+      "sign_in": {
+        "prompt": "سجّل الدخول للانضمام إلى قائمة انتظار المباريات وتتبّع إحصائياتك والمشاركة في البطولات."
       }
     },
     "top_nav": {

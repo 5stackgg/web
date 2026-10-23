@@ -5,6 +5,7 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { seededSubscribe } from "~/utilities/seededSubscribe";
+import { schemaHasField } from "~/utilities/schemaHasType";
 import { useAuthStore } from "./AuthStore";
 import { useApplicationSettingsStore } from "./ApplicationSettings";
 
@@ -21,6 +22,9 @@ export interface Plugin {
   is_default: boolean;
   nav_group: string | null;
   nav_order: number;
+  // Shown beside Play and Watch at the top of the left nav instead of in a
+  // section. Absent until the API serves the column.
+  nav_featured?: boolean;
   // Null means the plugin contributes no player-profile tab. A non-null value is
   // the tab's label — the opt-in and the wording are the same field.
   profile_tab_label: string | null;
@@ -48,6 +52,13 @@ export const usePluginsStore = defineStore("plugins", () => {
 
   const subscribeToPlugins = async () => {
     const { subscribe } = useSubscriptionManager();
+    // The web ships ahead of the API's nav_featured column; ask for it only
+    // once the API serves it, or the whole subscription would error.
+    const featured = await schemaHasField(
+      getGraphqlClient(),
+      "custom_pages",
+      "nav_featured",
+    );
 
     subscribe(
       "plugins:custom_pages",
@@ -73,6 +84,9 @@ export const usePluginsStore = defineStore("plugins", () => {
                 nav_group: true,
                 nav_order: true,
                 profile_tab_label: true,
+                ...(featured
+                  ? ({ nav_featured: true } as Record<string, true>)
+                  : {}),
               },
             ],
           }),

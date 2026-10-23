@@ -2803,7 +2803,9 @@
           "assets_section": "로고 및 파비콘",
           "assets_section_description": "로고(앱 전반과 PWA 설치 아이콘 생성에 사용)와 선택적으로 파비콘을 업로드하세요.",
           "upload_failed": "업로드 실패: {status}",
-          "delete_failed": "삭제 실패: {status}"
+          "delete_failed": "삭제 실패: {status}",
+          "banner": "내비게이션 배너",
+          "banner_description": "플레이어와 방문자의 사이드 내비게이션 상단에 표시됩니다. 없으면 로고와 이름이 표시됩니다."
         },
         "language": {
           "title": "언어",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "플러그인의 Federation 컨테이너 이름입니다 (vite federation 설정의 `name` 값).",
             "exposed_module_hint": "노출된 모듈 경로입니다 (예: ./App).",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "사이드바에서 이 항목을 묶을 선택 사항 제목입니다. 비워두면 기본 Apps 그룹에 들어갑니다.",
-            "nav_order_hint": "숫자가 작을수록 먼저 표시됩니다. 상관없다면 0으로 둡니다.",
+            "nav_group_hint": "사이드 내비게이션에서 표시할 섹션: compete, practice, media, community. 다른 이름을 쓰면 별도 섹션이 생기며, 비워 두면 Apps에 들어갑니다.",
+            "nav_order_hint": "섹션 안에서의 위치: 1은 첫 번째 페이지 뒤, 2는 두 번째 뒤입니다. 0으로 두면 맨 끝에 놓입니다.",
             "profile_tab_label": "플레이어 프로필 탭",
             "profile_tab_label_placeholder": "인벤토리",
             "profile_tab_label_hint": "이 라벨로 플레이어 프로필에 이 플러그인을 탭으로 표시합니다. 비워두면 탭이 표시되지 않습니다. 플러그인은 프로필의 SteamID를 전달받습니다.",
             "deployments": "배포",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "이미지 업데이트를 감시할 Kubernetes 배포 이름입니다. 쉼표로 구분합니다. 업데이트는 5stack 자체 서비스와 함께 헤더에 표시됩니다."
+            "deployments_hint": "이미지 업데이트를 감시할 Kubernetes 배포 이름입니다. 쉼표로 구분합니다. 업데이트는 5stack 자체 서비스와 함께 헤더에 표시됩니다.",
+            "nav_featured": "추천",
+            "nav_featured_hint": "섹션 안이 아니라 내비게이션 상단의 플레이와 관전 아래에 버튼으로 표시합니다."
           },
           "detect_label": "URL에서 자동 감지",
           "detect": "감지",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "관리",
         "plugin_directory": "플러그인 디렉터리"
+      },
+      "pins": {
+        "title": "고정됨",
+        "pin": "{page} 고정",
+        "unpin": "{page} 고정 해제",
+        "hint": "페이지에 별표를 하면 여기에 고정되고, 끌어서 순서를 바꿀 수 있습니다."
+      },
+      "sign_in": {
+        "prompt": "로그인하면 매치 대기열에 참가하고, 전적을 확인하고, 토너먼트에 참가할 수 있습니다."
       }
     },
     "top_nav": {

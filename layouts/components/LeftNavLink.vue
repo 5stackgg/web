@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Component } from "vue";
 import type { RouteLocationRaw } from "vue-router";
-import { AlertTriangle } from "lucide-vue-next";
+import { AlertTriangle, Star } from "lucide-vue-next";
+import { useLeftNavState } from "~/composables/useLeftNavState";
 
 // One entry in a data-driven nav group. A warning outranks a count: the icon
 // says something needs a look, and its tooltip names what.
@@ -12,7 +13,11 @@ const props = defineProps<{
   active?: boolean;
   badge?: number;
   warning?: string | null;
+  // Set to let the page be starred into Pinned.
+  pinKey?: string;
 }>();
+
+const { isPinned, togglePin } = useLeftNavState();
 </script>
 
 <template>
@@ -36,5 +41,22 @@ const props = defineProps<{
         </Badge>
       </NuxtLink>
     </SidebarMenuButton>
+    <SidebarMenuAction
+      v-if="props.pinKey"
+      :show-on-hover="!isPinned(props.pinKey)"
+      class="text-muted-foreground hover:text-[hsl(var(--tac-amber))] aria-pressed:text-[hsl(var(--tac-amber))]"
+      :aria-pressed="isPinned(props.pinKey)"
+      :aria-label="
+        $t(
+          isPinned(props.pinKey)
+            ? 'layouts.app_nav.pins.unpin'
+            : 'layouts.app_nav.pins.pin',
+          { page: props.label },
+        )
+      "
+      @click="togglePin(props.pinKey)"
+    >
+      <Star :class="{ 'fill-current': isPinned(props.pinKey) }" />
+    </SidebarMenuAction>
   </SidebarMenuItem>
 </template>

@@ -2803,7 +2803,9 @@
           "assets_section": "Logo 與網站圖示",
           "assets_section_description": "上傳 Logo（會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示）以及選填的網站圖示。",
           "upload_failed": "上傳失敗：{status}",
-          "delete_failed": "刪除失敗：{status}"
+          "delete_failed": "刪除失敗：{status}",
+          "banner": "導覽橫幅",
+          "banner_description": "顯示在玩家和訪客的側邊導覽頂部。未設定時，導覽顯示你的標誌和名稱。"
         },
         "language": {
           "title": "語言",
@@ -3120,14 +3122,16 @@
             "remote_scope_hint": "外掛的 Federation 容器名稱（vite federation 設定中的 `name`）。",
             "exposed_module_hint": "公開的模組路徑，例如 ./App。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "選填標題，用於在側邊欄中分組。留空則使用預設的 Apps 群組。",
-            "nav_order_hint": "數字越小越靠前。不在意的話請留 0。",
+            "nav_group_hint": "顯示在側邊導覽的哪個分區：compete、practice、media 或 community。其他名稱會自成一個分區；留空則放入 Apps。",
+            "nav_order_hint": "在分區中的位置：1 表示放在第一個頁面之後，2 表示第二個之後。保留 0 則放在最後。",
             "profile_tab_label": "玩家個人檔案分頁",
             "profile_tab_label_placeholder": "庫存",
             "profile_tab_label_hint": "以此標籤將此外掛顯示為玩家個人檔案上的分頁。留空則不顯示分頁。外掛會收到該檔案的 Steam ID。",
             "deployments": "部署",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "要監看映像更新的 Kubernetes 部署名稱，以逗號分隔。更新會與 5Stack 自身服務一起顯示在標頭中。"
+            "deployments_hint": "要監看映像更新的 Kubernetes 部署名稱，以逗號分隔。更新會與 5Stack 自身服務一起顯示在標頭中。",
+            "nav_featured": "精選",
+            "nav_featured_hint": "以按鈕形式顯示在導覽頂部的「遊玩」和「觀看」下方，而不是放在某個分區裡。"
           },
           "detect_label": "從 URL 自動偵測",
           "detect": "偵測",
@@ -8448,6 +8452,15 @@
       "platform": {
         "title": "管理",
         "plugin_directory": "外掛目錄"
+      },
+      "pins": {
+        "title": "已釘選",
+        "pin": "釘選{page}",
+        "unpin": "取消釘選{page}",
+        "hint": "為任一頁面加上星號即可釘選在這裡，拖曳可調整順序。"
+      },
+      "sign_in": {
+        "prompt": "登入後即可排隊配對、查看你的數據並參加錦標賽。"
       }
     },
     "top_nav": {

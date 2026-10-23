@@ -2816,6 +2816,7 @@ const AwardComposer = defineAsyncComponent(
     <!-- The sections run to the end of the page, so the docked strip stays
          over the match list too. -->
     <template v-if="player && pageContentReady && !noCareerData">
+      <PlayerHighlights v-if="playerId" :steam-id="playerId" />
       <Tabs v-model="statsTab" :unmount-on-hide="false" class="w-full">
         <PageTabsDock ref="statsTabsDock" class="mb-5 md:mb-7">
           <div class="flex items-center gap-3">
@@ -3431,7 +3432,6 @@ const AwardComposer = defineAsyncComponent(
 
         <div class="mt-4 flex flex-col gap-4 md:mt-6 md:gap-6">
           <Separator />
-          <PlayerHighlights v-if="playerId" :steam-id="playerId" />
           <PageTransition v-if="playerId">
             <PlayerTournaments :player-steam-id="playerId" />
           </PageTransition>

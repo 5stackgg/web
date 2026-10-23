@@ -283,7 +283,7 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
               <TournamentTeamMemberRow
                 v-for="member in team.roster"
                 :key="member.player.steam_id"
-                :member="withElo(member)"
+                :member="member"
                 :team="team"
                 :tournament="tournament"
                 :roles="e_team_roles"
@@ -519,7 +519,6 @@ import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { dateLocale } from "~/utilities/dateLocale";
 import { teamLedgerStatus } from "~/components/tournament/teamLedger";
-import { loadPlayerElos, withPlayerElo } from "~/composables/usePlayerElos";
 
 export default {
   emits: ["toggle"],
@@ -623,27 +622,7 @@ export default {
       }),
     },
   },
-  watch: {
-    // Read again when someone joins while the row is open.
-    rosterEloKey: {
-      immediate: true,
-      handler(key: string) {
-        if (key) {
-          void loadPlayerElos(key.split(","));
-        }
-      },
-    },
-  },
   computed: {
-    rosterEloKey(): string {
-      if (!this.expanded) {
-        return "";
-      }
-      return (this.team.roster ?? [])
-        .map((member: any) => member.player?.steam_id)
-        .filter(Boolean)
-        .join(",");
-    },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
@@ -1023,9 +1002,6 @@ export default {
     },
   },
   methods: {
-    withElo(member: any) {
-      return { ...member, player: withPlayerElo(member.player) };
-    },
     playerAvatarSrc(player: Record<string, any>) {
       return resolveAvatarUrl(
         player.custom_avatar_url || player.avatar_url,

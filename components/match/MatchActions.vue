@@ -58,7 +58,7 @@ const menuLabel =
     <MatchPauseButton
       :show="canPauseResume && !dock"
       :paused="isPaused"
-      :disabled="!match.is_server_online"
+      :disabled="!match.is_server_online || pausing"
       @toggle="togglePause"
     />
 
@@ -106,7 +106,7 @@ const menuLabel =
         v-else-if="primaryAction === 'pause'"
         type="button"
         :class="dockPrimary"
-        :disabled="!match.is_server_online"
+        :disabled="!match.is_server_online || pausing"
         @click="togglePause"
       >
         <MatchDockLabel
@@ -551,6 +551,14 @@ const RESTART_MATCH_MAP = gql`
   }
 `;
 
+const SET_MATCH_PAUSED = gql`
+  mutation SetMatchPaused($matchId: uuid!, $paused: Boolean!) {
+    setMatchPaused(match_id: $matchId, paused: $paused) {
+      success
+    }
+  }
+`;
+
 const RESUME_CLIP_RENDER_BATCH = gql`
   mutation ResumeClipRenderBatch($match_map_id: uuid!) {
     resumeClipRenderBatch(match_map_id: $match_map_id) {
@@ -633,6 +641,7 @@ export default {
       }>,
       renderSummarySub: undefined as { unsubscribe: () => void } | undefined,
       startingMatch: false,
+      pausing: false,
       cancellingMatch: false,
       deletingMatch: false,
       togglingLive: false,
@@ -1231,13 +1240,25 @@ export default {
         command: resolveRconCommand(action, pluginRuntime),
       });
     },
-    togglePause() {
-      this.sendRcon(
-        this.isPaused ? RconAction.Resume : RconAction.Pause,
-        this.isPaused
-          ? this.$t("match.actions.match_resumed")
-          : this.$t("match.actions.match_paused"),
-      );
+    async togglePause() {
+      if (this.pausing) {
+        return;
+      }
+      const paused = !this.isPaused;
+      this.pausing = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: SET_MATCH_PAUSED,
+          variables: { matchId: this.match.id, paused },
+        });
+        toast({
+          title: paused
+            ? this.$t("match.actions.match_paused")
+            : this.$t("match.actions.match_resumed"),
+        });
+      } finally {
+        this.pausing = false;
+      }
     },
     forceReady() {
       this.sendRcon(
@@ -1638,11 +1659,6 @@ export default {
     },
     canPauseResume() {
       if (!this.match.is_organizer) {
-        return false;
-      }
-      // Pause and resume are RCON commands, which the api runs only for
-      // moderators and above.
-      if (!useAuthStore().isRoleAbove(e_player_roles_enum.moderator)) {
         return false;
       }
       if (this.match.status !== e_match_status_enum.Live) {

@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "The plugin's Federation container name (its `name` in vite federation config).",
             "exposed_module_hint": "The exposed module path, e.g. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Optional heading to group this under in the sidebar. Leave blank for the default Apps group.",
-            "nav_order_hint": "Lower numbers appear first. Leave 0 if you don't care.",
+            "nav_group_hint": "Side nav section to show it in: play, compete, watch or community. Any other name gets a section of its own; leave blank for Apps.",
+            "nav_order_hint": "Where it sits in that section: 1 puts it after the first page, 2 after the second. Leave 0 for the end.",
             "profile_tab_label": "Player profile tab",
             "profile_tab_label_placeholder": "Inventory",
             "profile_tab_label_hint": "Show this plugin as a tab on player profiles, using this label. Leave blank for no tab. The plugin receives the profile's Steam ID.",
@@ -8345,7 +8345,8 @@
         "leagues": "League",
         "events": "Events",
         "utility": "Utility",
-        "bans": "Bans"
+        "bans": "Bans",
+        "overview": "Overview"
       },
       "community": {
         "title": "Community"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Platform",
         "plugin_directory": "Plugin Directory"
+      },
+      "pins": {
+        "title": "Pinned",
+        "empty": "Star any page to keep it here.",
+        "pin": "Pin {page}",
+        "unpin": "Unpin {page}"
+      },
+      "live": {
+        "signups_open": "Sign-ups open",
+        "count": "{count} live"
+      },
+      "sign_in": {
+        "prompt": "Sign in to queue for matches, track your stats and join tournaments."
       }
     },
     "top_nav": {

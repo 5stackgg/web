@@ -16,11 +16,14 @@ withDefaults(
     // Full-width, in the amber frame the Create Lobby button wears: for the
     // left nav, where it sits on its own under the fleet status.
     framed?: boolean;
+    // Small and labelled, for the end of the left nav's footer row.
+    compact?: boolean;
   }>(),
   {
     isMenuItem: true,
     showLabel: false,
     framed: false,
+    compact: false,
   },
 );
 
@@ -67,6 +70,16 @@ const { canInstall, manualInstall, showInstructions, install } =
         {{ $t("pwa.install.button") }}
       </Button>
     </div>
+    <Button
+      v-else-if="compact"
+      variant="outline"
+      size="sm"
+      class="h-7 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
+      @click="install"
+    >
+      <MonitorDown class="h-3.5 w-3.5" />
+      {{ $t("pwa.install.button") }}
+    </Button>
     <template v-else>
       <FiveStackToolTip v-if="!isMobile && !showLabel">
         <template #trigger>

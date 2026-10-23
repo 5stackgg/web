@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "Der Federation-Container-Name des Plugins (sein `name` in der Vite-Federation-Config).",
             "exposed_module_hint": "Der Pfad des exponierten Moduls, z. B. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Optionale Überschrift, unter der das in der Sidebar gruppiert wird. Leer lassen für die Standardgruppe Apps.",
-            "nav_order_hint": "Niedrigere Zahlen stehen weiter oben. Lass 0 stehen, wenn es dir egal ist.",
+            "nav_group_hint": "Bereich der Seitenleiste, in dem es erscheint: play, compete, watch oder community. Jeder andere Name erhält einen eigenen Bereich; leer lassen für Apps.",
+            "nav_order_hint": "Position im Bereich: 1 setzt es hinter die erste Seite, 2 hinter die zweite. Bei 0 kommt es ans Ende.",
             "profile_tab_label": "Tab im Spielerprofil",
             "profile_tab_label_placeholder": "Inventar",
             "profile_tab_label_hint": "Zeigt dieses Plugin als Tab in Spielerprofilen an, mit diesem Label. Leer lassen für keinen Tab. Das Plugin bekommt die SteamID des Profils.",
@@ -8345,7 +8345,8 @@
         "leagues": "Liga",
         "events": "Events",
         "utility": "Utility",
-        "bans": "Banns"
+        "bans": "Banns",
+        "overview": "Übersicht"
       },
       "community": {
         "title": "Community"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Administration",
         "plugin_directory": "Plugin-Verzeichnis"
+      },
+      "pins": {
+        "title": "Angeheftet",
+        "empty": "Markiere eine Seite mit einem Stern, um sie hier zu behalten.",
+        "pin": "{page} anheften",
+        "unpin": "{page} lösen"
+      },
+      "live": {
+        "signups_open": "Anmeldung offen",
+        "count": "{count} live"
+      },
+      "sign_in": {
+        "prompt": "Melde dich an, um dich für Matches anzustellen, deine Statistiken zu verfolgen und an Turnieren teilzunehmen."
       }
     },
     "top_nav": {

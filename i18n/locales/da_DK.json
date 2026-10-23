@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "Pluginnets Federation-containernavn (dets `name` i vite federation-konfigurationen).",
             "exposed_module_hint": "Stien til det eksponerede modul, f.eks. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Valgfri overskrift at gruppere dette under i sidebaren. Lad stå tomt for standardgruppen Apps.",
-            "nav_order_hint": "Lavere tal vises først. Lad stå på 0, hvis det er lige meget.",
+            "nav_group_hint": "Sektion i sidemenuen, den vises i: play, compete, watch eller community. Ethvert andet navn får sin egen sektion; lad feltet stå tomt for Apps.",
+            "nav_order_hint": "Placering i sektionen: 1 sætter den efter den første side, 2 efter den anden. Lad 0 stå for at placere den sidst.",
             "profile_tab_label": "Fane på spillerprofil",
             "profile_tab_label_placeholder": "Inventar",
             "profile_tab_label_hint": "Vis dette plugin som en fane på spillerprofiler med denne tekst. Lad stå tomt for ingen fane. Pluginnet modtager profilens SteamID.",
@@ -8345,7 +8345,8 @@
         "leagues": "Liga",
         "events": "Events",
         "utility": "Utility",
-        "bans": "Bans"
+        "bans": "Bans",
+        "overview": "Oversigt"
       },
       "community": {
         "title": "Community"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Administration",
         "plugin_directory": "Plugin-katalog"
+      },
+      "pins": {
+        "title": "Fastgjort",
+        "empty": "Sæt stjerne ved en side for at beholde den her.",
+        "pin": "Fastgør {page}",
+        "unpin": "Frigør {page}"
+      },
+      "live": {
+        "signups_open": "Tilmelding åben",
+        "count": "{count} live"
+      },
+      "sign_in": {
+        "prompt": "Log ind for at stå i kø til kampe, følge dine statistikker og deltage i turneringer."
       }
     },
     "top_nav": {

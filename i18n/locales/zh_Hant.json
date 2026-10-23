@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "外掛的 Federation 容器名稱（vite federation 設定中的 `name`）。",
             "exposed_module_hint": "公開的模組路徑，例如 ./App。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "選填標題，用於在側邊欄中分組。留空則使用預設的 Apps 群組。",
-            "nav_order_hint": "數字越小越靠前。不在意的話請留 0。",
+            "nav_group_hint": "顯示在側邊導覽的哪個分區：play、compete、watch 或 community。其他名稱會自成一個分區；留空則放入 Apps。",
+            "nav_order_hint": "在分區中的位置：1 表示放在第一個頁面之後，2 表示第二個之後。保留 0 則放在最後。",
             "profile_tab_label": "玩家個人檔案分頁",
             "profile_tab_label_placeholder": "庫存",
             "profile_tab_label_hint": "以此標籤將此外掛顯示為玩家個人檔案上的分頁。留空則不顯示分頁。外掛會收到該檔案的 Steam ID。",
@@ -8345,7 +8345,8 @@
         "leagues": "聯賽",
         "events": "活動",
         "utility": "道具",
-        "bans": "封鎖"
+        "bans": "封鎖",
+        "overview": "概覽"
       },
       "community": {
         "title": "社群"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "管理",
         "plugin_directory": "外掛目錄"
+      },
+      "pins": {
+        "title": "已釘選",
+        "empty": "為任一頁面加上星號即可釘選在這裡。",
+        "pin": "釘選{page}",
+        "unpin": "取消釘選{page}"
+      },
+      "live": {
+        "signups_open": "報名中",
+        "count": "{count} 場直播"
+      },
+      "sign_in": {
+        "prompt": "登入後即可排隊配對、查看你的數據並參加錦標賽。"
       }
     },
     "top_nav": {

@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "Il nome del container Federation del plugin (il suo `name` nella config federation di vite).",
             "exposed_module_hint": "Il percorso del modulo esposto, es. ./App.",
             "nav_group_placeholder": "App",
-            "nav_group_hint": "Intestazione facoltativa sotto cui raggruppare questa voce nella barra laterale. Lascia vuoto per il gruppo App predefinito.",
-            "nav_order_hint": "I numeri più bassi vengono prima. Lascia 0 se non ti interessa.",
+            "nav_group_hint": "Sezione del menu laterale in cui appare: play, compete, watch o community. Qualsiasi altro nome crea una sezione a sé; lascia vuoto per Apps.",
+            "nav_order_hint": "Posizione nella sezione: 1 la mette dopo la prima pagina, 2 dopo la seconda. Lascia 0 per la fine.",
             "profile_tab_label": "Tab sul profilo giocatore",
             "profile_tab_label_placeholder": "Inventario",
             "profile_tab_label_hint": "Mostra questo plugin come tab sui profili giocatore, con questa etichetta. Lascia vuoto per non mostrare alcun tab. Il plugin riceve lo SteamID del profilo.",
@@ -8345,7 +8345,8 @@
         "leagues": "Lega",
         "events": "Eventi",
         "utility": "Utility",
-        "bans": "Ban"
+        "bans": "Ban",
+        "overview": "Panoramica"
       },
       "community": {
         "title": "Community"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Amministrazione",
         "plugin_directory": "Catalogo plugin"
+      },
+      "pins": {
+        "title": "Fissati",
+        "empty": "Aggiungi una stella a una pagina per tenerla qui.",
+        "pin": "Fissa {page}",
+        "unpin": "Rimuovi {page} dai fissati"
+      },
+      "live": {
+        "signups_open": "Iscrizioni aperte",
+        "count": "{count} in diretta"
+      },
+      "sign_in": {
+        "prompt": "Accedi per metterti in coda per le partite, seguire le tue statistiche e partecipare ai tornei."
       }
     },
     "top_nav": {

@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "Eklentinin Federation container adı (vite federation yapılandırmasındaki `name` değeri).",
             "exposed_module_hint": "Açığa çıkan modül yolu, örn. ./App.",
             "nav_group_placeholder": "Uygulamalar",
-            "nav_group_hint": "Kenar çubuğunda bu eklentiyi gruplamak için isteğe bağlı başlık. Varsayılan Uygulamalar grubu için boş bırak.",
-            "nav_order_hint": "Düşük sayılar önce görünür. Önemli değilse 0 bırak.",
+            "nav_group_hint": "Yan menüde görüneceği bölüm: play, compete, watch veya community. Başka bir ad kendi bölümünü oluşturur; Apps için boş bırakın.",
+            "nav_order_hint": "Bölümdeki yeri: 1 ilk sayfadan sonra, 2 ikinci sayfadan sonra koyar. Sona koymak için 0 bırakın.",
             "profile_tab_label": "Oyuncu Profili Sekmesi",
             "profile_tab_label_placeholder": "Envanter",
             "profile_tab_label_hint": "Bu eklentiyi oyuncu profillerinde bu etiketle bir sekme olarak göster. Sekme istemiyorsan boş bırak. Eklenti profilin Steam ID'sini alır.",
@@ -8345,7 +8345,8 @@
         "leagues": "Lig",
         "events": "Etkinlikler",
         "utility": "Utility",
-        "bans": "Banlar"
+        "bans": "Banlar",
+        "overview": "Genel bakış"
       },
       "community": {
         "title": "Topluluk"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Yönetim",
         "plugin_directory": "Eklenti Dizini"
+      },
+      "pins": {
+        "title": "Sabitlenenler",
+        "empty": "Burada tutmak için herhangi bir sayfayı yıldızlayın.",
+        "pin": "{page} sayfasını sabitle",
+        "unpin": "{page} sabitlemesini kaldır"
+      },
+      "live": {
+        "signups_open": "Kayıtlar açık",
+        "count": "{count} canlı"
+      },
+      "sign_in": {
+        "prompt": "Maç sırasına girmek, istatistiklerini takip etmek ve turnuvalara katılmak için giriş yap."
       }
     },
     "top_nav": {

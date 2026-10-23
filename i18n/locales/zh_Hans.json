@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "插件的 Federation 容器名称（vite federation 配置中的 `name`）。",
             "exposed_module_hint": "暴露的模块路径，例如 ./App。",
             "nav_group_placeholder": "应用",
-            "nav_group_hint": "可选标题，用于在侧边栏中给它分组。留空则使用默认的「应用」分组。",
-            "nav_order_hint": "数字越小越靠前。不在意的话保持 0。",
+            "nav_group_hint": "显示在侧边导航的哪个分区：play、compete、watch 或 community。其他名称会单独成为一个分区；留空则放入 Apps。",
+            "nav_order_hint": "在分区中的位置：1 表示放在第一个页面之后，2 表示第二个之后。保留 0 则放在末尾。",
             "profile_tab_label": "玩家资料页标签",
             "profile_tab_label_placeholder": "库存",
             "profile_tab_label_hint": "以此标签在玩家资料页显示该插件。留空则不显示标签。插件会收到该资料页的 Steam ID。",
@@ -8345,7 +8345,8 @@
         "leagues": "联赛",
         "events": "活动",
         "utility": "道具",
-        "bans": "封禁"
+        "bans": "封禁",
+        "overview": "概览"
       },
       "community": {
         "title": "社区"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "管理",
         "plugin_directory": "插件目录"
+      },
+      "pins": {
+        "title": "已固定",
+        "empty": "为任意页面加星标即可固定在这里。",
+        "pin": "固定{page}",
+        "unpin": "取消固定{page}"
+      },
+      "live": {
+        "signups_open": "报名中",
+        "count": "{count} 场直播"
+      },
+      "sign_in": {
+        "prompt": "登录后即可排队匹配、查看你的数据并参加锦标赛。"
       }
     },
     "top_nav": {

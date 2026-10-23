@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "プラグインのFederationコンテナ名です（vite federation設定内の`name`）。",
             "exposed_module_hint": "公開モジュールのパスです（例：./App）。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "サイドバーでこのプラグインをまとめる見出し（任意）。空欄の場合はデフォルトのAppsグループに入ります。",
-            "nav_order_hint": "数値が小さいほど先頭に表示されます。気にしない場合は0のままにしてください。",
+            "nav_group_hint": "サイドナビのどのセクションに表示するか: play、compete、watch、community。それ以外の名前は独自のセクションになります。空欄なら Apps に入ります。",
+            "nav_order_hint": "セクション内の位置: 1 なら最初のページの後、2 なら 2 番目の後。0 のままなら末尾です。",
             "profile_tab_label": "プレイヤープロフィールタブ",
             "profile_tab_label_placeholder": "Inventory",
             "profile_tab_label_hint": "このラベルでプレイヤープロフィールにタブとして表示します。空欄の場合はタブを表示しません。プラグインにはプロフィールのSteam IDが渡されます。",
@@ -8345,7 +8345,8 @@
         "leagues": "リーグ",
         "events": "イベント",
         "utility": "ユーティリティ",
-        "bans": "BAN"
+        "bans": "BAN",
+        "overview": "概要"
       },
       "community": {
         "title": "コミュニティ"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "管理",
         "plugin_directory": "プラグインディレクトリ"
+      },
+      "pins": {
+        "title": "ピン留め",
+        "empty": "ページにスターを付けるとここに表示されます。",
+        "pin": "{page} をピン留め",
+        "unpin": "{page} のピン留めを外す"
+      },
+      "live": {
+        "signups_open": "参加受付中",
+        "count": "{count} 件ライブ"
+      },
+      "sign_in": {
+        "prompt": "サインインすると、マッチのキューに参加し、戦績を記録し、トーナメントに参加できます。"
       }
     },
     "top_nav": {

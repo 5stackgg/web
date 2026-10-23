@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "Nazwa kontenera Federation pluginu (pole `name` w konfiguracji vite federation).",
             "exposed_module_hint": "Ścieżka udostępnianego modułu, np. ./App.",
             "nav_group_placeholder": "Aplikacje",
-            "nav_group_hint": "Opcjonalny nagłówek, pod którym pojawi się w sidebarze. Zostaw puste, aby użyć domyślnej grupy Aplikacje.",
-            "nav_order_hint": "Niższe liczby pojawiają się wyżej. Zostaw 0, jeśli to bez znaczenia.",
+            "nav_group_hint": "Sekcja menu bocznego, w której się pojawi: play, compete, watch lub community. Każda inna nazwa tworzy osobną sekcję; zostaw puste dla Apps.",
+            "nav_order_hint": "Pozycja w sekcji: 1 umieszcza ją po pierwszej stronie, 2 po drugiej. Zostaw 0, aby była na końcu.",
             "profile_tab_label": "Zakładka na profilu gracza",
             "profile_tab_label_placeholder": "Ekwipunek",
             "profile_tab_label_hint": "Pokaż ten plugin jako zakładkę na profilach graczy, pod tą etykietą. Zostaw puste, by nie pokazywać zakładki. Plugin otrzyma SteamID profilu.",
@@ -8345,7 +8345,8 @@
         "leagues": "Liga",
         "events": "Wydarzenia",
         "utility": "Utility",
-        "bans": "Bany"
+        "bans": "Bany",
+        "overview": "Przegląd"
       },
       "community": {
         "title": "Społeczność"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Administracja",
         "plugin_directory": "Katalog wtyczek"
+      },
+      "pins": {
+        "title": "Przypięte",
+        "empty": "Oznacz dowolną stronę gwiazdką, aby mieć ją tutaj.",
+        "pin": "Przypnij {page}",
+        "unpin": "Odepnij {page}"
+      },
+      "live": {
+        "signups_open": "Zapisy otwarte",
+        "count": "{count} na żywo"
+      },
+      "sign_in": {
+        "prompt": "Zaloguj się, aby dołączać do kolejki meczów, śledzić statystyki i brać udział w turniejach."
       }
     },
     "top_nav": {

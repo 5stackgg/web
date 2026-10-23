@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "El nombre del contenedor Federation del plugin (su `name` en la configuración de vite federation).",
             "exposed_module_hint": "La ruta del módulo expuesto, p. ej. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Encabezado opcional para agrupar esto en la barra lateral. Déjalo en blanco para usar el grupo Apps por defecto.",
-            "nav_order_hint": "Los números más bajos aparecen primero. Deja 0 si te da igual.",
+            "nav_group_hint": "Sección del menú lateral donde aparece: play, compete, watch o community. Cualquier otro nombre crea su propia sección; déjalo vacío para Apps.",
+            "nav_order_hint": "Posición dentro de la sección: 1 la coloca después de la primera página, 2 después de la segunda. Deja 0 para el final.",
             "profile_tab_label": "Pestaña del perfil de jugador",
             "profile_tab_label_placeholder": "Inventario",
             "profile_tab_label_hint": "Muestra este plugin como una pestaña en los perfiles de jugador, con esta etiqueta. Déjalo en blanco para no añadir pestaña. El plugin recibe el SteamID del perfil.",
@@ -8345,7 +8345,8 @@
         "leagues": "Liga",
         "events": "Eventos",
         "utility": "Utilidad",
-        "bans": "Baneos"
+        "bans": "Baneos",
+        "overview": "Resumen"
       },
       "community": {
         "title": "Comunidad"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Administración",
         "plugin_directory": "Directorio de plugins"
+      },
+      "pins": {
+        "title": "Fijados",
+        "empty": "Marca cualquier página con una estrella para tenerla aquí.",
+        "pin": "Fijar {page}",
+        "unpin": "Dejar de fijar {page}"
+      },
+      "live": {
+        "signups_open": "Inscripciones abiertas",
+        "count": "{count} en directo"
+      },
+      "sign_in": {
+        "prompt": "Inicia sesión para buscar partidas, seguir tus estadísticas y unirte a torneos."
       }
     },
     "top_nav": {

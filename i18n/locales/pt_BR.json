@@ -3120,8 +3120,8 @@
             "remote_scope_hint": "O nome do container de Federation do plugin (o `name` na configuração de federation do vite).",
             "exposed_module_hint": "O caminho do módulo exposto, ex.: ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Cabeçalho opcional para agrupar esta página na barra lateral. Deixe em branco para o grupo padrão Apps.",
-            "nav_order_hint": "Números menores aparecem primeiro. Deixe 0 se não se importar.",
+            "nav_group_hint": "Seção do menu lateral em que aparece: play, compete, watch ou community. Qualquer outro nome cria uma seção própria; deixe em branco para Apps.",
+            "nav_order_hint": "Posição dentro da seção: 1 coloca depois da primeira página, 2 depois da segunda. Deixe 0 para o final.",
             "profile_tab_label": "Aba de perfil do jogador",
             "profile_tab_label_placeholder": "Inventário",
             "profile_tab_label_hint": "Mostre este plugin como uma aba nos perfis dos jogadores, usando este rótulo. Deixe em branco para não exibir aba. O plugin recebe o Steam ID do perfil.",
@@ -8345,7 +8345,8 @@
         "leagues": "Liga",
         "events": "Eventos",
         "utility": "Utilitário",
-        "bans": "Bans"
+        "bans": "Bans",
+        "overview": "Visão geral"
       },
       "community": {
         "title": "Comunidade"
@@ -8448,6 +8449,19 @@
       "platform": {
         "title": "Administração",
         "plugin_directory": "Diretório de plugins"
+      },
+      "pins": {
+        "title": "Fixados",
+        "empty": "Marque qualquer página com estrela para mantê-la aqui.",
+        "pin": "Fixar {page}",
+        "unpin": "Desafixar {page}"
+      },
+      "live": {
+        "signups_open": "Inscrições abertas",
+        "count": "{count} ao vivo"
+      },
+      "sign_in": {
+        "prompt": "Entre para entrar na fila de partidas, acompanhar suas estatísticas e participar de torneios."
       }
     },
     "top_nav": {

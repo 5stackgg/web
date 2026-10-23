@@ -13,6 +13,6 @@ definePageMeta({
   </h1>
 
   <PageTransition>
-    <UtilityPracticeServersPanel class="w-full max-w-3xl" />
+    <UtilityPracticeServersPanel class="w-full" />
   </PageTransition>
 </template>

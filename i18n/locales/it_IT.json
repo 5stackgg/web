@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Fermare questo server?",
         "stop_drops": "Non c'è nessuno. | Il giocatore presente verrà disconnesso. | I {count} giocatori presenti verranno disconnessi.",
         "stale": "Aggiornamenti in tempo reale interrotti",
-        "stale_note": "Questo elenco potrebbe non essere aggiornato."
+        "stale_note": "Questo elenco potrebbe non essere aggiornato.",
+        "console": "Console",
+        "logs": "Log",
+        "no_console": "Solo gli amministratori possono aprire la console del server di un altro giocatore."
       },
       "practice": {
         "title": "Server di allenamento",

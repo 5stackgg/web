@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "要停止此伺服器嗎？",
         "stop_drops": "上面沒有人。 | 上面的玩家將被中斷連線。 | 上面的 {count} 名玩家將被中斷連線。",
         "stale": "即時更新已停止",
-        "stale_note": "此清單可能已過時。"
+        "stale_note": "此清單可能已過時。",
+        "console": "主控台",
+        "logs": "日誌",
+        "no_console": "只有管理員可以開啟其他玩家伺服器的主控台。"
       },
       "practice": {
         "title": "練習伺服器",

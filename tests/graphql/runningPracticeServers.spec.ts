@@ -33,4 +33,10 @@ describe("runningUtilityPracticeSessionsSubscription", () => {
       expect(document).toContain(field);
     }
   });
+
+  it("selects the server, match and connect string the console panel needs", () => {
+    for (const field of ["server_id", "match_id", "connection_string"]) {
+      expect(document).toContain(field);
+    }
+  });
 });

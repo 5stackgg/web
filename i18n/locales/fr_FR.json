@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Arrêter ce serveur ?",
         "stop_drops": "Personne n'y est. | Le joueur qui y est sera déconnecté. | Les {count} joueurs qui y sont seront déconnectés.",
         "stale": "Mises à jour en direct interrompues",
-        "stale_note": "Cette liste n'est peut-être plus à jour."
+        "stale_note": "Cette liste n'est peut-être plus à jour.",
+        "console": "Console",
+        "logs": "Journaux",
+        "no_console": "Seuls les administrateurs peuvent ouvrir la console du serveur d'un autre joueur."
       },
       "practice": {
         "title": "Serveur d'entraînement",

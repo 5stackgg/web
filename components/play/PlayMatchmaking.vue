@@ -395,9 +395,7 @@ const searchInQueue = computed(
 
 const canControl = computed(() => !isMember.value);
 
-const playersOnline = computed(
-  () => (matchmaking.playersOnline as unknown[]).length,
-);
+const playersOnline = computed(() => matchmaking.onlineCount as number);
 
 function openParty() {
   setActiveHub("lobby");

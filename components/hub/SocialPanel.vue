@@ -4,42 +4,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
 import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
-import { useAuthStore } from "~/stores/AuthStore";
 import { useInvites } from "@/composables/useInvites";
 
 const activeTab = ref("friends");
 
 const matchmakingStore = useMatchmakingStore();
-const authStore = useAuthStore();
 const { hasSocialInvites } = useInvites();
 
 const onlineFriends = computed(() => matchmakingStore.onlineFriends);
 const offlineFriends = computed(() => matchmakingStore.offlineFriends);
 
-const otherOnlineCount = computed(() => {
-  const me = authStore.me;
-  const friends = matchmakingStore.friends;
-
-  return matchmakingStore.playersOnline.filter((player: any) => {
-    if (me && String(player.steam_id) === String(me.steam_id)) {
-      return false;
-    }
-
-    // Mirror PlayersList "Others" filter: accepted friends and incoming
-    // requests live in the Friends tab; outgoing requests stay here.
-    const entry = friends?.find(
-      (f: any) => String(f.steam_id) === String(player.steam_id),
-    );
-    if (entry) {
-      if (entry.status !== "Pending") return false;
-      if (String(entry.invited_by_steam_id) !== String(me?.steam_id)) {
-        return false;
-      }
-    }
-
-    return true;
-  }).length;
-});
+// The paged list of everyone else online comes later; the tab shows the count.
+const othersCount = computed(() => matchmakingStore.onlineCount);
 </script>
 
 <template>
@@ -73,7 +49,7 @@ const otherOnlineCount = computed(() => {
           >
             {{ $t("matchmaking.others.title") }}
             <span class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums">
-              {{ otherOnlineCount }}
+              {{ othersCount }}
             </span>
           </TabsTrigger>
         </TabsList>
@@ -84,21 +60,16 @@ const otherOnlineCount = computed(() => {
         value="friends"
         class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3 data-[state=inactive]:hidden"
       >
-        <PlayersList :friends-only="true" />
+        <PlayersList />
       </TabsContent>
       <TabsContent
         value="online"
-        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3 data-[state=inactive]:hidden"
+        class="mt-0 flex flex-1 flex-col min-h-0 px-3 data-[state=inactive]:hidden"
       >
-        <template v-if="otherOnlineCount > 0">
-          <PlayersList />
-        </template>
-        <template v-else>
-          <HubEmptyState
-            :title="$t('layouts.hub.empty.others_title')"
-            :description="$t('layouts.hub.empty.others_description')"
-          />
-        </template>
+        <HubEmptyState
+          :title="$t('layouts.hub.empty.others_title')"
+          :description="$t('layouts.hub.empty.others_description')"
+        />
       </TabsContent>
     </Tabs>
   </div>

@@ -89,7 +89,7 @@ describe("players page, Live on Twitch", () => {
     expect(lastSearch().live_steam_ids).toBeUndefined();
   });
 
-  it("offers the filter next to Online", async () => {
+  it("offers the filter next to Played matches", async () => {
     const wrapper = await mountPage();
     (wrapper.vm as any).filtersPopoverOpen = true;
     await flushPromises();
@@ -97,8 +97,9 @@ describe("players page, Live on Twitch", () => {
     const labels = wrapper
       .findAllComponents(FilterToggle)
       .map((toggle) => toggle.props("label"));
+    expect(labels).not.toContain("Online");
     expect(labels.indexOf("Live on Twitch")).toBe(
-      labels.indexOf("Online") + 1,
+      labels.indexOf("Played Matches") + 1,
     );
   });
 
@@ -107,9 +108,7 @@ describe("players page, Live on Twitch", () => {
     const before = searches().length;
 
     (wrapper.vm as any).onlyLiveOnTwitch = true;
-    await vi.waitFor(() =>
-      expect(searches().length).toBeGreaterThan(before),
-    );
+    await vi.waitFor(() => expect(searches().length).toBeGreaterThan(before));
 
     expect(lastSearch().live_steam_ids).toEqual([LIVE]);
     expect(
@@ -123,9 +122,7 @@ describe("players page, Live on Twitch", () => {
   it("searches again by itself when someone goes live", async () => {
     const wrapper = await mountPage();
     (wrapper.vm as any).onlyLiveOnTwitch = true;
-    await vi.waitFor(() =>
-      expect(lastSearch().live_steam_ids).toEqual([LIVE]),
-    );
+    await vi.waitFor(() => expect(lastSearch().live_steam_ids).toEqual([LIVE]));
 
     (wrapper.vm as any).twitchLive.steamIds = [LIVE, LATER];
     await vi.waitFor(() =>

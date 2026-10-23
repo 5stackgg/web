@@ -287,7 +287,6 @@ const { isMobile } = useSidebar();
               v-model="onlyPlayedMatches"
               :label="$t('pages.players.played_matches')"
             />
-            <FilterToggle v-model="onlyOnline" :label="$t('common.online')" />
             <FilterToggle
               v-if="supportsTwitch"
               v-model="onlyLiveOnTwitch"
@@ -637,7 +636,6 @@ export default {
       sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
       onlyPlayedMatches:
         this.loadFiltersFromStorage().onlyPlayedMatches || false,
-      onlyOnline: this.loadFiltersFromStorage().onlyOnline || false,
       onlyLiveOnTwitch:
         this.loadFiltersFromStorage().onlyLiveOnTwitch || false,
       twitchLive: useTwitchLiveSteamIds(),
@@ -709,12 +707,6 @@ export default {
     },
     canViewAdditionalDetails() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
-    },
-    onlinePlayerSteamIds() {
-      return useMatchmakingStore().onlinePlayerSteamIds as string[];
-    },
-    presenceLoaded() {
-      return useMatchmakingStore().presenceLoaded as boolean;
     },
     supportsTwitch() {
       return useApplicationSettingsStore().supportsTwitch;
@@ -819,16 +811,6 @@ export default {
           value: "yes",
           clear: () => {
             this.onlyPlayedMatches = false;
-          },
-        });
-      }
-      if (this.onlyOnline) {
-        chips.push({
-          id: "online",
-          label: this.$t("common.online"),
-          value: "yes",
-          clear: () => {
-            this.onlyOnline = false;
           },
         });
       }
@@ -956,10 +938,6 @@ export default {
       this.resetPage();
       this.onFilterChange();
     },
-    onlyOnline() {
-      this.resetPage();
-      this.onFilterChange();
-    },
     onlyRegistered() {
       this.resetPage();
       this.onFilterChange();
@@ -976,21 +954,6 @@ export default {
     },
     "twitchLive.loaded"() {
       if (this.liveOnTwitchFilter) {
-        this.queueSearch();
-      }
-    },
-    // Presence is pushed in live, so a player going on or offline has to
-    // re-run the search while the filter is on. Deliberately not
-    // onFilterChange(): that resets to page 1, and someone anywhere on the
-    // instance connecting would yank you back to the top of the list.
-    onlinePlayerSteamIds() {
-      if (this.onlyOnline) {
-        this.queueSearch();
-      }
-    },
-    // The first presence payload is what makes the filter applicable at all.
-    presenceLoaded() {
-      if (this.onlyOnline) {
         this.queueSearch();
       }
     },
@@ -1058,7 +1021,6 @@ export default {
         isMuted: false,
       });
       this.onlyPlayedMatches = false;
-      this.onlyOnline = false;
       this.onlyLiveOnTwitch = false;
       this.onlyRegistered = false;
       this.sortField = "name";
@@ -1118,7 +1080,6 @@ export default {
             isGagged: this.form.values.isGagged,
             isMuted: this.form.values.isMuted,
             onlyPlayedMatches: this.onlyPlayedMatches,
-            onlyOnline: this.onlyOnline,
             onlyLiveOnTwitch: this.onlyLiveOnTwitch,
             onlyRegistered: this.onlyRegistered,
             sortField: this.sortField,
@@ -1252,13 +1213,6 @@ export default {
                 : undefined,
             only_played_matches: this.onlyPlayedMatches,
             registeredOnly: this.onlyRegistered || undefined,
-            // Held back until presence has actually arrived. Sending an empty
-            // roster means "nobody is online" and returns nothing, which on a
-            // reload is indistinguishable from a broken filter.
-            online_steam_ids:
-              this.onlyOnline && this.presenceLoaded
-                ? this.onlinePlayerSteamIds
-                : undefined,
             live_steam_ids:
               this.liveOnTwitchFilter && this.twitchLive.loaded
                 ? this.twitchLive.steamIds

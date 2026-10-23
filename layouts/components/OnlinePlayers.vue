@@ -7,9 +7,7 @@ import { computed } from "vue";
 
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 const matchmakingStore = useMatchmakingStore();
-const playersOnlineCount = computed(
-  () => matchmakingStore.playersOnline.length,
-);
+const playersOnlineCount = computed(() => matchmakingStore.onlineCount);
 </script>
 
 <template>

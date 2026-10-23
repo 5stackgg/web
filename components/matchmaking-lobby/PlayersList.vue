@@ -49,7 +49,7 @@ const rowTransition = computed(() =>
           class="pl-8"
         />
       </div>
-      <div v-if="friendsOnly" class="flex shrink-0 items-center gap-0.5">
+      <div class="flex shrink-0 items-center gap-0.5">
         <!-- Steam friends who have never signed in here are still added, so
              this hides them without changing who gets synced. -->
         <Tooltip>
@@ -103,7 +103,7 @@ const rowTransition = computed(() =>
          goes, the leaving subtree is frozen mid-fold and the row rides the
          section shut instead of being torn down before its own leave. -->
     <div class="flex flex-1 flex-col">
-      <!-- Incoming friend requests (friends tab) -->
+      <!-- Incoming friend requests -->
       <Transition
         enter-active-class="friend-section-fold"
         enter-from-class="friend-section-fold-collapsed"
@@ -111,7 +111,7 @@ const rowTransition = computed(() =>
         leave-to-class="friend-section-fold-collapsed"
       >
       <section
-        v-if="friendsOnly && incomingRequests.length > 0"
+        v-if="incomingRequests.length > 0"
         class="grid grid-rows-[1fr]"
       >
         <div class="min-h-0">
@@ -185,7 +185,7 @@ const rowTransition = computed(() =>
       </section>
       </Transition>
 
-      <!-- Offline (friends tab only) -->
+      <!-- Offline -->
       <Transition
         enter-active-class="friend-section-fold"
         enter-from-class="friend-section-fold-collapsed"
@@ -193,7 +193,7 @@ const rowTransition = computed(() =>
         leave-to-class="friend-section-fold-collapsed"
       >
       <section
-        v-if="friendsOnly && filteredOfflinePlayers.length > 0"
+        v-if="filteredOfflinePlayers.length > 0"
         class="grid grid-rows-[1fr]"
       >
         <div class="min-h-0">
@@ -221,7 +221,7 @@ const rowTransition = computed(() =>
       </section>
       </Transition>
 
-      <!-- Sent requests (friends tab only) -->
+      <!-- Sent requests -->
       <Transition
         enter-active-class="friend-section-fold"
         enter-from-class="friend-section-fold-collapsed"
@@ -229,7 +229,7 @@ const rowTransition = computed(() =>
         leave-to-class="friend-section-fold-collapsed"
       >
       <section
-        v-if="friendsOnly && outgoingRequests.length > 0"
+        v-if="outgoingRequests.length > 0"
         class="grid grid-rows-[1fr]"
       >
         <div class="min-h-0">
@@ -268,16 +268,10 @@ const rowTransition = computed(() =>
           :title="
             searchQuery
               ? $t('layouts.hub.empty.no_match', { query: searchQuery })
-              : friendsOnly
-                ? $t('layouts.hub.empty.friends_title')
-                : $t('layouts.hub.empty.others_title')
+              : $t('layouts.hub.empty.friends_title')
           "
           :description="
-            searchQuery
-              ? null
-              : friendsOnly
-                ? $t('layouts.hub.empty.friends_description')
-                : $t('layouts.hub.empty.others_description')
+            searchQuery ? null : $t('layouts.hub.empty.friends_description')
           "
         />
       </Transition>
@@ -298,12 +292,6 @@ function matchesSearch(player: any, query: string) {
 }
 
 export default {
-  props: {
-    friendsOnly: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
       searchQuery: "",
@@ -316,9 +304,6 @@ export default {
     },
     me() {
       return useAuthStore().me;
-    },
-    onlinePlayers() {
-      return useMatchmakingStore().playersOnline;
     },
     // Writable so the toggle drives the store's own ref, keeping both the
     // online and offline lists in step.
@@ -338,11 +323,9 @@ export default {
     },
     // Friends who came online since you last looked, marked for this visit.
     justOnlineIds(): Set<string> {
-      if (!this.friendsOnly) return new Set();
       return new Set(useFriendArrivals().visitArrivals.value);
     },
     incomingRequests(): any[] {
-      if (!this.friendsOnly) return [];
       return this.friends.filter(
         (f: any) =>
           f.status === "Pending" &&
@@ -351,7 +334,6 @@ export default {
       );
     },
     outgoingRequests(): any[] {
-      if (!this.friendsOnly) return [];
       return this.friends.filter(
         (f: any) =>
           f.status === "Pending" &&
@@ -359,58 +341,30 @@ export default {
           matchesSearch(f, this.searchQuery),
       );
     },
+    // Applied here rather than in the store: the shared friend lists also
+    // feed the hub badge and social panel, which have no such toggle.
     filteredOnlinePlayers() {
-      if (this.friendsOnly) {
-        // Applied here rather than in the store: the shared friend lists also
-        // feed the hub badge and social panel, which have no such toggle.
-        return this.onlineFriends.filter(
-          (p: any) =>
-            matchesSearch(p, this.searchQuery) &&
-            this.passesRegisteredFilter(p),
-        );
-      }
-
-      // Others tab: online players who aren't me and aren't an accepted friend
-      // or an incoming request. Outgoing requests STAY here so adding someone
-      // doesn't make them jump out of the list mid-action.
-      return this.onlinePlayers.filter((player: any) => {
-        if (String(player.steam_id) === String(this.me?.steam_id)) return false;
-
-        const entry = this.friends?.find(
-          (f: any) => String(f.steam_id) === String(player.steam_id),
-        );
-        if (entry) {
-          if (entry.status !== "Pending") return false;
-          const outgoing =
-            String(entry.invited_by_steam_id) === String(this.me?.steam_id);
-          if (!outgoing) return false;
-        }
-
-        return matchesSearch(player, this.searchQuery);
-      });
+      return this.onlineFriends.filter(
+        (p: any) =>
+          matchesSearch(p, this.searchQuery) && this.passesRegisteredFilter(p),
+      );
     },
     filteredOfflinePlayers() {
-      if (!this.friendsOnly) return [];
       return this.offlineFriends.filter(
         (p: any) =>
           matchesSearch(p, this.searchQuery) && this.passesRegisteredFilter(p),
       );
     },
     isEmpty(): boolean {
-      if (this.friendsOnly) {
-        return (
-          this.incomingRequests.length === 0 &&
-          this.filteredOnlinePlayers.length === 0 &&
-          this.filteredOfflinePlayers.length === 0 &&
-          this.outgoingRequests.length === 0
-        );
-      }
-      return this.filteredOnlinePlayers.length === 0;
+      return (
+        this.incomingRequests.length === 0 &&
+        this.filteredOnlinePlayers.length === 0 &&
+        this.filteredOfflinePlayers.length === 0 &&
+        this.outgoingRequests.length === 0
+      );
     },
     searchPlaceholder() {
-      return this.friendsOnly
-        ? this.$t("matchmaking.friends.search_placeholder")
-        : this.$t("player.search.placeholder");
+      return this.$t("matchmaking.friends.search_placeholder");
     },
   },
   methods: {

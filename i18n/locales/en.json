@@ -8565,6 +8565,7 @@
       "regions": "Server regions",
       "ping_by_region": "Ping by region",
       "online_count": "{online}/{total} online",
+      "players_online": "{count} online",
       "partial": "Partial",
       "preferred": "Preferred region",
       "skips_over": "Matchmaking skips regions over {ms} ms.",

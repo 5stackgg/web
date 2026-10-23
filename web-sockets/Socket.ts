@@ -1304,9 +1304,21 @@ socket.listen("matchmaking:region-stats", (data) => {
   useMatchmakingStore().regionStats = data;
 });
 
+socket.listen("friends-online", (steamIds) => {
+  useMatchmakingStore().setFriendsOnline(steamIds);
+});
+
+socket.listen("friend-presence", (presence) => {
+  useMatchmakingStore().setFriendPresence(presence);
+});
+
+socket.listen("players-online:count", (count) => {
+  useMatchmakingStore().setOnlineCount(count);
+});
+
+// Only read from an api that predates friends presence.
 socket.listen("players-online", (onlinePlayerSteamIds) => {
-  useMatchmakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
-  useMatchmakingStore().presenceLoaded = true;
+  useMatchmakingStore().setLegacyRoster(onlinePlayerSteamIds);
 });
 
 // The api sends a code with its English message. A code this build doesn't

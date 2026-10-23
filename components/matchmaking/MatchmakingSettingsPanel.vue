@@ -38,6 +38,7 @@ const isPhone = useMediaQuery("(max-width: 767px)");
       :collision-padding="12"
       class="w-[min(92vw,520px)] p-4"
     >
+      <slot name="header" />
       <MatchmakingSettings>
         <slot name="extra" />
       </MatchmakingSettings>
@@ -56,6 +57,7 @@ const isPhone = useMediaQuery("(max-width: 767px)");
         <DrawerDescription class="sr-only">{{
           $t("pages.play.matchmaking.settings")
         }}</DrawerDescription>
+        <slot name="header" />
         <MatchmakingSettings>
           <slot name="extra" />
         </MatchmakingSettings>

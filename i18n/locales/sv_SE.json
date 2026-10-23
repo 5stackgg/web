@@ -8569,7 +8569,8 @@
       "preferred": "Föredragen region",
       "skips_over": "Matchmaking hoppar över regioner över {ms} ms.",
       "uses_starred": "Matchmaking använder dina stjärnmärkta regioner.",
-      "sign_in": "Logga in för att se din ping till varje region."
+      "sign_in": "Logga in för att se din ping till varje region.",
+      "players_online": "{count} online"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "Skickad, Avbryt förfrågan",
       "incoming_requests": "Förfrågningar",
       "sent_requests": "Skickade",
-      "just_online": "Har just loggat in"
+      "just_online": "Har just loggat in",
+      "team_section": "Lag · {name}"
     },
     "others": {
       "title": "Övriga"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "Matchmaking är inte tillåtet.",
       "role_required": "Du har inte behörighet att gå med i den här kön.",
       "queue_busy": "Din lobby håller fortfarande på att gå med i kön, försök igen."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "alla som är online här",
+      "search_placeholder": "Sök på detta LAN...",
+      "just_arrived": "Precis anlänt",
+      "at_this_lan": "På detta LAN",
+      "left": "Har lämnat LAN:et",
+      "empty_title": "Ingen annan är här än",
+      "empty_description": "Spelare på detta LAN visas här medan de är online."
     }
   },
   "game_server": {

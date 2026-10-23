@@ -7,8 +7,9 @@ export const useSearchStore = defineStore("searchStore", () => {
 
   let miniSearch: MiniSearch;
 
+  // Online now means online friends, so searching everyone is the default.
   const onlineOnly = ref<boolean>(
-    localStorage.getItem("playerSearchOnlineOnly") !== "false",
+    localStorage.getItem("playerSearchOnlineOnly") === "true",
   );
 
   // Off by default: searching an unregistered Steam account is the point of
@@ -21,25 +22,10 @@ export const useSearchStore = defineStore("searchStore", () => {
     const onlineIds = new Set(
       matchMakingStore.onlinePlayerSteamIds as string[],
     );
-    const merged = new Map<string, any>();
 
-    for (const player of matchMakingStore.playersOnline as any[]) {
-      if (player?.steam_id && onlineIds.has(player.steam_id)) {
-        merged.set(player.steam_id, player);
-      }
-    }
-
-    for (const friend of (matchMakingStore.friends as any[]) || []) {
-      if (
-        friend?.steam_id &&
-        onlineIds.has(friend.steam_id) &&
-        !merged.has(friend.steam_id)
-      ) {
-        merged.set(friend.steam_id, friend);
-      }
-    }
-
-    return Array.from(merged.values());
+    return ((matchMakingStore.friends as any[]) || []).filter(
+      (friend) => friend?.steam_id && onlineIds.has(String(friend.steam_id)),
+    );
   });
 
   watch(

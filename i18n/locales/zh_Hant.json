@@ -8569,7 +8569,8 @@
       "preferred": "偏好區域",
       "skips_over": "配對會略過延遲超過 {ms} ms 的區域。",
       "uses_starred": "配對會使用你加星號的區域。",
-      "sign_in": "登入後即可查看你到各區域的延遲。"
+      "sign_in": "登入後即可查看你到各區域的延遲。",
+      "players_online": "{count} 人在線"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "已請求，取消請求",
       "incoming_requests": "收到的請求",
       "sent_requests": "已送出",
-      "just_online": "剛剛上線"
+      "just_online": "剛剛上線",
+      "team_section": "戰隊 · {name}"
     },
     "others": {
       "title": "其他"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "不允許配對。",
       "role_required": "你沒有加入此佇列的權限。",
       "queue_busy": "你的大廳仍在加入佇列，請重試。"
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "這裡所有在線的人",
+      "search_placeholder": "搜尋此 LAN...",
+      "just_arrived": "剛剛到達",
+      "at_this_lan": "在此 LAN",
+      "left": "已離開 LAN",
+      "empty_title": "這裡還沒有其他人",
+      "empty_description": "此 LAN 上的玩家在線時會顯示在這裡。"
     }
   },
   "game_server": {

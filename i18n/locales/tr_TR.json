@@ -8569,7 +8569,8 @@
       "preferred": "Tercih edilen bölge",
       "skips_over": "Eşleştirme {ms} ms üzerindeki bölgeleri atlar.",
       "uses_starred": "Eşleştirme yıldızladığın bölgeleri kullanır.",
-      "sign_in": "Her bölgeye pingini görmek için giriş yap."
+      "sign_in": "Her bölgeye pingini görmek için giriş yap.",
+      "players_online": "{count} çevrimiçi"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "İstek gönderildi, İsteği iptal et",
       "incoming_requests": "İstekler",
       "sent_requests": "Gönderilen",
-      "just_online": "Az önce çevrimiçi oldu"
+      "just_online": "Az önce çevrimiçi oldu",
+      "team_section": "Takım · {name}"
     },
     "others": {
       "title": "Diğerleri"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "Eşleştirmeye izin verilmiyor.",
       "role_required": "Bu sıraya katılma izniniz yok.",
       "queue_busy": "Lobiniz hâlâ sıraya giriyor, tekrar deneyin."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "burada çevrimiçi olan herkes",
+      "search_placeholder": "Bu LAN'da ara...",
+      "just_arrived": "Yeni geldi",
+      "at_this_lan": "Bu LAN'da",
+      "left": "LAN'dan ayrıldı",
+      "empty_title": "Henüz burada başka kimse yok",
+      "empty_description": "Bu LAN'daki oyuncular çevrimiçiyken burada görünür."
     }
   },
   "game_server": {

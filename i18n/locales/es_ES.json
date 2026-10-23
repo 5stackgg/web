@@ -8569,7 +8569,8 @@
       "preferred": "Región preferida",
       "skips_over": "El emparejamiento omite las regiones de más de {ms} ms.",
       "uses_starred": "El emparejamiento usa tus regiones marcadas con estrella.",
-      "sign_in": "Inicia sesión para ver tu ping a cada región."
+      "sign_in": "Inicia sesión para ver tu ping a cada región.",
+      "players_online": "{count} en línea"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "Solicitado, Cancelar solicitud",
       "incoming_requests": "Solicitudes",
       "sent_requests": "Enviadas",
-      "just_online": "Acaba de conectarse"
+      "just_online": "Acaba de conectarse",
+      "team_section": "Equipo · {name}"
     },
     "others": {
       "title": "Otros"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "El emparejamiento no está permitido.",
       "role_required": "No tienes permiso para unirte a esta cola.",
       "queue_busy": "Tu lobby todavía se está uniendo a la cola, inténtalo de nuevo."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "todos los que están en línea aquí",
+      "search_placeholder": "Buscar en esta LAN...",
+      "just_arrived": "Recién llegados",
+      "at_this_lan": "En esta LAN",
+      "left": "Ha salido de la LAN",
+      "empty_title": "Todavía no hay nadie más aquí",
+      "empty_description": "Los jugadores de esta LAN aparecen aquí mientras están en línea."
     }
   },
   "game_server": {

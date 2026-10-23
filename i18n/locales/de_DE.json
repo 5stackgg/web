@@ -8569,7 +8569,8 @@
       "preferred": "Bevorzugte Region",
       "skips_over": "Matchmaking überspringt Regionen über {ms} ms.",
       "uses_starred": "Matchmaking nutzt deine markierten Regionen.",
-      "sign_in": "Melde dich an, um deinen Ping zu jeder Region zu sehen."
+      "sign_in": "Melde dich an, um deinen Ping zu jeder Region zu sehen.",
+      "players_online": "{count} online"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "Angefragt, Anfrage abbrechen",
       "incoming_requests": "Anfragen",
       "sent_requests": "Gesendet",
-      "just_online": "Gerade online gekommen"
+      "just_online": "Gerade online gekommen",
+      "team_section": "Team · {name}"
     },
     "others": {
       "title": "Andere"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "Matchmaking ist nicht erlaubt.",
       "role_required": "Du hast keine Berechtigung, dieser Queue beizutreten.",
       "queue_busy": "Deine Lobby tritt der Queue noch bei, versuch es erneut."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "alle, die hier online sind",
+      "search_placeholder": "Dieses LAN durchsuchen...",
+      "just_arrived": "Gerade angekommen",
+      "at_this_lan": "Auf diesem LAN",
+      "left": "Hat das LAN verlassen",
+      "empty_title": "Noch niemand sonst hier",
+      "empty_description": "Spieler in diesem LAN erscheinen hier, solange sie online sind."
     }
   },
   "game_server": {

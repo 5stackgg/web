@@ -1,9 +1,8 @@
-import { ref, watch, computed } from "vue";
+import { ref, shallowRef, watch, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
-import { e_match_types_enum, $ } from "~/generated/zeus";
+import { e_match_types_enum, order_by, $ } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { PLAYERS_MESSAGE_REQUESTS_QUERY } from "~/graphql/messageRequests";
 import {
   MY_FRIENDS_ROW_STATE_SUBSCRIPTION,
   MY_FRIENDS_SUBSCRIPTION,
@@ -16,6 +15,7 @@ import { isInCs2 } from "~/utilities/cs2Presence";
 import type { RegionStats } from "~/utilities/matchmakingPartySize";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { setActiveHub } from "~/composables/useHubState";
+import socket from "~/web-sockets/Socket";
 
 const REGION_LATENCY_PREFIX = "5stack_region_latency_";
 const MAX_LATENCY_KEY = "5stack_max_acceptable_latency";
@@ -36,12 +36,14 @@ function safeParseLocalStorage<T>(key: string): T | null {
 }
 
 export const useMatchmakingStore = defineStore("matchmaking", () => {
-  const playersOnline = ref([]);
+  // Who among my friends is online, plus me. The api no longer sends who else
+  // is: a roster of everyone online sent to every tab doesn't scale.
   const onlinePlayerSteamIds = ref<string[]>([]);
+  const onlineCount = ref(0);
 
-  // Whether the players-online event has landed at least once. Before it does,
-  // an empty roster is indistinguishable from nobody being online, and callers
-  // that filter on presence have to tell those two apart.
+  // Whether presence has landed at least once. Before it does, an empty list
+  // is indistinguishable from nobody being online, and callers that filter on
+  // presence have to tell those two apart.
   const presenceLoaded = ref(false);
 
   const joinedMatchmakingQueues = ref<{
@@ -67,115 +69,246 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const regionStats = ref<RegionStats>({});
 
-  // Presence arrives as a full roster on every change, so asking for the whole
-  // roster each time meant one player connecting re-ran elo and the three
-  // sanction checks for everyone online, in every open tab. A profile doesn't
-  // change while its player sits in the list, so keep the ones already
-  // fetched and only ask the API for steam ids never seen before.
-  const profiles = new Map<string, any>();
-  // Every steam id already asked for, found or not: the api broadcasts the
-  // roster to every tab whenever anyone connects, so asking again for ids the
-  // api didn't return re-ran these queries in every tab on every broadcast.
-  const askedSteamIds = new Set<string>();
-  const MAX_ASKED_STEAM_IDS = 5000;
+  // An api from before friends presence only sends the roster of everyone
+  // online; until it sends anything newer, that roster is used as before.
+  let friendsPresenceFromApi = false;
+  const FRIENDS_RESYNC_MS = 5 * 60 * 1000;
+  let friendsResync: ReturnType<typeof setTimeout> | undefined;
 
-  const rebuildPlayersOnline = () => {
-    playersOnline.value = onlinePlayerSteamIds.value
-      .map((steamId) => profiles.get(String(steamId)))
-      .filter(Boolean) as any;
+  const sendFriendsOnlineRequest = shallowRef(() => {
+    socket.event("friends-online", {});
+  });
+
+  const withMe = (steamIds: Array<string>) => {
+    const me = useAuthStore().me?.steam_id;
+    const ids = steamIds.map(String);
+    return me && !ids.includes(String(me)) ? [...ids, String(me)] : ids;
   };
 
-  const queryPlayers = async () => {
-    const steamIds = onlinePlayerSteamIds.value;
+  const setFriendsOnline = (steamIds: Array<string>) => {
+    friendsPresenceFromApi = true;
+    onlinePlayerSteamIds.value = withMe(steamIds);
+    presenceLoaded.value = true;
 
-    if (askedSteamIds.size > MAX_ASKED_STEAM_IDS) {
-      askedSteamIds.clear();
-      profiles.clear();
+    clearTimeout(friendsResync);
+    friendsResync = setTimeout(() => {
+      const steamId = useAuthStore().me?.steam_id;
+      if (steamId) {
+        sendFriendsOnlineRequest.value();
+        if (myTeamsFor === String(steamId)) {
+          void loadMyTeams(steamId);
+        }
+      }
+    }, FRIENDS_RESYNC_MS);
+  };
+
+  const setFriendPresence = ({
+    steam_id,
+    online,
+  }: {
+    steam_id: string;
+    online: boolean;
+  }) => {
+    friendsPresenceFromApi = true;
+    const steamId = String(steam_id);
+    const present = onlinePlayerSteamIds.value.includes(steamId);
+
+    if (online && !present) {
+      onlinePlayerSteamIds.value = [...onlinePlayerSteamIds.value, steamId];
+    } else if (!online && present) {
+      onlinePlayerSteamIds.value = onlinePlayerSteamIds.value.filter(
+        (id) => id !== steamId,
+      );
     }
+  };
 
-    const missing = steamIds.filter(
-      (steamId) => !askedSteamIds.has(String(steamId)),
-    );
+  const setOnlineCount = (count: number) => {
+    friendsPresenceFromApi = true;
+    onlineCount.value = Number(count) || 0;
+  };
 
-    // Players only left, or they are all already known -- no round trip, but
-    // the list still has to drop whoever went offline.
-    if (missing.length === 0) {
-      rebuildPlayersOnline();
+  // Everyone online at the LAN this tab is on, which the api sends only to tabs
+  // on that LAN. A player who leaves stays a moment, greyed, before dropping.
+  const LAN_LEFT_LINGER_MS = 30_000;
+  const lanRegion = ref<string | null>(null);
+  const lanPlayers = ref<Array<any>>([]);
+  const lanArrivals = ref<Array<string>>([]);
+  const lanLeft = ref<Array<string>>([]);
+  const lanLeaveTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  const forgetLanLeaver = (steamId: string) => {
+    clearTimeout(lanLeaveTimers.get(steamId));
+    lanLeaveTimers.delete(steamId);
+    lanLeft.value = lanLeft.value.filter((id) => id !== steamId);
+  };
+
+  const clearLan = () => {
+    for (const steamId of lanLeaveTimers.keys()) {
+      forgetLanLeaver(steamId);
+    }
+    lanRegion.value = null;
+    lanPlayers.value = [];
+    lanArrivals.value = [];
+  };
+
+  const setLanRoster = ({
+    region,
+    players,
+  }: {
+    region: string | null;
+    players: Array<any>;
+  }) => {
+    friendsPresenceFromApi = true;
+    clearLan();
+    lanRegion.value = region ?? null;
+    lanPlayers.value = region
+      ? (players ?? []).map((player) => ({
+          ...player,
+          steam_id: String(player.steam_id),
+        }))
+      : [];
+    lanArrivals.value = [];
+  };
+
+  const applyLanPresence = ({
+    region,
+    joined,
+    left,
+  }: {
+    region: string | null;
+    joined?: Array<any>;
+    left?: Array<string>;
+  }) => {
+    if (!region || region !== lanRegion.value) {
       return;
     }
 
-    for (const steamId of missing) {
-      askedSteamIds.add(String(steamId));
+    for (const player of joined ?? []) {
+      const steamId = String(player.steam_id);
+      forgetLanLeaver(steamId);
+      lanPlayers.value = [
+        ...lanPlayers.value.filter((row) => row.steam_id !== steamId),
+        { ...player, steam_id: steamId },
+      ];
+      lanArrivals.value = [
+        steamId,
+        ...lanArrivals.value.filter((id) => id !== steamId),
+      ];
     }
 
-    let data: any;
-    try {
-      ({ data } = await getGraphqlClient().query({
-        query: generateQuery({
-          players: [
-            {
-              where: {
-                steam_id: {
-                  _in: $("steam_ids", "[bigint]!"),
-                },
-              },
-            },
-            playerFields,
-          ],
-        }),
-        variables: {
-          steam_ids: missing,
-        },
-      }));
-    } catch (error) {
-      for (const steamId of missing) {
-        askedSteamIds.delete(String(steamId));
+    for (const id of left ?? []) {
+      const steamId = String(id);
+      if (
+        !lanPlayers.value.some((row) => row.steam_id === steamId) ||
+        lanLeft.value.includes(steamId)
+      ) {
+        continue;
       }
-      throw error;
+      lanLeft.value = [...lanLeft.value, steamId];
+      lanLeaveTimers.set(
+        steamId,
+        setTimeout(() => {
+          forgetLanLeaver(steamId);
+          lanPlayers.value = lanPlayers.value.filter(
+            (row) => row.steam_id !== steamId,
+          );
+          lanArrivals.value = lanArrivals.value.filter((id) => id !== steamId);
+        }, LAN_LEFT_LINGER_MS),
+      );
     }
-
-    for (const player of data.players) {
-      profiles.set(String(player.steam_id), player);
-    }
-
-    rebuildPlayersOnline();
-
-    void loadMessageRequestSettings(missing);
   };
 
-  // Whether each newly seen player takes message requests, folded into their
-  // profile so the online list can grey out Message for those who do not.
-  // Optional: unknown just leaves the button enabled and the server decides.
-  const loadMessageRequestSettings = async (steamIds: Array<string>) => {
+  // Which of a page of players are online, for search results. The api answers
+  // by request id, so a reply for an older page is dropped.
+  const onlineChecks = new Map<string, (online: Array<string>) => void>();
+  let onlineCheckId = 0;
+
+  const sendOnlineCheck = shallowRef(
+    (requestId: string, steamIds: Array<string>) => {
+      socket.event("players-online:check", { requestId, steamIds });
+    },
+  );
+
+  const checkOnline = (steamIds: Array<string>) => {
+    const requestId = String(++onlineCheckId);
+    const ids = [...new Set(steamIds.map(String))].slice(0, 50);
+
+    return new Promise<{ requestId: string; online: Set<string> }>(
+      (resolve) => {
+        onlineChecks.set(requestId, (online) =>
+          resolve({ requestId, online: new Set(online.map(String)) }),
+        );
+        // An api from before the check never answers.
+        setTimeout(() => onlineChecks.delete(requestId), 10_000);
+        sendOnlineCheck.value(requestId, ids);
+      },
+    );
+  };
+
+  const setOnlineCheck = ({
+    requestId,
+    online,
+  }: {
+    requestId: string;
+    online: Array<string>;
+  }) => {
+    const resolve = onlineChecks.get(String(requestId));
+    onlineChecks.delete(String(requestId));
+    resolve?.(online ?? []);
+  };
+
+  const setLegacyRoster = (steamIds: Array<string>) => {
+    if (friendsPresenceFromApi) {
+      return;
+    }
+    onlinePlayerSteamIds.value = steamIds.map(String);
+    onlineCount.value = steamIds.length;
+    presenceLoaded.value = true;
+  };
+
+  // Every team I am on with its roster, shown beside my friends. Their online
+  // status comes with my friends' from the api. Loaded once the friends list
+  // is shown, not for every tab.
+  const myTeams = ref<Array<any>>([]);
+  let myTeamsFor: string | undefined;
+
+  const ensureMyTeams = () => {
+    const steamId = useAuthStore().me?.steam_id;
+    if (steamId && myTeamsFor !== String(steamId)) {
+      myTeamsFor = String(steamId);
+      void loadMyTeams(steamId);
+    }
+  };
+
+  const loadMyTeams = async (steamId: bigint | string) => {
     try {
       const { data } = await getGraphqlClient().query({
-        query: PLAYERS_MESSAGE_REQUESTS_QUERY,
-        variables: { steamIds },
-        context: { optional: true },
+        query: generateQuery({
+          teams: [
+            {
+              where: {
+                roster: { player_steam_id: { _eq: $("steamId", "bigint!") } },
+              },
+              order_by: [{ name: order_by.asc }],
+            },
+            {
+              id: true,
+              name: true,
+              short_name: true,
+              roster: [{}, { player: playerFields }],
+            },
+          ],
+        }),
+        variables: { steamId },
+        fetchPolicy: "network-only",
       });
-
-      for (const row of data?.players ?? []) {
-        const profile = profiles.get(String(row.steam_id));
-
-        if (profile) {
-          profiles.set(String(row.steam_id), {
-            ...profile,
-            allow_message_requests: row.allow_message_requests,
-          });
-        }
+      if (String(useAuthStore().me?.steam_id) === String(steamId)) {
+        myTeams.value = data?.teams ?? [];
       }
-
-      rebuildPlayersOnline();
-    } catch {
-      // An api from before message requests: nothing to fold in.
+    } catch (error) {
+      console.error("[matchmaking] unable to load my teams", error);
     }
   };
-
-  // Presence churns in bursts -- a match ending drops ten players at once, and
-  // each drop is its own roster push.
-  const queryPlayersDebounced = debounce(() => {
-    void queryPlayers();
-  }, 250);
 
   const friends = ref([]);
   const lobbies = ref([]);
@@ -301,15 +434,26 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     );
   };
 
+  // A new friend, or one removed, changes who the api would count as online
+  // for me. Not on the first load: the api sends that when the socket opens.
+  let friendSteamIds: string | undefined;
+
   watch(
     () => useAuthStore().me?.steam_id,
     (steamId) => {
       friendsLoaded.value = false;
       lobbiesLoaded.value = false;
+      friendSteamIds = undefined;
       if (steamId) {
         subscribeToFriends(steamId);
         subscribeToLobbies(steamId);
       } else {
+        onlinePlayerSteamIds.value = [];
+        presenceLoaded.value = false;
+        myTeams.value = [];
+        myTeamsFor = undefined;
+        clearLan();
+        clearTimeout(friendsResync);
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("matchmaking:friends");
         unsubscribe("matchmaking:lobbies");
@@ -318,13 +462,19 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     { immediate: true },
   );
 
-  watch(onlinePlayerSteamIds, (newSteamIds, oldSteamIds) => {
-    if (
-      newSteamIds.length !== oldSteamIds.length ||
-      !newSteamIds.every((id, index) => id === oldSteamIds[index])
-    ) {
-      queryPlayersDebounced();
+  const requestFriendsOnline = debounce(() => {
+    sendFriendsOnlineRequest.value();
+  }, 500);
+  watch(friends, (rows: Array<any>) => {
+    const next = (rows ?? [])
+      .map((friend) => String(friend.steam_id))
+      .sort()
+      .join(",");
+
+    if (friendSteamIds !== undefined && next !== friendSteamIds) {
+      requestFriendsOnline();
     }
+    friendSteamIds = next;
   });
 
   const creatingLobby = ref(false);
@@ -769,9 +919,26 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     lobbiesLoaded,
     currentLobby,
     regionStats,
-    playersOnline,
     onlinePlayerSteamIds,
+    onlineCount,
     presenceLoaded,
+    setFriendsOnline,
+    setFriendPresence,
+    setOnlineCount,
+    setLegacyRoster,
+    sendFriendsOnlineRequest,
+    lanRegion,
+    lanPlayers,
+    lanArrivals,
+    lanLeft,
+    setLanRoster,
+    applyLanPresence,
+    checkOnline,
+    setOnlineCheck,
+    sendOnlineCheck,
+    myTeams,
+    loadMyTeams,
+    ensureMyTeams,
     joinedMatchmakingQueues,
 
     checkLatenies,

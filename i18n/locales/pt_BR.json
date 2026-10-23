@@ -8569,7 +8569,8 @@
       "preferred": "Região preferida",
       "skips_over": "O matchmaking ignora regiões acima de {ms} ms.",
       "uses_starred": "O matchmaking usa suas regiões marcadas com estrela.",
-      "sign_in": "Entre para ver seu ping para cada região."
+      "sign_in": "Entre para ver seu ping para cada região.",
+      "players_online": "{count} online"
     },
     "match_lobby": {
       "versus": "vs"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "Solicitado, Cancelar Pedido",
       "incoming_requests": "Pedidos",
       "sent_requests": "Enviados",
-      "just_online": "Acabou de ficar online"
+      "just_online": "Acabou de ficar online",
+      "team_section": "Time · {name}"
     },
     "others": {
       "title": "Outros"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "O matchmaking não é permitido.",
       "role_required": "Você não tem permissão para entrar nesta fila.",
       "queue_busy": "Sua lobby ainda está entrando na fila, tente novamente."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "todos online aqui",
+      "search_placeholder": "Buscar nesta LAN...",
+      "just_arrived": "Acabaram de chegar",
+      "at_this_lan": "Nesta LAN",
+      "left": "Saiu da LAN",
+      "empty_title": "Ninguém mais aqui ainda",
+      "empty_description": "Jogadores desta LAN aparecem aqui enquanto estiverem online."
     }
   },
   "game_server": {

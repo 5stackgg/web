@@ -8317,7 +8317,6 @@
             "body": "O chat de voz da partida já vem embutido, e a webcam pode ser obrigatória."
           }
         },
-        "link": "Experimente o draft de demonstração",
         "replay_veto": "Repetir o veto"
       },
       "compete": {
@@ -8387,8 +8386,7 @@
             "body": "Corte o seu de qualquer partida e compartilhe."
           }
         },
-        "link": "Ver highlights",
-        "example_caption": "Um highlight real: quatro abates e um abate de faca na Mirage, encontrados e cortados quando a partida terminou."
+        "link": "Ver highlights"
       },
       "utility": {
         "eyebrow": "Utilitário",
@@ -8477,8 +8475,7 @@
             "title": "Utilitários.",
             "body": "Cada granada que cada jogador lançou, e o que ela fez."
           }
-        },
-        "link": "Experimente a partida de demonstração"
+        }
       },
       "network": {
         "label": "A rede 5Stack",

@@ -43,8 +43,8 @@ const LandingBracket = defineAsyncComponent(
 const LandingStream = defineAsyncComponent(
   () => import("~/components/landing/LandingStream.vue"),
 );
-const LandingHighlights = defineAsyncComponent(
-  () => import("~/components/landing/LandingHighlights.vue"),
+const LandingReplay = defineAsyncComponent(
+  () => import("~/components/landing/LandingReplay.vue"),
 );
 const LandingUtility = defineAsyncComponent(
   () => import("~/components/landing/LandingUtility.vue"),
@@ -349,7 +349,6 @@ const outlineButton =
           wide
           v-bind="copy('match')"
           :points="sections.match"
-          :link="{ to: '/faq/demo-draft', label: $t('pages.welcome.match.link') }"
         >
           <LandingDefer :placeholder="560">
             <LandingVeto />
@@ -361,10 +360,6 @@ const outlineButton =
           wide
           v-bind="copy('match_page')"
           :points="sections.match_page"
-          :link="{
-            to: '/faq/demo-match',
-            label: $t('pages.welcome.match_page.link'),
-          }"
         >
           <LandingDefer :placeholder="780">
             <LandingMatchPage />
@@ -399,6 +394,7 @@ const outlineButton =
 
         <LandingSection
           id="rewatch"
+          wide
           v-bind="copy('rewatch')"
           :points="sections.rewatch"
           :link="
@@ -407,8 +403,8 @@ const outlineButton =
               : null
           "
         >
-          <LandingDefer :placeholder="520">
-            <LandingHighlights />
+          <LandingDefer :placeholder="720">
+            <LandingReplay />
           </LandingDefer>
         </LandingSection>
 

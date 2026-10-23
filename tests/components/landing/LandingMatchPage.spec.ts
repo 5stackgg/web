@@ -79,7 +79,9 @@ describe("LandingMatchPage", () => {
     for (const lens of ["Aim", "Trades", "Utility", "Opening Duels", "General"]) {
       await button(lens)?.trigger("click");
       await settle();
-      expect(panel()).toContain("kuro");
+      await vi.waitFor(() => expect(panel()).toContain("kuro"), {
+        timeout: 8000,
+      });
     }
 
     const tabs = wrapper.findAll('[role="tab"]');

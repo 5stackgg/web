@@ -8317,7 +8317,6 @@
             "body": "Czat głosowy meczu jest wbudowany, a kamery mogą być wymagane."
           }
         },
-        "link": "Wypróbuj przykładowy draft",
         "replay_veto": "Powtórz veto"
       },
       "compete": {
@@ -8387,8 +8386,7 @@
             "body": "Wytnij własny klip z dowolnego meczu i udostępnij go."
           }
         },
-        "link": "Przeglądaj highlighty",
-        "example_caption": "Prawdziwy highlight: cztery zabójstwa i zabójstwo nożem na Mirage, znalezione i wycięte po zakończeniu meczu."
+        "link": "Przeglądaj highlighty"
       },
       "utility": {
         "eyebrow": "Utility",
@@ -8477,8 +8475,7 @@
             "title": "Utility.",
             "body": "Każdy granat rzucony przez każdego gracza i to, co zdziałał."
           }
-        },
-        "link": "Wypróbuj przykładowy mecz"
+        }
       },
       "network": {
         "label": "Sieć 5Stack",

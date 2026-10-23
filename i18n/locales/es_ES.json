@@ -8317,7 +8317,6 @@
             "body": "El chat de voz de la partida viene integrado, y se pueden exigir webcams."
           }
         },
-        "link": "Prueba el draft de demostración",
         "replay_veto": "Repetir el veto"
       },
       "compete": {
@@ -8387,8 +8386,7 @@
             "body": "Recorta los tuyos de cualquier partida y compártelos."
           }
         },
-        "link": "Explorar highlights",
-        "example_caption": "Un highlight real: cuatro kills y un kill con cuchillo en Mirage, detectados y recortados al terminar la partida."
+        "link": "Explorar highlights"
       },
       "utility": {
         "eyebrow": "Utilidad",
@@ -8477,8 +8475,7 @@
             "title": "Utilidad.",
             "body": "Cada granada que lanzó cada jugador, y lo que hizo."
           }
-        },
-        "link": "Prueba la partida de demostración"
+        }
       },
       "network": {
         "label": "La red 5Stack",

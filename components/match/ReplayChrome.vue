@@ -308,6 +308,40 @@ const scorePanelStyle = computed(() => {
   const top = props.mobile ? 8 : 14;
   return { maxHeight: `calc(100% - ${top + barHeight.value + 12}px)` };
 });
+// The left column stops above the bar too; the play-by-play scrolls inside it.
+const leftStyle = scorePanelStyle;
+
+// A short stage (an embed, a small window) cannot hold both full rosters, so
+// the rows tighten. Decided from the height the full board needs, so it does
+// not flip back and forth.
+const chromeEl = ref<HTMLElement | null>(null);
+const chromeHeight = ref(0);
+const chromeWidth = ref(0);
+let chromeRO: ResizeObserver | null = null;
+onMounted(() => {
+  if (!chromeEl.value || typeof ResizeObserver === "undefined") return;
+  chromeRO = new ResizeObserver(() => {
+    chromeHeight.value = chromeEl.value?.clientHeight ?? 0;
+    chromeWidth.value = chromeEl.value?.clientWidth ?? 0;
+  });
+  chromeRO.observe(chromeEl.value);
+});
+onBeforeUnmount(() => chromeRO?.disconnect());
+
+// A narrow stage (an embed on a phone held upright) gets a watch view: the
+// map, the score, the 2D/3D switch and the transport. The rosters, tools and
+// filters wait for a wider stage.
+const narrow = computed(() => chromeWidth.value > 0 && chromeWidth.value < 560);
+
+const FULL_ROW_PX = 62;
+const TEAM_CHROME_PX = 40;
+const denseRoster = computed(() => {
+  if (!chromeHeight.value) return false;
+  const top = props.mobile ? 8 : 14;
+  const room = chromeHeight.value - top - barHeight.value - 12;
+  const rows = props.teamA.length + props.teamB.length;
+  return room < rows * FULL_ROW_PX + 2 * TEAM_CHROME_PX + 9;
+});
 
 // Custom pointer scrubber for the seek bar. Native <input type=range> on iOS
 // only drags from the (4px) thumb and otherwise lets the touch scroll the page,
@@ -416,7 +450,11 @@ const utilClusters = computed(() => {
 
 <template>
   <TooltipProvider :delay-duration="250">
-    <div class="bp-chrome" :class="{ 'is-mobile': mobile }">
+    <div
+      ref="chromeEl"
+      class="bp-chrome"
+      :class="{ 'is-mobile': mobile, 'is-narrow': narrow }"
+    >
       <!-- HUD -->
       <div ref="hudEl" class="bp-hud">
         <span class="bp-score"
@@ -441,7 +479,7 @@ const utilClusters = computed(() => {
       </div>
 
       <!-- left column: controls row (2D/3D | camera) + play-by-play -->
-      <div class="bp-left">
+      <div class="bp-left" :style="leftStyle">
         <div class="bp-controls">
           <div class="bp-viewtoggle">
             <Tooltip
@@ -782,6 +820,7 @@ const utilClusters = computed(() => {
         <div
           v-show="showScoreboard !== false"
           class="bp-score-panel"
+          :class="{ dense: denseRoster }"
           :style="scorePanelStyle"
         >
         <div
@@ -1101,7 +1140,7 @@ const utilClusters = computed(() => {
 
       <!-- transport -->
       <div ref="barEl" class="bp-bar">
-        <div class="bp-toprow">
+        <div class="bp-toprow" :class="{ 'one-round': rounds.length <= 1 }">
           <!-- util-summary toggle is pinned on the left; only the round
                numbers scroll past it -->
           <Tooltip>
@@ -1674,6 +1713,9 @@ const utilClusters = computed(() => {
   color: #ffd24d;
   font-weight: 700;
 }
+.bp-left > * {
+  flex-shrink: 0;
+}
 .bp-pbp {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -1681,6 +1723,8 @@ const utilClusters = computed(() => {
   padding: 7px 8px;
   max-height: 42vh;
   overflow-y: auto;
+  flex-shrink: 1;
+  min-height: 0;
 }
 .bp-pbp-h {
   font-size: 10px;
@@ -2082,7 +2126,44 @@ const utilClusters = computed(() => {
   color: #7f8fa0;
   font-variant-numeric: tabular-nums;
 }
-/* controls row: 2D/3D | cam dock — single line (overflows the 264px column) */
+/* short stage: tighter rows */
+.bp-score-panel.dense {
+  gap: 6px;
+}
+.bp-score-panel.dense .bp-team-h {
+  padding-bottom: 3px;
+}
+.bp-score-panel.dense .bp-prow {
+  padding: 2px 6px 6px 9px;
+}
+.bp-score-panel.dense .bp-prow + .bp-prow {
+  margin-top: 0;
+}
+/* health and armor ride the row's bottom edge instead of a line of their own */
+.bp-score-panel.dense .prow-bars {
+  position: absolute;
+  left: 9px;
+  right: 6px;
+  bottom: 1px;
+  margin: 0;
+  gap: 1px;
+}
+.bp-score-panel.dense .hpw {
+  height: 3px;
+}
+.bp-score-panel.dense .armw {
+  height: 1px;
+}
+.bp-score-panel.dense .prow-gear {
+  margin-top: 2px;
+  min-height: 16px;
+}
+.bp-score-panel.dense .prow-gear .eq {
+  height: 14px;
+}
+.bp-score-panel.dense .prow-gear .eq.gun {
+  height: 16px;
+}/* controls row: 2D/3D | cam dock — single line (overflows the 264px column) */
 .bp-controls {
   display: flex;
   align-items: center;
@@ -2611,6 +2692,34 @@ const utilClusters = computed(() => {
   .bp-chrome.is-mobile .bp-left {
     width: 300px;
   }
+}
+/* narrow stage: a watch view (see `narrow`) */
+.bp-chrome.is-narrow .bp-hud {
+  left: auto;
+  right: 8px;
+  transform: none;
+}
+.bp-chrome.is-narrow .bp-pbp,
+.bp-chrome.is-narrow .bp-score-panel,
+.bp-chrome.is-narrow .bp-sb-tools,
+.bp-chrome.is-narrow .bp-toprow .buyt,
+.bp-chrome.is-narrow .bp-filters,
+.bp-chrome.is-narrow .bp-toprow.one-round,
+.bp-chrome.is-narrow .util-lane,
+.bp-chrome.is-narrow .spd,
+.bp-chrome.is-narrow .fs,
+.bp-chrome.is-narrow .bp-help {
+  display: none;
+}
+.bp-chrome.is-narrow .bp-transport {
+  padding-bottom: 0;
+}
+/* an embed sits mid-page, never over the home indicator */
+.bp-chrome.is-narrow .bp-bar {
+  padding-bottom: 8px;
+}
+.bp-chrome.is-narrow .seek-wrap {
+  min-width: 0;
 }
 .bp-toprow .rt.on {
   background: color-mix(in srgb, var(--accent) 18%, transparent);

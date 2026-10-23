@@ -8317,7 +8317,6 @@
             "body": "Sprachchat fürs Match ist eingebaut, und Webcams können Pflicht sein."
           }
         },
-        "link": "Demo-Draft ausprobieren",
         "replay_veto": "Veto erneut abspielen"
       },
       "compete": {
@@ -8387,8 +8386,7 @@
             "body": "Schneide eigene Clips aus jedem Match und teile sie."
           }
         },
-        "link": "Highlights ansehen",
-        "example_caption": "Ein echtes Highlight: vier Kills und ein Messer-Kill auf Mirage, gefunden und geclippt, als das Match endete."
+        "link": "Highlights ansehen"
       },
       "utility": {
         "eyebrow": "Utility",
@@ -8477,8 +8475,7 @@
             "title": "Utility.",
             "body": "Jede Granate, die jeder Spieler geworfen hat, und was sie bewirkt hat."
           }
-        },
-        "link": "Demo-Match ausprobieren"
+        }
       },
       "network": {
         "label": "Das 5Stack-Netzwerk",

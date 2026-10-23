@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { useMediaQuery } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
   ClipboardCheck,
@@ -53,6 +54,9 @@ const tabs = computed(() => [
 ]);
 
 const board = ref<InstanceType<typeof UtilityRadarBoard> | null>(null);
+// Stacked under the map (below lg) the card is as tall as the lineup, so a
+// thumb scrolling the page never gets caught in a scroller inside it.
+const stacked = useMediaQuery("(max-width: 1023px)");
 const card = ref<HTMLElement | null>(null);
 
 const zoom = computed(() => [
@@ -176,7 +180,7 @@ onBeforeUnmount(() => observer?.disconnect());
       />
     </div>
 
-    <div ref="card" class="flex min-w-0 max-lg:h-[600px]">
+    <div ref="card" class="flex min-w-0">
       <div
         class="utility-card flex min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-sidebar shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)] max-md:bg-background"
       >
@@ -197,6 +201,7 @@ onBeforeUnmount(() => observer?.disconnect());
             can-react
             can-practice
             :snapshot="snapshot"
+            :flow="stacked"
           />
         </div>
         <UtilityPracticeBar

@@ -115,6 +115,12 @@ const props = defineProps<{
     runUp: UtilityRunUp | null;
     missPattern: UtilityMissPatternView | null;
   } | null;
+  /**
+   * As tall as what it holds, in the page's flow, instead of filling its box
+   * and scrolling inside it (the landing page on a phone, where a scroller
+   * inside the page traps the thumb).
+   */
+  flow?: boolean;
 }>();
 
 const open = defineModel<boolean>("open", { default: false });
@@ -750,7 +756,8 @@ const stats = computed(() => {
     <section
       v-if="open"
       data-utility-lineup-open
-      class="absolute inset-0 z-20 flex flex-col bg-sidebar max-md:bg-background"
+      class="z-20 flex flex-col bg-sidebar max-md:bg-background"
+      :class="flow ? 'relative' : 'absolute inset-0'"
       :aria-label="lineup?.name ?? $t('pages.utility.detail.not_found')"
     >
       <Teleport v-if="onStage && layers?.stage.value" :to="layers.stage.value">
@@ -782,7 +789,9 @@ const stats = computed(() => {
       <header
         class="relative z-30 flex shrink-0 items-center gap-1.5 border-b border-white/[0.07] px-3 py-2.5"
       >
+        <!-- A snapshot (the landing page) has no list behind it to go back to. -->
         <Button
+          v-if="!snapshot"
           variant="outline"
           size="sm"
           class="h-8 shrink-0 border-white/10 bg-white/[0.05] pl-2 pr-3 text-foreground hover:bg-white/[0.09]"
@@ -972,7 +981,10 @@ const stats = computed(() => {
 
       <div
         ref="bodyRef"
-        class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4 pt-3"
+        class="px-3 pb-4 pt-3"
+        :class="
+          flow ? '' : 'min-h-0 flex-1 overflow-y-auto overscroll-contain'
+        "
       >
         <div
           v-if="lineup"

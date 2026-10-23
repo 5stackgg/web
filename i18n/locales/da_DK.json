@@ -8317,7 +8317,6 @@
             "body": "Stemmechat i kampen er indbygget, og webcams kan gøres obligatoriske."
           }
         },
-        "link": "Prøv demo-draften",
         "replay_veto": "Afspil vetoen igen"
       },
       "compete": {
@@ -8387,8 +8386,7 @@
             "body": "Klip dine egne fra enhver kamp, og del dem."
           }
         },
-        "link": "Se highlights",
-        "example_caption": "Et ægte highlight: fire kills og et knivkill på Mirage, fundet og klippet, da kampen sluttede."
+        "link": "Se highlights"
       },
       "utility": {
         "eyebrow": "Utility",
@@ -8477,8 +8475,7 @@
             "title": "Utility.",
             "body": "Hver granat, hver spiller kastede, og hvad den gjorde."
           }
-        },
-        "link": "Prøv demokampen"
+        }
       },
       "network": {
         "label": "5Stack-netværket",

@@ -8317,7 +8317,6 @@
             "body": "Match voice is built in, and webcams can be required."
           }
         },
-        "link": "Try the demo draft",
         "replay_veto": "Replay the veto"
       },
       "compete": {
@@ -8387,8 +8386,7 @@
             "body": "Cut your own from any match and share it."
           }
         },
-        "link": "Browse highlights",
-        "example_caption": "A real highlight: four kills and a knife kill on Mirage, found and clipped when the match ended."
+        "link": "Browse highlights"
       },
       "utility": {
         "eyebrow": "Utility",
@@ -8477,8 +8475,7 @@
             "title": "Utility.",
             "body": "Every grenade each player threw, and what it did."
           }
-        },
-        "link": "Try the demo match"
+        }
       },
       "network": {
         "label": "The 5Stack network",

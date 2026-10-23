@@ -554,7 +554,12 @@ const eventSubscription = typedGql("subscription")({
         {},
         {
           steam_id: true,
-          player: { steam_id: true, name: true, avatar_url: true },
+          player: {
+            steam_id: true,
+            name: true,
+            avatar_url: true,
+            country: true,
+          },
         },
       ],
     },

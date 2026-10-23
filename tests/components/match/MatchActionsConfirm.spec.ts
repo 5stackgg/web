@@ -248,12 +248,12 @@ describe("admin dock main action", () => {
     expect(actions.primaryAction).toBe("force_ready");
   });
 
-  it("shows no main action when the role can never use it", async () => {
+  it("gives a plain organizer no main action in warmup, with Pause coming up", async () => {
     signIn(e_player_roles_enum.user);
     const actions = await mountActions("Warmup", { dock: true });
 
     expect(actions.primaryAction).toBeNull();
-    expect(actions.upcoming.map((action: any) => action.key)).not.toContain(
+    expect(actions.upcoming.map((action: any) => action.key)).toContain(
       "pause",
     );
   });

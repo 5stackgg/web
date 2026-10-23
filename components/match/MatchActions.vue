@@ -671,14 +671,27 @@ export default {
     socket.on("rcon", this.onRconResponse);
   },
   beforeUnmount() {
-    clearTimeout(this.pauseTimer);
+    this.finishPause();
     socket.removeListener("rcon", this.onRconResponse);
     this.renderSummarySub?.unsubscribe();
     this.vetoPicksSub?.unsubscribe();
   },
   watch: {
-    isPaused(paused: boolean) {
-      if (this.pauseTarget !== paused) {
+    // A map that leaves play instead (a restart, a surrender, a winner) ends
+    // the wait without saying the pause or resume happened.
+    currentMapStatus(status: string | undefined) {
+      if (this.pauseTarget === null) {
+        return;
+      }
+      const paused = status === e_match_map_status_enum.Paused;
+      const playing =
+        status === e_match_map_status_enum.Live ||
+        status === e_match_map_status_enum.Overtime;
+      if (!paused && !playing) {
+        this.finishPause();
+        return;
+      }
+      if (paused !== this.pauseTarget) {
         return;
       }
       this.finishPause();
@@ -1283,6 +1296,7 @@ export default {
         return;
       }
       if (this.pauseTarget === paused) {
+        clearTimeout(this.pauseTimer);
         this.pauseTimer = setTimeout(
           this.pauseNotApplied,
           PAUSE_APPLY_TIMEOUT_MS,
@@ -1297,6 +1311,9 @@ export default {
     },
     pauseNotApplied() {
       const paused = this.pauseTarget;
+      if (paused === null) {
+        return;
+      }
       this.finishPause();
       toast({
         variant: "destructive",
@@ -1693,8 +1710,11 @@ export default {
     currentMap() {
       return this.match.match_maps?.find((m: any) => m.is_current_map);
     },
+    currentMapStatus() {
+      return this.currentMap?.status as string | undefined;
+    },
     isPaused() {
-      return this.currentMap?.status === e_match_map_status_enum.Paused;
+      return this.currentMapStatus === e_match_map_status_enum.Paused;
     },
     canForceReady() {
       return this.canSendMatchCommand(RconAction.ForceReady);
@@ -1706,8 +1726,9 @@ export default {
       if (!this.match.is_organizer) {
         return false;
       }
-      // The api refuses an organizer on one of the teams below moderator, as
-      // it does their restore or restart.
+      // The api refuses organizers below moderator on one of the teams. This
+      // hides it from the ones playing or coaching; a roster member the match
+      // doesn't list still sees it, and the api refuses them.
       if (
         (this.match.is_in_lineup || this.match.is_coach) &&
         !useAuthStore().isRoleAbove(e_player_roles_enum.moderator)

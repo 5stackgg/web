@@ -79,6 +79,29 @@ const sentPauses = () =>
     print(mutation).includes("setMatchPaused"),
   );
 
+// The api's answer, held back until the test lets it through.
+const answerLater = () => {
+  let answer = () => {};
+  mutate.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        answer = () => resolve({ data: {} });
+      }),
+  );
+  return async () => {
+    answer();
+    await flushPromises();
+  };
+};
+
+const fakeTimers = () =>
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+
+const leave = () => {
+  wrapper!.unmount();
+  wrapper = undefined;
+};
+
 beforeEach(() => {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   mutate = vi.fn().mockResolvedValue({ data: {} });
@@ -241,5 +264,100 @@ describe("match actions pause and resume", () => {
     await flip("Paused");
 
     expect(toast).toHaveBeenCalledWith({ title: "Match paused" });
+  });
+
+  it("forgets a pause whose answer comes after the page closed", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+    fakeTimers();
+    const answer = answerLater();
+
+    await toggle();
+    leave();
+    await answer();
+    vi.advanceTimersByTime(10_000);
+
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("stops waiting for the map when the page closes", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+    fakeTimers();
+
+    await toggle();
+    expect((wrapper!.vm as any).pauseTimer).toBeDefined();
+
+    leave();
+    vi.advanceTimersByTime(10_000);
+
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("waits no longer once the map flipped before the api answered", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+    fakeTimers();
+    const answer = answerLater();
+
+    await toggle();
+    await flip("Paused");
+    await answer();
+
+    expect((wrapper!.vm as any).pauseTimer).toBeUndefined();
+    vi.advanceTimersByTime(10_000);
+    expect(toast.mock.calls).toEqual([[{ title: "Match paused" }]]);
+  });
+
+  // A restart, a surrender or a winner moves the map on, and that is not the
+  // server doing what was asked.
+  it.each([
+    ["Paused", "Warmup"],
+    ["Paused", "Finished"],
+    ["Live", "Warmup"],
+    ["Live", "Finished"],
+  ])(
+    "stops waiting quietly when a %s map goes to %s instead",
+    async (from, to) => {
+      await mountActions(e_player_roles_enum.user, from);
+      fakeTimers();
+
+      await toggle();
+      await flip(to);
+
+      expect((wrapper!.vm as any).pausing).toBe(false);
+      vi.advanceTimersByTime(10_000);
+      expect(toast).not.toHaveBeenCalled();
+    },
+  );
+
+  it("keeps waiting while a paused-for map moves between halves", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+
+    await toggle();
+    await flip("Overtime");
+
+    expect(pauseButton().props("loading")).toBe(true);
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("never reports a pause it isn't waiting for", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+    const actions = wrapper!.vm as any;
+
+    actions.pauseNotApplied();
+
+    expect(toast).not.toHaveBeenCalled();
+  });
+
+  it("replaces an earlier wait instead of keeping both", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+    const actions = wrapper!.vm as any;
+    fakeTimers();
+    const stale = vi.fn();
+    actions.pauseTimer = setTimeout(stale, 1_000);
+
+    await toggle();
+    vi.advanceTimersByTime(10_000);
+
+    expect(stale).not.toHaveBeenCalled();
+    expect(toast).toHaveBeenCalledTimes(1);
   });
 });

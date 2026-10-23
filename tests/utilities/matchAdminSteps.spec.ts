@@ -61,7 +61,7 @@ describe("upcomingAdminActions", () => {
       roleAtLeast(e_player_roles_enum.user),
     ).map((action) => action.key);
 
-    expect(keys).toEqual(["veto_override", "live_stream"]);
+    expect(keys).toEqual(["veto_override", "live_stream", "pause"]);
   });
 
   it("lists the later steps' tools for an administrator", () => {

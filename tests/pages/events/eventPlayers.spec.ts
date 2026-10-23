@@ -2,10 +2,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { provideApolloClient } from "@vue/apollo-composable";
-import { Kind } from "graphql";
-import type { SelectionSetNode } from "graphql";
 import EventPage from "~/pages/events/[eventId]/index.vue";
 import EventOverview from "~/components/events/EventOverview.vue";
+import { selectFields } from "../../helpers/fakeHasura";
 
 const DAY = 86_400_000;
 const EVENT_ID = "6f1c3c4e-2f0a-4c55-9a8e-1b2c3d4e5f60";
@@ -50,28 +49,6 @@ const event = {
   media_aggregate: { aggregate: { count: 0 } },
 };
 
-// Hasura only returns the fields a query selects.
-function project(data: any, selectionSet?: SelectionSetNode): any {
-  if (Array.isArray(data)) {
-    return data.map((item) => project(item, selectionSet));
-  }
-  if (!selectionSet || data === null || typeof data !== "object") {
-    return data;
-  }
-  return Object.fromEntries(
-    selectionSet.selections.flatMap((selection) =>
-      selection.kind === Kind.FIELD && selection.name.value in data
-        ? [
-            [
-              selection.name.value,
-              project(data[selection.name.value], selection.selectionSet),
-            ],
-          ]
-        : [],
-    ),
-  );
-}
-
 async function mountPage() {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   provideApolloClient(client);
@@ -79,7 +56,10 @@ async function mountPage() {
     subscribe(observer: any) {
       const operation = options.query.definitions[0];
       if (operation.selectionSet.selections[0].name.value === "events_by_pk") {
-        const data = project({ events_by_pk: event }, operation.selectionSet);
+        const data = selectFields(
+          { events_by_pk: event },
+          operation.selectionSet,
+        );
         Promise.resolve().then(() => observer.next({ data }));
       }
       return { unsubscribe() {}, closed: false };

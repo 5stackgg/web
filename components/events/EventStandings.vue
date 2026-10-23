@@ -70,6 +70,7 @@ const EVENT_STANDINGS_QUERY = gql`
             player {
               name
               avatar_url
+              country
             }
           }
         }
@@ -197,6 +198,7 @@ interface MedalRow {
   teamId: string | null;
   steamId: string | null;
   avatarUrl: string | null;
+  country: string | null;
   mvp: number;
   gold: number;
   silver: number;
@@ -255,6 +257,7 @@ const medalTable = computed<MedalRow[]>(() => {
           teamId: linkTeamId,
           steamId: isTeam ? null : playerSteamId,
           avatarUrl: isTeam ? null : (award.player?.avatar_url ?? null),
+          country: isTeam ? null : (award.player?.country ?? null),
           mvp: 0,
           gold: 0,
           silver: 0,
@@ -398,6 +401,7 @@ const medalTable = computed<MedalRow[]>(() => {
                     steam_id: row.steamId,
                     name: row.name,
                     avatar_url: row.avatarUrl,
+                    country: row.country,
                   }"
                   size="xs"
                   :show-elo="false"

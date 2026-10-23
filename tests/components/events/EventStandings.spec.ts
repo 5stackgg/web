@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import EventStandings from "~/components/events/EventStandings.vue";
+import { selectFields } from "../../helpers/fakeHasura";
 
 const { query } = vi.hoisted(() => ({ query: vi.fn() }));
 
@@ -56,6 +57,20 @@ function standings() {
                   team: null,
                   player: { name: "Roster Player", avatar_url: null },
                 },
+                {
+                  ...award,
+                  id: "mvp-1",
+                  placement: 0,
+                  player_steam_id: "76561198000000002",
+                  tournament_team_id: null,
+                  tournament_team: null,
+                  team: null,
+                  player: {
+                    name: "Notschi",
+                    avatar_url: null,
+                    country: "DE",
+                  },
+                },
               ],
             },
           },
@@ -66,7 +81,12 @@ function standings() {
 }
 
 async function mountStandings() {
-  query.mockResolvedValue(standings());
+  query.mockImplementation(async (options: any) => ({
+    data: selectFields(
+      standings().data,
+      options.query.definitions[0].selectionSet,
+    ),
+  }));
   const wrapper = await mountSuspended(EventStandings, {
     props: { eventId: "event-1" },
   });
@@ -93,5 +113,16 @@ describe("EventStandings team links", () => {
     for (const span of adHoc) {
       expect(span.element.closest("a")).toBeNull();
     }
+  });
+});
+
+describe("EventStandings medal table", () => {
+  it("shows a player's country flag", async () => {
+    const wrapper = await mountStandings();
+
+    const row = wrapper
+      .findAll("tr")
+      .find((tr) => tr.text().includes("Notschi"));
+    expect(row?.text()).toContain("🇩🇪");
   });
 });

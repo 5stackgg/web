@@ -26,11 +26,13 @@ import {
   EllipsisVertical,
   Pin,
   ScrollText,
+  Trash2,
 } from "lucide-vue-next";
 import {
   isGpuOnly,
   runsCs2,
   isReachable,
+  takesMatches,
   type NodeLike,
 } from "~/components/game-server-nodes/nodeState";
 import {
@@ -45,8 +47,8 @@ import { TONE_TEXT } from "~/components/admin/tone";
 import { dateLocale } from "~/utilities/dateLocale";
 
 // CS2: one status line (up to date, behind, updating, failed), then the build
-// pin and the plugin pin. The ⋮ menu holds the update log and installing
-// CS:GO, which gets its own section once it's on the node.
+// pin and the plugin pin. The ⋮ menu holds the update log, installing CS:GO,
+// which gets its own section once it's on the node, and removing CS2.
 const props = defineProps<{
   node: NodeLike & Record<string, any>;
   gameVersions: Array<Record<string, any>>;
@@ -66,6 +68,7 @@ const emit = defineEmits<{
   updateCs: [];
   installCsgo: [];
   openLog: [];
+  remove: [];
 }>();
 
 const { t } = useI18n();
@@ -78,6 +81,10 @@ const gpuOnly = computed(() => isGpuOnly(props.node));
 const noCs2 = computed(() => !runsCs2(props.node));
 const reachable = computed(() => isReachable(props.node));
 const state = computed(() => cs2State(props.node, props.currentBuildId));
+// matches pick a node without looking at its build, so the api refuses this
+const takingMatches = computed(
+  () => takesMatches(props.node) && props.node.accepting_new_matches !== false,
+);
 
 // The header already offers it; the section doesn't repeat the button.
 const headerUpdates = computed(
@@ -172,6 +179,26 @@ const when = (value: string) =>
                 <span class="text-xs text-muted-foreground">{{
                   t(`${INSPECTOR}.csgo.install_hint`)
                 }}</span>
+              </span>
+            </DropdownMenuItem>
+          </template>
+          <template v-if="node.build_id || node.update_failed_at">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              class="items-start text-destructive focus:text-destructive"
+              :disabled="!reachable || !!node.update_status || takingMatches"
+              @click="emit('remove')"
+            >
+              <Trash2 class="mt-0.5" />
+              <span class="flex flex-col">
+                <span>{{
+                  t(`${INSPECTOR}.remove_game.action`, { game: "CS2" })
+                }}</span>
+                <span
+                  v-if="takingMatches"
+                  class="text-xs text-muted-foreground"
+                  >{{ t(`${INSPECTOR}.remove_game.stop_matches`) }}</span
+                >
               </span>
             </DropdownMenuItem>
           </template>
@@ -354,24 +381,15 @@ const when = (value: string) =>
               </SelectGroup>
             </SelectContent>
           </Select>
-        </div>
-        <p
-          v-if="node.build_id && node.plugin_supported === false"
-          class="gsn-note"
-        >
-          <span class="gsn-flag" :class="TONE_TEXT.bad"
+          <span
+            v-if="node.build_id && node.plugin_supported === false"
+            class="gsn-flag"
+            :class="TONE_TEXT.bad"
             ><CircleAlert class="h-3 w-3" />{{
               t(`${INSPECTOR}.cs2.plugin_unsupported`)
             }}</span
           >
-          <i18n-t :keypath="`${INSPECTOR}.cs2.on_build`" scope="global">
-            <template #build>
-              <span class="font-mono text-[11.5px] text-foreground">{{
-                node.build_id
-              }}</span>
-            </template>
-          </i18n-t>
-        </p>
+        </div>
       </div>
     </template>
   </section>
@@ -399,20 +417,12 @@ const when = (value: string) =>
   align-items: center;
   column-gap: 8px;
 }
-.gsn-note {
-  grid-column: 2;
-  min-width: 0;
-  padding-bottom: 2px;
-  font-size: 12px;
-  line-height: 1.45;
-  color: hsl(var(--muted-foreground));
-}
 .gsn-flag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-right: 4px;
+  font-size: 12px;
   font-weight: 600;
-  vertical-align: -1px;
+  white-space: nowrap;
 }
 </style>

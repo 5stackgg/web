@@ -1,4 +1,5 @@
 // The per-node mutations the table menu, the inspector and its sections share.
+import gql from "graphql-tag";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 type MutationClient = {
@@ -29,6 +30,24 @@ export function updateGame(client: MutationClient, id: string, game?: "csgo") {
         { success: true },
       ],
     }),
+  });
+}
+
+// Raw gql: removeCs is newer than the generated zeus types.
+export function removeGame(
+  client: MutationClient,
+  id: string,
+  game: "cs2" | "csgo",
+) {
+  return client.mutate({
+    mutation: gql`
+      mutation RemoveCs($game_server_node_id: String!, $game: String!) {
+        removeCs(game_server_node_id: $game_server_node_id, game: $game) {
+          success
+        }
+      }
+    `,
+    variables: { game_server_node_id: id, game },
   });
 }
 

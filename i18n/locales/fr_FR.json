@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Mise à jour",
           "updating_pct": "Mise à jour {percent}%",
+          "removing": "Suppression",
           "failed": "Échec de la mise à jour",
           "behind": "En retard",
           "pinned": "Épinglé",
@@ -5222,6 +5223,14 @@
         "more": "{count} de plus",
         "remove": "Supprimer le nœud",
         "remove_text": "Supprime le nœud et tous ses serveurs dédiés de 5Stack.",
+        "remove_game": {
+          "action": "Supprimer {game}",
+          "title": "Supprimer {game} de ce nœud ?",
+          "description": "Supprime les fichiers de {game} du nœud. Les matchs et les serveurs ne pourront plus utiliser {game} ici tant qu'il n'est pas réinstallé.",
+          "cs2_returns": "Les nœuds activés réinstallent CS2 à la prochaine mise à jour de CS2.",
+          "started": "{game} est en cours de suppression du nœud",
+          "stop_matches": "Désactivez d'abord « Matchmaking » ou « Accepte des matchs »"
+        },
         "rename": "Renommer {node}",
         "label": "Libellé du nœud",
         "close": "Fermer les détails",
@@ -5385,6 +5394,7 @@
           "updating_to": "Mise à jour vers {build}",
           "installing": "Installation",
           "installing_to": "Installation de {build}",
+          "removing": "Suppression",
           "installed": "Installé",
           "build": "build {build}",
           "on_update_to": "Sur {build}, mettre à jour vers {target}",

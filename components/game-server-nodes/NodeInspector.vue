@@ -28,6 +28,7 @@ import InspectorCapacity from "~/components/game-server-nodes/InspectorCapacity.
 import InspectorCs2 from "~/components/game-server-nodes/InspectorCs2.vue";
 import InspectorCsgo from "~/components/game-server-nodes/InspectorCsgo.vue";
 import UpdateLogSheet from "~/components/game-server-nodes/UpdateLogSheet.vue";
+import GameRemoveDialog from "~/components/game-server-nodes/GameRemoveDialog.vue";
 import InspectorDisk from "~/components/game-server-nodes/InspectorDisk.vue";
 import InspectorHardware from "~/components/game-server-nodes/InspectorHardware.vue";
 import InspectorLive from "~/components/game-server-nodes/InspectorLive.vue";
@@ -176,6 +177,8 @@ const copyOf = (item: (typeof attention.value)[number]) =>
 const portsOpen = ref(false);
 const moreOpen = ref(false);
 const logGame = ref<"cs2" | "csgo" | null>(null);
+const removeOpen = ref(false);
+const removeFor = ref<"cs2" | "csgo">("cs2");
 const editVideo = ref(false);
 
 const regionLabel = computed(() => {
@@ -314,6 +317,11 @@ async function updateCsgo() {
   } catch (error: any) {
     failed(error);
   }
+}
+
+function askRemove(game: "cs2" | "csgo") {
+  removeFor.value = game;
+  removeOpen.value = true;
 }
 
 async function savePorts(start: number, end: number) {
@@ -772,6 +780,7 @@ const CALLOUT_BORDER: Record<string, string> = {
           @update-cs="updateCs"
           @install-csgo="updateCsgo"
           @open-log="logGame = 'cs2'"
+          @remove="askRemove('cs2')"
         />
         <InspectorCsgo
           v-if="csgoShown"
@@ -779,6 +788,7 @@ const CALLOUT_BORDER: Record<string, string> = {
           :latest-build-id="settings.csgoBuildId"
           @update="updateCsgo"
           @open-log="logGame = 'csgo'"
+          @remove="askRemove('csgo')"
         />
         <InspectorHardware :node="node" />
         <InspectorGpu
@@ -808,6 +818,12 @@ const CALLOUT_BORDER: Record<string, string> = {
     </div>
 
     <UpdateLogSheet v-model:game="logGame" :node="node" />
+
+    <GameRemoveDialog
+      v-model:open="removeOpen"
+      :node="node"
+      :game="removeFor"
+    />
 
     <EditCs2Options
       v-if="node.gpu"

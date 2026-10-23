@@ -52,8 +52,12 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const GAME = `${INSPECTOR}.game`;
 
+// the api reports a running removal as "Removing", with no build to name
+const removing = computed(() => props.updateStatus === "Removing");
 const progress = computed(() => updateProgress(props.updateStatus));
-const step = computed(() => updateStep(props.updateStatus));
+const step = computed(() =>
+  removing.value ? "" : updateStep(props.updateStatus),
+);
 
 const TONE: Record<GameStatusState, Tone> = {
   updating: "info",
@@ -77,6 +81,9 @@ const ICON = {
 const title = computed(() => {
   switch (props.state) {
     case "updating":
+      if (removing.value) {
+        return t(`${GAME}.removing`);
+      }
       if (!props.target) {
         return props.build ? t(`${GAME}.updating`) : t(`${GAME}.installing`);
       }
@@ -171,23 +178,7 @@ const showsBuild = computed(
     />
 
     <i18n-t
-      v-if="state === 'behind' && build && target"
-      :keypath="`${GAME}.on_update_to`"
-      tag="p"
-      class="gsn-line"
-      scope="global"
-    >
-      <template #build>
-        <span class="font-mono text-[11.5px] text-foreground">{{ build }}</span>
-      </template>
-      <template #target>
-        <span class="font-mono text-[11.5px] text-foreground">{{
-          target
-        }}</span>
-      </template>
-    </i18n-t>
-    <i18n-t
-      v-else-if="state === 'failed' && build"
+      v-if="state === 'failed' && build"
       :keypath="`${GAME}.still_on`"
       tag="p"
       class="gsn-line"

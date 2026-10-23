@@ -60,6 +60,19 @@ async function mountCsgo(overrides: Record<string, unknown>, latest: unknown) {
   return wrapper;
 }
 
+async function menuItems(wrapper: { get: (selector: string) => any }) {
+  await wrapper
+    .get('button[aria-haspopup="menu"]')
+    .trigger("keydown", { key: "Enter" });
+  await flushPromises();
+  return Array.from(
+    document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+  );
+}
+
+const item = (items: Array<HTMLElement>, label: string) =>
+  items.find((entry) => entry.textContent?.trim() === label);
+
 describe("CS2 section", () => {
   it("says it's up to date with the installed build", async () => {
     const wrapper = await mountCs2({ build_id: 25971020 });
@@ -67,10 +80,10 @@ describe("CS2 section", () => {
     expect(wrapper.text()).toContain("25971020");
   });
 
-  it("offers the update with the build it moves to", async () => {
+  it("offers the update without spelling out the builds", async () => {
     const wrapper = await mountCs2({});
     expect(wrapper.text()).toContain("Update available");
-    expect(wrapper.text()).toContain("On 25966348, update to 25971020");
+    expect(wrapper.text()).not.toContain("update to");
     expect(wrapper.find("button.gsn-st-update").exists()).toBe(true);
   });
 
@@ -107,6 +120,60 @@ describe("CS2 section", () => {
     expect(wrapper.text()).toContain("Open log");
   });
 
+  it("asks to remove CS2 from its menu", async () => {
+    const wrapper = await mountCs2({ accepting_new_matches: false });
+
+    item(await menuItems(wrapper), "Remove CS2")!.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("remove")).toHaveLength(1);
+  });
+
+  it("offers no removal when CS2 isn't on the node", async () => {
+    const wrapper = await mountCs2({ build_id: null });
+    expect(item(await menuItems(wrapper), "Remove CS2")).toBeUndefined();
+  });
+
+  it("can't remove CS2 while the node accepts matches", async () => {
+    const wrapper = await mountCs2({});
+    const remove = (await menuItems(wrapper)).find((entry) =>
+      entry.textContent?.includes("Remove CS2"),
+    );
+    expect(remove!.hasAttribute("data-disabled")).toBe(true);
+    expect(remove!.textContent).toContain(
+      "Turn off Matchmaking or Accepting matches first",
+    );
+  });
+
+  it("can't remove CS2 while its update runs", async () => {
+    const wrapper = await mountCs2({
+      accepting_new_matches: false,
+      update_status: "Downloading 41%",
+    });
+    const remove = item(await menuItems(wrapper), "Remove CS2");
+    expect(remove!.hasAttribute("data-disabled")).toBe(true);
+  });
+
+  it("says Removing, not Installing, while CS2 is removed", async () => {
+    const wrapper = await mountCs2({
+      build_id: null,
+      update_status: "Removing",
+    });
+    expect(wrapper.find(".gsn-st").text()).toContain("Removing");
+    expect(wrapper.text()).not.toContain("Installing");
+    expect(wrapper.text()).toContain("Watch log");
+  });
+
+  it("flags an unsupported plugin beside its picker, without the build", async () => {
+    const wrapper = await mountCs2({ plugin_supported: false });
+    const flag = wrapper.find(".gsn-flag");
+    expect(flag.text()).toBe("Not supported");
+    expect(
+      flag.element.closest(".gsn-v")?.querySelector("button"),
+    ).toBeTruthy();
+    expect(wrapper.text()).not.toContain("on build");
+  });
+
   it("no longer lists CS:GO in the section", async () => {
     const wrapper = await mountCs2({ csgo_build_id: 12426148 });
     expect(wrapper.text()).not.toContain("CS:GO");
@@ -140,7 +207,6 @@ describe("CS:GO section", () => {
   it("says when CS:GO is behind the latest build", async () => {
     const wrapper = await mountCsgo({ csgo_build_id: 12426148 }, 12430215);
     expect(wrapper.text()).toContain("Update available");
-    expect(wrapper.text()).toContain("On 12426148, update to 12430215");
   });
 
   it("is up to date on the latest build", async () => {
@@ -159,5 +225,23 @@ describe("CS:GO section", () => {
     );
     expect(wrapper.text()).toContain("Updating to 12426148");
     expect(wrapper.text()).toContain("Initializing");
+  });
+
+  it("asks to remove CS:GO from its menu", async () => {
+    const wrapper = await mountCsgo({ csgo_build_id: 12426148 }, 12426148);
+
+    item(await menuItems(wrapper), "Remove CS:GO")!.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("remove")).toHaveLength(1);
+  });
+
+  it("says Removing while CS:GO is removed", async () => {
+    const wrapper = await mountCsgo(
+      { csgo_build_id: null, csgo_update_status: "Removing" },
+      12426148,
+    );
+    expect(wrapper.find(".gsn-st").text()).toContain("Removing");
+    expect(wrapper.text()).not.toContain("Installing");
   });
 });

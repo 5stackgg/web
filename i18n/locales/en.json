@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Updating",
           "updating_pct": "Updating {percent}%",
+          "removing": "Removing",
           "failed": "Update failed",
           "behind": "Behind",
           "pinned": "Pinned",
@@ -5222,6 +5223,14 @@
         "more": "{count} more",
         "remove": "Remove node",
         "remove_text": "Removes the node and every dedicated server on it from 5Stack.",
+        "remove_game": {
+          "action": "Remove {game}",
+          "title": "Remove {game} from this node?",
+          "description": "Deletes the {game} files from the node. Matches and servers can't use {game} here until it is installed again.",
+          "cs2_returns": "Enabled nodes install CS2 again when the next CS2 update comes out.",
+          "started": "{game} is being removed from the node",
+          "stop_matches": "Turn off Matchmaking or Accepting matches first"
+        },
         "rename": "Rename {node}",
         "label": "Node label",
         "close": "Close details",
@@ -5385,6 +5394,7 @@
           "updating_to": "Updating to {build}",
           "installing": "Installing",
           "installing_to": "Installing {build}",
+          "removing": "Removing",
           "installed": "Installed",
           "build": "build {build}",
           "on_update_to": "On {build}, update to {target}",

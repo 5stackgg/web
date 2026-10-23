@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Uppdaterar",
           "updating_pct": "Uppdaterar {percent}%",
+          "removing": "Tar bort",
           "failed": "Uppdateringen misslyckades",
           "behind": "Efter",
           "pinned": "Fäst",
@@ -5222,6 +5223,14 @@
         "more": "{count} till",
         "remove": "Ta bort nod",
         "remove_text": "Tar bort noden och alla dedikerade servrar på den från 5Stack.",
+        "remove_game": {
+          "action": "Ta bort {game}",
+          "title": "Ta bort {game} från den här noden?",
+          "description": "Raderar {game}-filerna från noden. Matcher och servrar kan inte använda {game} här förrän det installeras igen.",
+          "cs2_returns": "Aktiverade noder installerar CS2 igen vid nästa CS2-uppdatering.",
+          "started": "{game} tas bort från noden",
+          "stop_matches": "Stäng av ”Matchmaking” eller ”Tar emot matcher” först"
+        },
         "rename": "Byt namn på {node}",
         "label": "Nodens etikett",
         "close": "Stäng detaljer",
@@ -5385,6 +5394,7 @@
           "updating_to": "Uppdaterar till {build}",
           "installing": "Installerar",
           "installing_to": "Installerar {build}",
+          "removing": "Tar bort",
           "installed": "Installerad",
           "build": "build {build}",
           "on_update_to": "På {build}, uppdatera till {target}",

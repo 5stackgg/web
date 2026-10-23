@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Actualizando",
           "updating_pct": "Actualizando {percent}%",
+          "removing": "Eliminando",
           "failed": "Error al actualizar",
           "behind": "Desactualizado",
           "pinned": "Fijado",
@@ -5222,6 +5223,14 @@
         "more": "{count} más",
         "remove": "Eliminar nodo",
         "remove_text": "Elimina el nodo y todos sus servidores dedicados de 5Stack.",
+        "remove_game": {
+          "action": "Eliminar {game}",
+          "title": "¿Eliminar {game} de este nodo?",
+          "description": "Borra los archivos de {game} del nodo. Las partidas y los servidores no podrán usar {game} aquí hasta que se vuelva a instalar.",
+          "cs2_returns": "Los nodos habilitados vuelven a instalar CS2 con la próxima actualización de CS2.",
+          "started": "Se está eliminando {game} del nodo",
+          "stop_matches": "Desactiva primero «Matchmaking» o «Acepta partidas»"
+        },
         "rename": "Renombrar {node}",
         "label": "Etiqueta del nodo",
         "close": "Cerrar detalles",
@@ -5385,6 +5394,7 @@
           "updating_to": "Actualizando a {build}",
           "installing": "Instalando",
           "installing_to": "Instalando {build}",
+          "removing": "Eliminando",
           "installed": "Instalado",
           "build": "build {build}",
           "on_update_to": "En {build}, actualiza a {target}",

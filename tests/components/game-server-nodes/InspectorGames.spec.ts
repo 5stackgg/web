@@ -164,6 +164,16 @@ describe("CS2 section", () => {
     expect(wrapper.text()).toContain("Watch log");
   });
 
+  it("flags an unsupported plugin beside its picker, without the build", async () => {
+    const wrapper = await mountCs2({ plugin_supported: false });
+    const flag = wrapper.find(".gsn-flag");
+    expect(flag.text()).toBe("Not supported");
+    expect(
+      flag.element.closest(".gsn-v")?.querySelector("button"),
+    ).toBeTruthy();
+    expect(wrapper.text()).not.toContain("on build");
+  });
+
   it("no longer lists CS:GO in the section", async () => {
     const wrapper = await mountCs2({ csgo_build_id: 12426148 });
     expect(wrapper.text()).not.toContain("CS:GO");

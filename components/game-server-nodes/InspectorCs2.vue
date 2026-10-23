@@ -381,24 +381,15 @@ const when = (value: string) =>
               </SelectGroup>
             </SelectContent>
           </Select>
-        </div>
-        <p
-          v-if="node.build_id && node.plugin_supported === false"
-          class="gsn-note"
-        >
-          <span class="gsn-flag" :class="TONE_TEXT.bad"
+          <span
+            v-if="node.build_id && node.plugin_supported === false"
+            class="gsn-flag"
+            :class="TONE_TEXT.bad"
             ><CircleAlert class="h-3 w-3" />{{
               t(`${INSPECTOR}.cs2.plugin_unsupported`)
             }}</span
           >
-          <i18n-t :keypath="`${INSPECTOR}.cs2.on_build`" scope="global">
-            <template #build>
-              <span class="font-mono text-[11.5px] text-foreground">{{
-                node.build_id
-              }}</span>
-            </template>
-          </i18n-t>
-        </p>
+        </div>
       </div>
     </template>
   </section>
@@ -426,20 +417,12 @@ const when = (value: string) =>
   align-items: center;
   column-gap: 8px;
 }
-.gsn-note {
-  grid-column: 2;
-  min-width: 0;
-  padding-bottom: 2px;
-  font-size: 12px;
-  line-height: 1.45;
-  color: hsl(var(--muted-foreground));
-}
 .gsn-flag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-right: 4px;
+  font-size: 12px;
   font-weight: 600;
-  vertical-align: -1px;
+  white-space: nowrap;
 }
 </style>

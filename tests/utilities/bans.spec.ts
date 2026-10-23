@@ -234,6 +234,72 @@ describe("played with me", () => {
 });
 
 describe("banTimeline", () => {
+  it("dates a VAC ban and a game ban each on its own day", () => {
+    const steam = banTimeline(
+      entry({
+        steam_banned_on: "2026-10-19",
+        vac_banned_on: "2016-09-01",
+        game_banned_on: "2026-10-19",
+        vac_ban_count: 1,
+        game_ban_count: 1,
+      }),
+      NOW,
+    ).filter((item) => item.type === "steam");
+
+    expect(steam).toEqual([
+      {
+        type: "steam",
+        at: Date.parse("2016-09-01T00:00:00Z"),
+        day: "2016-09-01",
+        vac: 1,
+        game: 0,
+        arrived: true,
+      },
+      {
+        type: "steam",
+        at: Date.parse("2026-10-19T00:00:00Z"),
+        day: "2026-10-19",
+        vac: 0,
+        game: 1,
+        arrived: false,
+      },
+    ]);
+  });
+
+  it.each([
+    {
+      title: "the day of the first match",
+      first_match_at: "2026-10-19T15:00:00Z",
+      arrived: false,
+    },
+    { title: "no match here at all", first_match_at: null, arrived: true },
+  ])("counts a Steam ban on $title as before joining: $arrived", (row) => {
+    const [steam] = banTimeline(
+      entry({
+        steam_banned_on: "2026-10-19",
+        vac_ban_count: 1,
+        first_match_at: row.first_match_at,
+        matches_played: row.first_match_at ? 1 : 0,
+      }),
+      NOW,
+    ).filter((item) => item.type === "steam");
+
+    expect(steam).toMatchObject({ arrived: row.arrived });
+  });
+
+  it("keeps one Steam entry when the api has no day per kind", () => {
+    const steam = banTimeline(
+      entry({
+        steam_banned_on: "2026-10-19",
+        vac_ban_count: 1,
+        game_ban_count: 2,
+      }),
+      NOW,
+    ).filter((item) => item.type === "steam");
+
+    expect(steam).toMatchObject([{ day: "2026-10-19", vac: 1, game: 2 }]);
+  });
+
   it("puts a Steam ban before the automatic ban it caused the same day", () => {
     const today = NOW.toISOString().slice(0, 10);
     const items = banTimeline(

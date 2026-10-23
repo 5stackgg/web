@@ -13,6 +13,7 @@ import {
   dateTimeLabel,
   reasonCategory,
   sharedMatchesOf,
+  steamAnchorDay,
   steamBanned,
   steamDateLabel,
   steamDayLabel,
@@ -32,9 +33,10 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: "open"): void }>();
 
 const name = computed(() => props.entry.player?.name ?? props.entry.steam_id);
-const steamAnchor = computed(
-  () =>
-    props.entry.banned_at_source === "steam" && !!props.entry.steam_banned_on,
+const steamAnchor = computed(() =>
+  props.entry.banned_at_source === "steam" && !!props.entry.steam_banned_on
+    ? steamAnchorDay(props.entry)
+    : null,
 );
 const length = computed(() =>
   props.entry.sanction
@@ -144,7 +146,7 @@ const lost = computed(() => shared.value.filter((m) => m.won === false).length);
     >
       <span class="whitespace-nowrap text-sm font-medium tabular-nums">
         <template v-if="steamAnchor">{{
-          steamDayLabel(entry.steam_banned_on!, now)
+          steamDayLabel(steamAnchor, now)
         }}</template>
         <TimeAgo v-else :date="entry.banned_at" hide-icon />
       </span>
@@ -152,8 +154,8 @@ const lost = computed(() => shared.value.filter((m) => m.won === false).length);
         class="hidden whitespace-nowrap text-xs tabular-nums text-muted-foreground/80 md:block"
       >
         <template v-if="steamAnchor">{{
-          steamDaysAgo(entry.steam_banned_on!, now) < 7
-            ? steamDateLabel(entry.steam_banned_on!, now)
+          steamDaysAgo(steamAnchor, now) < 7
+            ? steamDateLabel(steamAnchor, now)
             : ""
         }}</template>
         <template v-else>{{ dateTimeLabel(entry.banned_at, now) }}</template>

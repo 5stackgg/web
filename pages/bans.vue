@@ -38,9 +38,11 @@ import { banColumns } from "~/components/bans/banColumns";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
-import { schemaHasType } from "~/utilities/schemaHasType";
+import { schemaHasField, schemaHasType } from "~/utilities/schemaHasType";
 import debounce from "~/utilities/debounce";
 import {
+  RECENT_BANS_KIND_DATE_FIELD,
+  RECENT_BANS_KIND_DATES_QUERY,
   RECENT_BANS_QUERY,
   RECENT_BAN_GAPS_QUERY,
   RECENT_BANS_TYPE,
@@ -91,6 +93,7 @@ const total = ref(0);
 const gaps = ref(0);
 const loading = ref(true);
 const available = ref<boolean | null>(null);
+const kindDates = ref(false);
 const now = ref(new Date());
 const menuOpen = ref(false);
 const windowOpen = ref(false);
@@ -191,7 +194,12 @@ async function load() {
   const mine = ++token;
   loading.value = true;
   if (available.value === null) {
-    available.value = await schemaHasType(client, RECENT_BANS_TYPE);
+    const [type, field] = await Promise.all([
+      schemaHasType(client, RECENT_BANS_TYPE),
+      schemaHasField(client, RECENT_BANS_TYPE, RECENT_BANS_KIND_DATE_FIELD),
+    ]);
+    kindDates.value = field;
+    available.value = type;
   }
   if (!available.value) {
     rows.value = [];
@@ -201,7 +209,7 @@ async function load() {
   }
   try {
     const { data } = await client.query({
-      query: RECENT_BANS_QUERY,
+      query: kindDates.value ? RECENT_BANS_KIND_DATES_QUERY : RECENT_BANS_QUERY,
       variables: {
         args: banQueryArgs(filters),
         limit: PER_PAGE,

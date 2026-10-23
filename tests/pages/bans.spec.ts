@@ -4,7 +4,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import BansPage from "~/pages/bans.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 
-const schema = vi.hoisted(() => ({ available: true }));
+const schema = vi.hoisted(() => ({ available: true, kindDates: false }));
 const query = vi.hoisted(() => vi.fn());
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<any>()),
@@ -13,6 +13,7 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
 vi.mock("~/utilities/schemaHasType", async (importOriginal) => ({
   ...(await importOriginal<any>()),
   schemaHasType: vi.fn(async () => schema.available),
+  schemaHasField: vi.fn(async () => schema.kindDates),
 }));
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -94,6 +95,7 @@ afterEach(() => {
   mounted?.unmount();
   mounted = null;
   schema.available = true;
+  schema.kindDates = false;
   useAuthStore().me = undefined;
   query.mockReset();
 });
@@ -115,6 +117,19 @@ describe("/bans", () => {
       { steam_id: "asc" },
     ]);
     expect(first.context).toEqual({ optional: true });
+  });
+
+  it("asks for each kind's Steam day only once the api serves it", async () => {
+    const asked = () =>
+      listCalls()[0].query.loc.source.body.includes("vac_banned_on");
+
+    await mountPage();
+    expect(asked()).toBe(false);
+    mounted?.unmount();
+
+    schema.kindDates = true;
+    await mountPage();
+    expect(asked()).toBe(true);
   });
 
   it("narrows to Steam kinds from the source switch", async () => {

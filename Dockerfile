@@ -18,11 +18,11 @@ COPY . .
 
 RUN corepack enable && corepack prepare
 
-# Node caps its default old-space at ~4GB, and this build peaks around 5.7GB
-# (measured), so it OOMs with "Ineffective mark-compacts near heap limit".
-# CI runners have 16GB, so give the build room instead of letting it run at
-# the edge of the default ceiling.
-ENV NODE_OPTIONS=--max-old-space-size=8192
+# The client build leaves ~6.8GB of live heap (measured 2026-10-23), which an
+# 8GB old-space can no longer fit through the Nitro and PWA steps after it
+# ("Ineffective mark-compacts near heap limit"). Peak RSS with a 14GB cap was
+# 9.3GB and CI runners have 16GB.
+ENV NODE_OPTIONS=--max-old-space-size=12288
 
 RUN yarn build
 

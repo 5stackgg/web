@@ -90,6 +90,50 @@ describe("BanRow", () => {
     expect(wrapper.text()).toContain("Permanent");
   });
 
+  it("dates a VAC ban and a game ban each on its own", async () => {
+    const wrapper = await mount(
+      entry({
+        banned_at: "2026-10-19T00:00:00Z",
+        banned_at_source: "steam",
+        steam_banned_on: "2026-10-19",
+        vac_banned_on: "2016-09-01",
+        game_banned_on: "2026-10-19",
+        vac_ban_count: 1,
+        game_ban_count: 1,
+      }),
+    );
+
+    const vac = wrapper.find('span[title="Steam VAC ban"]');
+    expect(vac.text()).toBe("VAC 2016");
+    expect(vac.classes()).toContain("text-muted-foreground/70");
+    const game = wrapper.find('span[title="Steam game ban (CS2 Overwatch)"]');
+    expect(game.text()).toBe("Game ban");
+    expect(game.classes()).not.toContain("text-muted-foreground/70");
+  });
+
+  it("lists a Steam ban under the day of the ban the filters matched", async () => {
+    const wrapper = await mount(
+      entry({
+        banned_at: "2026-10-11T00:00:00Z",
+        banned_at_source: "steam",
+        steam_banned_on: "2026-10-19",
+        vac_banned_on: "2026-10-11",
+        game_banned_on: "2026-10-19",
+        vac_ban_count: 1,
+        game_ban_count: 1,
+      }),
+      {
+        filters: {
+          ...defaultBanFilters(),
+          kinds: { vac: true, game: false, staff: true, auto: true },
+        },
+      },
+    );
+
+    expect(wrapper.text()).toContain("Oct 11");
+    expect(wrapper.text()).not.toContain("2 days ago");
+  });
+
   it("names who issued a staff ban only to moderators", async () => {
     const row = entry({
       banned_here: true,

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import {
+  gameBanDay,
   kindOn,
-  steamBanned,
   steamDateLabel,
   steamDaysAgo,
+  vacBanDay,
   type BanEntry,
   type BanFilters,
   type BanKind,
@@ -21,23 +22,30 @@ const props = defineProps<{
 
 const on = (kind: BanKind) => !props.filters || kindOn(props.filters, kind);
 
-const steamOld = computed(
-  () =>
-    !!props.filters &&
-    steamBanned(props.entry) &&
-    steamDaysAgo(props.entry.steam_banned_on!, props.now) >
-      props.filters.windowDays,
-);
+const vacDay = computed(() => vacBanDay(props.entry));
+const gameDay = computed(() => gameBanDay(props.entry));
+
+const old = (day: string | null) =>
+  !!props.filters &&
+  !!day &&
+  steamDaysAgo(day, props.now) > props.filters.windowDays;
+const vacOld = computed(() => old(vacDay.value));
+const gameOld = computed(() => old(gameDay.value));
 
 // An old Steam ban says when it was: the year, or the day this year.
-const steamWhen = computed(() => {
-  if (!steamOld.value) return null;
-  const day = props.entry.steam_banned_on!;
+const when = (day: string) => {
   const year = Number(day.slice(0, 4));
   return year === props.now.getUTCFullYear()
     ? steamDateLabel(day, props.now)
     : String(year);
-});
+};
+const vacWhen = computed(() => (vacOld.value ? when(vacDay.value!) : null));
+// Without a day of its own the game ban shares the VAC tag's.
+const gameWhen = computed(() =>
+  gameOld.value && gameDay.value !== vacDay.value
+    ? when(gameDay.value!)
+    : null,
+);
 
 const fiveKind = computed(() => props.entry.sanction_kind);
 const fiveOff = computed(() => {
@@ -63,7 +71,7 @@ const offClasses = "border-border/70 bg-transparent text-muted-foreground/70";
       v-if="entry.vac_ban_count > 0"
       :class="[
         tagBase,
-        steamOld || !on('vac')
+        vacOld || !on('vac')
           ? offClasses
           : 'border-destructive/40 bg-destructive/10 text-destructive',
       ]"
@@ -74,13 +82,13 @@ const offClasses = "border-border/70 bg-transparent text-muted-foreground/70";
           ? $t("pages.bans.tags.vac_count", { count: entry.vac_ban_count })
           : $t("pages.bans.tags.vac")
       }}
-      <span v-if="steamWhen" class="font-medium">{{ steamWhen }}</span>
+      <span v-if="vacWhen" class="font-medium">{{ vacWhen }}</span>
     </span>
     <span
       v-if="entry.game_ban_count > 0"
       :class="[
         tagBase,
-        steamOld || !on('game')
+        gameOld || !on('game')
           ? offClasses
           : 'border-orange-500/40 bg-orange-500/10 text-orange-400',
       ]"
@@ -91,9 +99,7 @@ const offClasses = "border-border/70 bg-transparent text-muted-foreground/70";
           ? $t("pages.bans.tags.game_count", { count: entry.game_ban_count })
           : $t("pages.bans.tags.game")
       }}
-      <span v-if="steamWhen && entry.vac_ban_count === 0" class="font-medium">{{
-        steamWhen
-      }}</span>
+      <span v-if="gameWhen" class="font-medium">{{ gameWhen }}</span>
     </span>
     <span
       v-if="fiveKind"

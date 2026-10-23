@@ -42,6 +42,8 @@ export type BanEntry = {
   banned_at: string;
   banned_at_source: "steam" | "5stack";
   steam_banned_on: string | null;
+  vac_banned_on?: string | null;
+  game_banned_on?: string | null;
   vac_ban_count: number;
   game_ban_count: number;
   sanction_id: string | null;
@@ -329,20 +331,71 @@ export function steamBanned(
   );
 }
 
+type SteamDays = Pick<
+  BanEntry,
+  | "vac_ban_count"
+  | "game_ban_count"
+  | "steam_banned_on"
+  | "vac_banned_on"
+  | "game_banned_on"
+>;
+
+// Each kind's own Steam day. An api that predates them only has the newest
+// ban of either kind, which stands in for both.
+export function vacBanDay(entry: SteamDays): string | null {
+  return entry.vac_ban_count > 0
+    ? (entry.vac_banned_on ?? entry.steam_banned_on)
+    : null;
+}
+
+export function gameBanDay(entry: SteamDays): string | null {
+  return entry.game_ban_count > 0
+    ? (entry.game_banned_on ?? entry.steam_banned_on)
+    : null;
+}
+
+// The Steam day a row is listed under: the newest ban of the kinds asked for,
+// which the api puts at 00:00 UTC in banned_at.
+export function steamAnchorDay(entry: Pick<BanEntry, "banned_at">): string {
+  return new Date(entry.banned_at).toISOString().slice(0, 10);
+}
+
+function bannedBeforeJoining(entry: BanEntry, day: string): boolean {
+  if (!entry.first_match_at) return true;
+  return day < new Date(entry.first_match_at).toISOString().slice(0, 10);
+}
+
 // Oldest first. A Steam ban sits at the start of its UTC day, so the
 // automatic ban it caused the same day always lands after it.
 export function banTimeline(entry: BanEntry, now: Date): BanTimelineItem[] {
   const items: BanTimelineItem[] = [];
 
   if (steamBanned(entry)) {
-    items.push({
-      type: "steam",
-      at: steamDayMs(entry.steam_banned_on!),
-      day: entry.steam_banned_on!,
-      vac: entry.vac_ban_count,
-      game: entry.game_ban_count,
-      arrived: entry.arrived_banned,
-    });
+    const vacDay = vacBanDay(entry);
+    const gameDay = gameBanDay(entry);
+    const days =
+      vacDay && gameDay && vacDay !== gameDay
+        ? [
+            { day: vacDay, vac: entry.vac_ban_count, game: 0 },
+            { day: gameDay, vac: 0, game: entry.game_ban_count },
+          ]
+        : [
+            {
+              day: vacDay ?? gameDay!,
+              vac: entry.vac_ban_count,
+              game: entry.game_ban_count,
+            },
+          ];
+    for (const { day, vac, game } of days) {
+      items.push({
+        type: "steam",
+        at: steamDayMs(day),
+        day,
+        vac,
+        game,
+        arrived: bannedBeforeJoining(entry, day),
+      });
+    }
   }
 
   if (entry.first_match_at && entry.matches_played > 0) {

@@ -4,10 +4,12 @@ import gql from "graphql-tag";
 // the generated zeus client. The page checks schemaHasType(RECENT_BANS_TYPE)
 // first and sends these with { optional: true }, so web shipping ahead of the
 // api shows an empty page instead of toasting an error. Who issued a ban is
-// only asked for when the viewer is a moderator.
+// only asked for when the viewer is a moderator. Each kind's own Steam date is
+// asked for only once the api serves it (schemaHasField).
 export const RECENT_BANS_TYPE = "recent_ban_entries";
+export const RECENT_BANS_KIND_DATE_FIELD = "vac_banned_on";
 
-export const RECENT_BANS_QUERY = gql`
+const recentBansQuery = (kindDates: boolean) => gql`
   query RecentlyBanned(
     $args: recently_banned_players_args!
     $limit: Int!
@@ -25,6 +27,7 @@ export const RECENT_BANS_QUERY = gql`
       banned_at
       banned_at_source
       steam_banned_on
+      ${kindDates ? "vac_banned_on game_banned_on" : ""}
       vac_ban_count
       game_ban_count
       sanction_id
@@ -64,6 +67,9 @@ export const RECENT_BANS_QUERY = gql`
     }
   }
 `;
+
+export const RECENT_BANS_QUERY = recentBansQuery(false);
+export const RECENT_BANS_KIND_DATES_QUERY = recentBansQuery(true);
 
 // Moderators only: Steam-banned players inside the window with no active ban
 // here, for the "can still play here" link.

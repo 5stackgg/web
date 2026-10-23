@@ -2,8 +2,14 @@ import { ref } from "vue";
 import gql from "graphql-tag";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
-import { $, e_draft_game_status_enum, order_by } from "~/generated/zeus";
+import {
+  $,
+  e_draft_game_status_enum,
+  e_lobby_access_enum,
+  order_by,
+} from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import getPublicGraphqlClient from "~/graphql/getPublicGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { mapFields } from "~/graphql/mapGraphql";
@@ -113,31 +119,74 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     },
   };
 
+  // Open drafts are the same for every viewer, so they are read as a guest and
+  // everyone on the Play page shares one poll. Only the drafts a viewer sees
+  // through friends, invites or hosting are read with their own session.
+  let sharedDraftGames: Array<any> = [];
+  let myOpenDraftGames: Array<any> = [];
+  const listOpenDraftGames = () => {
+    const byId = new Map<string, any>();
+    for (const game of [...sharedDraftGames, ...myOpenDraftGames]) {
+      if (!byId.has(game.id)) {
+        byId.set(game.id, game);
+      }
+    }
+    openDraftGames.value = [...byId.values()];
+  };
+
   const subscribeToOpenDraftGames = async () => {
-    const subscription = getGraphqlClient().subscribe({
+    const { subscribe } = useSubscriptionManager();
+    const shared = getPublicGraphqlClient().subscribe({
       query: generateSubscription({
         draft_games: [
           {
             where: {
-              status: {
-                _eq: e_draft_game_status_enum.Open,
-              },
+              status: { _eq: e_draft_game_status_enum.Open },
+              access: { _eq: e_lobby_access_enum.Open },
+            },
+          },
+          draftGameFields as Record<string, any>,
+        ],
+      }),
+    });
+    subscribe(
+      "draft-games:open",
+      shared.subscribe({
+        next: ({ data }) => {
+          sharedDraftGames = data.draft_games;
+          listOpenDraftGames();
+        },
+        error: (error: any) => {
+          console.error("[draft-games] open subscription:", error);
+        },
+      }),
+    );
+
+    if (!useAuthStore().me?.steam_id) {
+      return;
+    }
+    const mine = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        draft_games: [
+          {
+            where: {
+              status: { _eq: e_draft_game_status_enum.Open },
+              access: { _neq: e_lobby_access_enum.Open },
             },
           },
           withInviteCode(draftGameFields),
         ],
       }),
     });
-
-    const { subscribe } = useSubscriptionManager();
     subscribe(
-      "draft-games:open",
-      subscription.subscribe({
+      "draft-games:open-mine",
+      mine.subscribe({
         next: ({ data }) => {
-          openDraftGames.value = data.draft_games;
+          myOpenDraftGames = data.draft_games;
+          listOpenDraftGames();
         },
         error: (error: any) => {
-          console.error("[draft-games] open subscription:", error);
+          console.error("[draft-games] my open subscription:", error);
         },
       }),
     );
@@ -146,6 +195,9 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
   const unsubscribeFromOpenDraftGames = () => {
     const { unsubscribe } = useSubscriptionManager();
     unsubscribe("draft-games:open");
+    unsubscribe("draft-games:open-mine");
+    sharedDraftGames = [];
+    myOpenDraftGames = [];
     openDraftGames.value = [];
   };
 

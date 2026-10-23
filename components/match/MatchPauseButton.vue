@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 defineProps<{
   show: boolean;
   paused: boolean;
+  loading?: boolean;
   disabled?: boolean;
 }>();
 
@@ -28,6 +29,7 @@ const emit = defineEmits<{ toggle: [] }>();
         <Button
           size="sm"
           variant="outline"
+          :loading="loading"
           :disabled="disabled"
           :class="[
             'h-9 gap-1.5 font-mono text-[0.62rem] font-bold tracking-[0.18em] uppercase transition-colors',

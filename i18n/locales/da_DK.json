@@ -11162,6 +11162,8 @@
       "resume": "Genoptag kampen",
       "match_paused": "Kampen er sat på pause",
       "match_resumed": "Kampen er genoptaget",
+      "pause_not_applied": "Serveren satte ikke kampen på pause. En timeout eller nulstilling af runden kan være i gang.",
+      "resume_not_applied": "Serveren genoptog ikke kampen. En timeout eller nulstilling af runden kan være i gang.",
       "forced_ready": "Spillerne er tvunget klar",
       "skipped_knife": "Knivrunden er sprunget over",
       "start_live": "Start livestream",

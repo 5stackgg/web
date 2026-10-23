@@ -11162,6 +11162,8 @@
       "resume": "Maçı Devam Ettir",
       "match_paused": "Maç duraklatıldı",
       "match_resumed": "Maç devam ettirildi",
+      "pause_not_applied": "Sunucu maçı duraklatmadı. Bir mola veya raunt sıfırlaması devam ediyor olabilir.",
+      "resume_not_applied": "Sunucu maçı devam ettirmedi. Bir mola veya raunt sıfırlaması devam ediyor olabilir.",
       "forced_ready": "Oyuncular zorla hazır yapıldı",
       "skipped_knife": "Bıçak raundu atlandı",
       "start_live": "Canlı Yayını Başlat",

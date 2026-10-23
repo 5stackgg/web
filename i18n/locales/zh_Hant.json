@@ -11162,6 +11162,8 @@
       "resume": "繼續比賽",
       "match_paused": "比賽已暫停",
       "match_resumed": "比賽已繼續",
+      "pause_not_applied": "伺服器未暫停比賽。可能正在進行戰術暫停或回合重置。",
+      "resume_not_applied": "伺服器未繼續比賽。可能正在進行戰術暫停或回合重置。",
       "forced_ready": "已強制所有玩家準備",
       "skipped_knife": "已跳過刀戰",
       "start_live": "開始直播",

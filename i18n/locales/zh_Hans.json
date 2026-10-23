@@ -11162,6 +11162,8 @@
       "resume": "恢复比赛",
       "match_paused": "比赛已暂停",
       "match_resumed": "比赛已恢复",
+      "pause_not_applied": "服务器未暂停比赛。可能正在进行战术暂停或回合重置。",
+      "resume_not_applied": "服务器未恢复比赛。可能正在进行战术暂停或回合重置。",
       "forced_ready": "已强制所有玩家准备",
       "skipped_knife": "已跳过刀战",
       "start_live": "开始直播",

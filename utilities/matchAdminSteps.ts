@@ -117,7 +117,6 @@ export const UPCOMING_ADMIN_ACTIONS: UpcomingAdminAction[] = [
     key: "pause",
     step: "live",
     label: "match.actions.pause",
-    role: e_player_roles_enum.moderator,
   },
   {
     key: "highlights",

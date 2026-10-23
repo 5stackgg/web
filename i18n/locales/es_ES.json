@@ -11162,6 +11162,8 @@
       "resume": "Reanudar partida",
       "match_paused": "Partida pausada",
       "match_resumed": "Partida reanudada",
+      "pause_not_applied": "El servidor no pausó la partida. Puede que haya un tiempo muerto o un reinicio de ronda en curso.",
+      "resume_not_applied": "El servidor no reanudó la partida. Puede que haya un tiempo muerto o un reinicio de ronda en curso.",
       "forced_ready": "Jugadores forzados a listos",
       "skipped_knife": "Ronda de cuchillo saltada",
       "start_live": "Iniciar stream en directo",

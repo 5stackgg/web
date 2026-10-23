@@ -988,6 +988,11 @@ import {
 import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { bracketProposalSelection } from "~/graphql/bracketNegotiation";
+import {
+  joinShared,
+  readsShared,
+  splitSubscription,
+} from "~/utilities/sharedSubscription";
 import { formatPrizePool } from "~/utilities/prizePool";
 import {
   freeAgentPoolWhere,
@@ -1030,6 +1035,350 @@ const LEGACY_TABS: Record<string, { tab: string; section?: string }> = {
   notifications: { tab: "manage", section: "discord" },
 };
 
+const tournamentSubscription = typedGql("subscription")({
+  tournaments_by_pk: [
+    {
+      id: $("tournamentId", "uuid!"),
+    },
+    {
+      id: true,
+      name: true,
+      start: true,
+      status: true,
+      // Cast: current_stage is a new computed field; drop it once
+      // `yarn codegen` has run against a migrated stack.
+      ...({ current_stage: true } as {}),
+      auto_start: true,
+      scheduling_mode: true,
+      league_season_division: {
+        id: true,
+      },
+      awards_enabled: true,
+      substitutes_enabled: true,
+      e_tournament_status: {
+        description: true,
+      },
+      is_organizer: true,
+      can_join: true,
+      joined_tournament: true,
+      can_start: true,
+      can_cancel: true,
+      can_open_registration: true,
+      can_close_registration: true,
+      can_pause: true,
+      can_resume: true,
+      can_setup: true,
+      min_players_per_lineup: true,
+      max_players_per_lineup: true,
+      teams: [
+        {
+          order_by: [
+            {
+              seed: order_by.asc,
+            },
+            {
+              eligible_at: order_by.asc,
+            },
+            {
+              created_at: order_by.asc,
+            },
+          ],
+        },
+        tournamentTeamFields,
+      ],
+      teams_aggregate: [
+        {},
+        {
+          aggregate: {
+            count: true,
+          },
+        },
+      ],
+      __alias: tournamentRosterCounts,
+      stages: [
+        {
+          order_by: [
+            {
+              order: order_by.asc,
+            },
+          ],
+        },
+        {
+          id: true,
+          type: true,
+          e_tournament_stage_type: {
+            description: true,
+          },
+          order: true,
+          groups: true,
+          min_teams: true,
+          max_teams: true,
+          max_rounds: true,
+          swiss_no_elimination: true,
+          decider_best_of: true,
+          default_best_of: true,
+          final_map_advantage: true,
+          settings: true,
+          third_place_match: true,
+          options: matchOptionsFields,
+          windows: [
+            {},
+            {
+              round: true,
+              opens_at: true,
+              closes_at: true,
+              default_match_at: true,
+            },
+          ],
+          results: [
+            {},
+            {
+              tournament_team_id: true,
+              group_number: true,
+              rank: true,
+              placement: true,
+              wins: true,
+              losses: true,
+              rounds_won: true,
+              rounds_lost: true,
+              maps_won: true,
+              maps_lost: true,
+              matches_played: true,
+              matches_remaining: true,
+              team: {
+                id: true,
+                name: true,
+                team: {
+                  id: true,
+                  name: true,
+                  avatar_url: true,
+                },
+                roster: [
+                  {},
+                  {
+                    role: true,
+                    player: playerFields,
+                  },
+                ],
+              },
+            },
+          ],
+          brackets: [
+            {
+              order_by: [
+                {
+                  round: order_by.asc,
+                },
+                {
+                  group: order_by.asc,
+                },
+                {
+                  path: order_by.desc,
+                },
+                {
+                  match_number: order_by.asc,
+                },
+              ],
+            },
+            {
+              // Heavy match fields are fetched by TournamentMatches.vue.
+              id: true,
+              round: true,
+              group: true,
+              bye: true,
+              finished: true,
+              match_number: true,
+              scheduled_at: true,
+              scheduled_eta: true,
+              team_1_seed: true,
+              team_2_seed: true,
+              path: true,
+              loser_parent_bracket_id: true,
+              match_options_id: true,
+              options: {
+                best_of: true,
+                match_mode: true,
+              },
+              parent_bracket: {
+                id: true,
+                round: true,
+                group: true,
+                match_number: true,
+                path: true,
+                match: {
+                  status: true,
+                },
+              },
+              loser_bracket: {
+                id: true,
+                round: true,
+                group: true,
+                match_number: true,
+                path: true,
+                match: {
+                  status: true,
+                },
+              },
+              feeding_brackets: {
+                id: true,
+                round: true,
+                group: true,
+                match_number: true,
+                path: true,
+                parent_bracket_id: true,
+                loser_parent_bracket_id: true,
+                team_1_seed: true,
+                team_2_seed: true,
+              },
+              match: {
+                id: true,
+                status: true,
+                scheduled_at: true,
+                winning_lineup_id: true,
+                lineup_1_id: true,
+                lineup_2_id: true,
+                options: {
+                  best_of: true,
+                },
+                match_maps: [
+                  {
+                    order_by: [
+                      {
+                        order: order_by.asc,
+                      },
+                    ],
+                  },
+                  {
+                    lineup_1_score: true,
+                    lineup_2_score: true,
+                    winning_lineup_id: true,
+                    order: true,
+                    status: true,
+                  },
+                ],
+                lineup_1: {
+                  id: true,
+                  name: true,
+                  team_id: true,
+                },
+                lineup_2: {
+                  id: true,
+                  name: true,
+                  team_id: true,
+                },
+              },
+              team_1: {
+                id: true,
+                name: true,
+                team_id: true,
+                team: {
+                  name: true,
+                },
+              },
+              team_2: {
+                id: true,
+                name: true,
+                team_id: true,
+                team: {
+                  name: true,
+                },
+              },
+              ...bracketProposalSelection,
+              created_at: true,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+});
+
+// What on the tournament page depends on who is looking: the viewer's own
+// permissions, and bracket matches, which a guest sees fewer of (one still
+// picking players or canceled).
+const TOURNAMENT_PERSONAL = [
+  "is_organizer",
+  "can_join",
+  "joined_tournament",
+  "can_start",
+  "can_cancel",
+  "can_open_registration",
+  "can_close_registration",
+  "can_pause",
+  "can_resume",
+  "can_setup",
+  "teams.can_recruit",
+  "teams.can_manage",
+  "stages.brackets.match",
+  "stages.brackets.parent_bracket.match",
+  "stages.brackets.loser_bracket.match",
+];
+
+const {
+  shared: sharedTournamentSubscription,
+  personal: personalTournamentSubscription,
+} = splitSubscription(tournamentSubscription, TOURNAMENT_PERSONAL);
+
+const checkInTeamsSubscription = generateSubscription({
+  tournament_teams: [
+    {
+      where: {
+        tournament_id: {
+          _eq: $("tournamentId", "uuid!"),
+        },
+      },
+      order_by: [
+        {
+          created_at: order_by.asc,
+        },
+      ],
+    },
+    {
+      id: true,
+      name: true,
+      short_name: true,
+      created_at: true,
+      checked_in_at: true,
+      owner_steam_id: true,
+      captain_steam_id: true,
+      // can_manage_tournament_team: the exact predicate the check-in
+      // action accepts. Re-deriving it from captain/owner locks out a
+      // roster Admin the API would have let through.
+      can_manage: true,
+      team: {
+        id: true,
+        name: true,
+        short_name: true,
+        avatar_url: true,
+      },
+      roster: [
+        {},
+        {
+          player_steam_id: true,
+          role: true,
+          checked_in_at: true,
+          player: playerFields,
+        },
+      ],
+      roster_aggregate: [
+        {},
+        {
+          aggregate: {
+            count: true,
+          },
+        },
+      ],
+    },
+  ],
+} as any);
+
+// Every team in the tournament, the same for every viewer but whether they
+// may check it in.
+const {
+  shared: sharedCheckInTeamsSubscription,
+  personal: personalCheckInTeamsSubscription,
+} = splitSubscription(checkInTeamsSubscription, ["can_manage"]);
+
 export default {
   data() {
     return {
@@ -1042,6 +1391,11 @@ export default {
       // to `never`, and every `tournament.x` in this file's 1000-line template
       // then type-errors on a value that is plainly an object at runtime.
       tournamentLive: undefined as Record<string, any> | undefined,
+      liveShared: undefined as Record<string, any> | null | undefined,
+      livePersonal: undefined as Record<string, any> | null | undefined,
+      tournamentFallback: false,
+      checkInShared: undefined as Array<Record<string, any>> | undefined,
+      checkInPersonal: undefined as Array<Record<string, any>> | undefined,
       tournamentStatic: undefined as Record<string, any> | undefined,
       tournamentRegistration: null as Record<string, any> | null,
       statusMenuNow: Date.now(),
@@ -1261,283 +1615,48 @@ export default {
     },
     $subscribe: {
       tournaments_by_pk: {
-        query: typedGql("subscription")({
-          tournaments_by_pk: [
-            {
-              id: $("tournamentId", "uuid!"),
-            },
-            {
-              id: true,
-              name: true,
-              start: true,
-              status: true,
-              // Cast: current_stage is a new computed field; drop it once
-              // `yarn codegen` has run against a migrated stack.
-              ...({ current_stage: true } as {}),
-              auto_start: true,
-              scheduling_mode: true,
-              league_season_division: {
-                id: true,
-              },
-              awards_enabled: true,
-              substitutes_enabled: true,
-              e_tournament_status: {
-                description: true,
-              },
-              is_organizer: true,
-              can_join: true,
-              joined_tournament: true,
-              can_start: true,
-              can_cancel: true,
-              can_open_registration: true,
-              can_close_registration: true,
-              can_pause: true,
-              can_resume: true,
-              can_setup: true,
-              min_players_per_lineup: true,
-              max_players_per_lineup: true,
-              teams: [
-                {
-                  order_by: [
-                    {
-                      seed: order_by.asc,
-                    },
-                    {
-                      eligible_at: order_by.asc,
-                    },
-                    {
-                      created_at: order_by.asc,
-                    },
-                  ],
-                },
-                tournamentTeamFields,
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-              __alias: tournamentRosterCounts,
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                  groups: true,
-                  min_teams: true,
-                  max_teams: true,
-                  max_rounds: true,
-                  swiss_no_elimination: true,
-                  decider_best_of: true,
-                  default_best_of: true,
-                  final_map_advantage: true,
-                  settings: true,
-                  third_place_match: true,
-                  options: matchOptionsFields,
-                  windows: [
-                    {},
-                    {
-                      round: true,
-                      opens_at: true,
-                      closes_at: true,
-                      default_match_at: true,
-                    },
-                  ],
-                  results: [
-                    {},
-                    {
-                      tournament_team_id: true,
-                      group_number: true,
-                      rank: true,
-                      placement: true,
-                      wins: true,
-                      losses: true,
-                      rounds_won: true,
-                      rounds_lost: true,
-                      maps_won: true,
-                      maps_lost: true,
-                      matches_played: true,
-                      matches_remaining: true,
-                      team: {
-                        id: true,
-                        name: true,
-                        team: {
-                          id: true,
-                          name: true,
-                          avatar_url: true,
-                        },
-                        roster: [
-                          {},
-                          {
-                            role: true,
-                            player: playerFields,
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                  brackets: [
-                    {
-                      order_by: [
-                        {
-                          round: order_by.asc,
-                        },
-                        {
-                          group: order_by.asc,
-                        },
-                        {
-                          path: order_by.desc,
-                        },
-                        {
-                          match_number: order_by.asc,
-                        },
-                      ],
-                    },
-                    {
-                      // Heavy match fields are fetched by TournamentMatches.vue.
-                      id: true,
-                      round: true,
-                      group: true,
-                      bye: true,
-                      finished: true,
-                      match_number: true,
-                      scheduled_at: true,
-                      scheduled_eta: true,
-                      team_1_seed: true,
-                      team_2_seed: true,
-                      path: true,
-                      loser_parent_bracket_id: true,
-                      match_options_id: true,
-                      options: {
-                        best_of: true,
-                        match_mode: true,
-                      },
-                      parent_bracket: {
-                        id: true,
-                        round: true,
-                        group: true,
-                        match_number: true,
-                        path: true,
-                        match: {
-                          status: true,
-                        },
-                      },
-                      loser_bracket: {
-                        id: true,
-                        round: true,
-                        group: true,
-                        match_number: true,
-                        path: true,
-                        match: {
-                          status: true,
-                        },
-                      },
-                      feeding_brackets: {
-                        id: true,
-                        round: true,
-                        group: true,
-                        match_number: true,
-                        path: true,
-                        parent_bracket_id: true,
-                        loser_parent_bracket_id: true,
-                        team_1_seed: true,
-                        team_2_seed: true,
-                      },
-                      match: {
-                        id: true,
-                        status: true,
-                        scheduled_at: true,
-                        winning_lineup_id: true,
-                        lineup_1_id: true,
-                        lineup_2_id: true,
-                        options: {
-                          best_of: true,
-                        },
-                        match_maps: [
-                          {
-                            order_by: [
-                              {
-                                order: order_by.asc,
-                              },
-                            ],
-                          },
-                          {
-                            lineup_1_score: true,
-                            lineup_2_score: true,
-                            winning_lineup_id: true,
-                            order: true,
-                            status: true,
-                          },
-                        ],
-                        lineup_1: {
-                          id: true,
-                          name: true,
-                          team_id: true,
-                        },
-                        lineup_2: {
-                          id: true,
-                          name: true,
-                          team_id: true,
-                        },
-                      },
-                      team_1: {
-                        id: true,
-                        name: true,
-                        team_id: true,
-                        team: {
-                          name: true,
-                        },
-                      },
-                      team_2: {
-                        id: true,
-                        name: true,
-                        team_id: true,
-                        team: {
-                          name: true,
-                        },
-                      },
-                      ...bracketProposalSelection,
-                      created_at: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        }),
-        variables: function () {
+        query: tournamentSubscription,
+        variables: function (this: any) {
           return {
             tournamentId: this.$route.params.tournamentId,
           };
         },
-        result: function ({ data }) {
-          this.tournamentLive = data.tournaments_by_pk;
-          const ctx = useTournamentContext();
-          if (this.tournament) {
-            const existing = ctx.value;
-            ctx.value = {
-              id: this.tournament.id,
-              name: this.tournament.name,
-              isOrganizer: !!this.tournament.is_organizer,
-              // Preserve any participant flag that may have been set from myTeam.
-              isParticipant: existing?.isParticipant ?? !!this.myTeam,
-            };
-          } else {
-            ctx.value = null;
-          }
+        skip: function (this: any): boolean {
+          return this.readsSharedTournament;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.setTournamentLive(data.tournaments_by_pk);
+        },
+      },
+      tournamentShared: {
+        client: "public",
+        query: sharedTournamentSubscription,
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return !this.readsSharedTournament;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.liveShared = data.tournaments_by_pk;
+          this.joinTournament();
+        },
+      },
+      tournamentPersonal: {
+        query: personalTournamentSubscription,
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return !this.readsSharedTournament;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.livePersonal = data.tournaments_by_pk;
+          this.joinTournament();
         },
       },
       // Deliberately separate from the main tournament subscription: these
@@ -1600,68 +1719,57 @@ export default {
       // it duplicates the roster the main subscription already carries, and
       // the 99% of tournaments with check-in off should not pay for it.
       checkInTeams: {
-        query: generateSubscription({
-          tournament_teams: [
-            {
-              where: {
-                tournament_id: {
-                  _eq: $("tournamentId", "uuid!"),
-                },
-              },
-              order_by: [
-                {
-                  created_at: order_by.asc,
-                },
-              ],
-            },
-            {
-              id: true,
-              name: true,
-              short_name: true,
-              created_at: true,
-              checked_in_at: true,
-              owner_steam_id: true,
-              captain_steam_id: true,
-              // can_manage_tournament_team: the exact predicate the check-in
-              // action accepts. Re-deriving it from captain/owner locks out a
-              // roster Admin the API would have let through.
-              can_manage: true,
-              team: {
-                id: true,
-                name: true,
-                short_name: true,
-                avatar_url: true,
-              },
-              roster: [
-                {},
-                {
-                  player_steam_id: true,
-                  role: true,
-                  checked_in_at: true,
-                  player: playerFields,
-                },
-              ],
-              roster_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
-          ],
-        } as any),
+        query: checkInTeamsSubscription,
         variables: function (this: any) {
           return {
             tournamentId: this.$route.params.tournamentId,
           };
         },
         skip: function (this: any): boolean {
-          return this.tournamentRegistration?.check_in_required !== true;
+          return (
+            this.tournamentRegistration?.check_in_required !== true ||
+            this.readsSharedTournament
+          );
         },
         result: function (this: any, { data }: { data: any }) {
           this.checkInTeams = data?.tournament_teams ?? [];
+        },
+      },
+      checkInTeamsShared: {
+        client: "public",
+        query: sharedCheckInTeamsSubscription,
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return (
+            this.tournamentRegistration?.check_in_required !== true ||
+            !this.readsSharedTournament
+          );
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.checkInShared = data?.tournament_teams ?? [];
+          this.joinCheckInTeams();
+        },
+      },
+      checkInTeamsPersonal: {
+        query: personalCheckInTeamsSubscription,
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return (
+            this.tournamentRegistration?.check_in_required !== true ||
+            !this.readsSharedTournament
+          );
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.checkInPersonal = data?.tournament_teams ?? [];
+          this.joinCheckInTeams();
         },
       },
       freeAgentSteamIds: {
@@ -1814,6 +1922,9 @@ export default {
     },
   },
   computed: {
+    readsSharedTournament(): boolean {
+      return readsShared(useAuthStore().me?.role) && !this.tournamentFallback;
+    },
     /**
      * The tournament as this page and its ~20 child components see it: the
      * static query merged under the live subscription.
@@ -2430,6 +2541,52 @@ export default {
     },
   },
   methods: {
+    setTournamentLive(tournament: any) {
+      this.tournamentLive = tournament;
+      const ctx = useTournamentContext();
+      if (this.tournament) {
+        const existing = ctx.value;
+        ctx.value = {
+          id: this.tournament.id,
+          name: this.tournament.name,
+          isOrganizer: !!this.tournament.is_organizer,
+          // Preserve any participant flag that may have been set from myTeam.
+          isParticipant: existing?.isParticipant ?? !!this.myTeam,
+        };
+      } else {
+        ctx.value = null;
+      }
+    },
+    joinCheckInTeams() {
+      if (
+        this.checkInShared === undefined ||
+        this.checkInPersonal === undefined
+      ) {
+        return;
+      }
+      this.checkInTeams = joinShared(this.checkInShared, this.checkInPersonal);
+    },
+    joinTournament() {
+      const shared = this.liveShared;
+      const personal = this.livePersonal;
+      if (shared === undefined || personal === undefined) {
+        return;
+      }
+      if (personal === null) {
+        this.setTournamentLive(null);
+        return;
+      }
+      // Hidden from guests (still in setup) but not from this viewer: read
+      // whole on their session, as before.
+      if (shared === null) {
+        this.tournamentFallback = true;
+        return;
+      }
+      if (shared.id !== personal.id) {
+        return;
+      }
+      this.setTournamentLive(joinShared(shared, personal));
+    },
     chatBadgeClass,
     onStatusMenuOpen(open: boolean) {
       if (this.statusMenuClock) {
@@ -2646,6 +2803,13 @@ export default {
     },
   },
   watch: {
+    "$route.params.tournamentId"() {
+      this.liveShared = undefined;
+      this.livePersonal = undefined;
+      this.tournamentFallback = false;
+      this.checkInShared = undefined;
+      this.checkInPersonal = undefined;
+    },
     viewingFollowTeamId: {
       immediate: true,
       handler(teamId: string | null) {

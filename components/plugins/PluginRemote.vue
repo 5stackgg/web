@@ -6,7 +6,7 @@ const registeredScopes = new Set<string>();
 </script>
 
 <script setup lang="ts">
-import { ref, shallowRef, watch } from "vue";
+import { onMounted, ref, shallowRef, watch } from "vue";
 // @ts-expect-error virtual module provided by @originjs/vite-plugin-federation
 import {
   __federation_method_setRemote,
@@ -69,6 +69,17 @@ type Status = "loading" | "ready" | "error" | "forbidden" | "not-found";
 const RemoteComponent = shallowRef<unknown>(null);
 const status = ref<Status>("loading");
 const errorMessage = ref("");
+
+// A remote can portal into its own root (the inventory plugin's tooltips do),
+// and a teleport target is only found once it is in the document. On a cold
+// load the remote often arrives while the layout is still resolving its async
+// parts, so this host still sits in Suspense's detached tree; mounting the
+// remote then leaves those teleports half-mounted and Vue crashes on their
+// next update. onMounted only runs once every Suspense above has resolved.
+const attached = ref(false);
+onMounted(() => {
+  attached.value = true;
+});
 
 let loadGeneration = 0;
 
@@ -150,7 +161,10 @@ watch(
          front of it read as two separate loads for one wait. This only holds
          the height the remote will occupy while its bundle downloads, so the
          page doesn't jump when it mounts. -->
-    <div v-if="status === 'loading'" class="min-h-[70dvh] w-full"></div>
+    <div
+      v-if="status === 'loading' || !attached"
+      class="min-h-[70dvh] w-full"
+    ></div>
 
     <component
       :is="RemoteComponent"

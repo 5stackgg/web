@@ -168,11 +168,11 @@ describe("match admin bottom bar RCON", () => {
 });
 
 describe("match actions pause control", () => {
-  it("hides Pause Match from a non-staff organizer", async () => {
+  it("offers Pause Match to a non-staff organizer", async () => {
     signIn(e_player_roles_enum.user);
     const actions = await mountMatchActions();
 
-    expect(actions.text()).not.toContain("Pause Match");
+    expect(actions.text()).toContain("Pause Match");
   });
 
   it("keeps Pause Match for a moderator", async () => {

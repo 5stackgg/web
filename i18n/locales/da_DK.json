@@ -2677,6 +2677,9 @@
         "matchmaking_type_description": "Slå matchmaking til for hver type, så spillere kan gå i matchmaking for den slags kamp.",
         "players": {
           "permissions_section": "Rolletilladelser",
+          "leaderboard_section": "Ranglister",
+          "leaderboard_section_description": "Spillere vises først på en rangliste, når de har spillet så mange kampe i den viste sæson eller periode. Ranglisterne for trofæer, Faceit og Premier ignorerer det.",
+          "leaderboard_min_matches": "Minimum kampe",
           "force_name_registration": "Kræv navneregistrering af spillere",
           "force_name_registration_description": "Hvis registrering kræves, skal spilleren angive et navn, der bruges på platformen.",
           "refresh_all_title": "Genindekser søgeindeks",

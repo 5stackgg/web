@@ -2677,6 +2677,9 @@
         "matchmaking_type_description": "为每种比赛类型切换匹配系统，允许玩家加入该类比赛的匹配队列。",
         "players": {
           "permissions_section": "角色权限",
+          "leaderboard_section": "排行榜",
+          "leaderboard_section_description": "玩家需在当前查看的赛季或时间范围内打满这么多场比赛，才会出现在排行榜上。奖杯、Faceit 和 Premier 排行榜不受此限制。",
+          "leaderboard_min_matches": "最少比赛数",
           "force_name_registration": "强制玩家名称注册",
           "force_name_registration_description": "如果强制要求玩家注册，玩家将需要提交一个在平台上使用的名称。",
           "refresh_all_title": "重建搜索索引",

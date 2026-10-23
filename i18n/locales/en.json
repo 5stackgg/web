@@ -2677,6 +2677,9 @@
         "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
         "players": {
           "permissions_section": "Role permissions",
+          "leaderboard_section": "Leaderboards",
+          "leaderboard_section_description": "Players appear on a leaderboard only once they have played this many matches in the season or time range being viewed. The Awards, Faceit and Premier boards ignore it.",
+          "leaderboard_min_matches": "Minimum matches",
           "force_name_registration": "Force player name registration",
           "force_name_registration_description": "If forced to have player registration, the player will be required to submit a name that will be used on the platform.",
           "refresh_all_title": "Reindex search index",

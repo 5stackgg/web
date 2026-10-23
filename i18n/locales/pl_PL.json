@@ -2677,6 +2677,9 @@
         "matchmaking_type_description": "Przełącz matchmaking dla każdego typu, aby umożliwić graczom dołączanie do matchmakingu dla tego typu meczu.",
         "players": {
           "permissions_section": "Uprawnienia ról",
+          "leaderboard_section": "Rankingi",
+          "leaderboard_section_description": "Gracze pojawiają się w rankingu dopiero po rozegraniu tylu meczów w wyświetlanym sezonie lub okresie. Rankingi Nagrody, Faceit i Premier go ignorują.",
+          "leaderboard_min_matches": "Minimalna liczba meczów",
           "force_name_registration": "Wymuś rejestrację nazwy gracza",
           "force_name_registration_description": "Jeśli wymuszona jest rejestracja gracza, gracz będzie musiał podać nazwę, która będzie używana na platformie.",
           "refresh_all_title": "Przebuduj indeks wyszukiwania",

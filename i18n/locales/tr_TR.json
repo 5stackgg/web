@@ -2677,6 +2677,9 @@
         "matchmaking_type_description": "Her tür için eşleştirmeyi aç/kapat; açık olan türlerde oyuncular o maç türü için eşleştirmeye katılabilir.",
         "players": {
           "permissions_section": "Rol izinleri",
+          "leaderboard_section": "Sıralamalar",
+          "leaderboard_section_description": "Oyuncular, görüntülenen sezon veya dönemde bu kadar maç oynadıktan sonra sıralamada görünür. Ödüller, Faceit ve Premier sıralamaları bunu dikkate almaz.",
+          "leaderboard_min_matches": "En az maç",
           "force_name_registration": "Oyuncu adı kaydını zorunlu kıl",
           "force_name_registration_description": "Oyuncu kaydı zorunlu kılınırsa, oyuncunun platformda kullanılacak bir isim girmesi gerekir.",
           "refresh_all_title": "Arama indeksini yeniden oluştur",

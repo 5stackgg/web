@@ -232,6 +232,40 @@ async function doScanSteamBans() {
             </FormField>
           </SettingsSection>
 
+          <SettingsSection
+            id="leaderboard"
+            :title="
+              $t('pages.settings.application.players.leaderboard_section')
+            "
+            :description="
+              $t(
+                'pages.settings.application.players.leaderboard_section_description',
+              )
+            "
+          >
+            <FormField
+              v-slot="{ componentField }"
+              name="leaderboard_min_matches"
+            >
+              <FormItem>
+                <FormLabel>{{
+                  $t(
+                    "pages.settings.application.players.leaderboard_min_matches",
+                  )
+                }}</FormLabel>
+                <FormControl>
+                  <Input
+                    v-bind="componentField"
+                    type="number"
+                    min="1"
+                    max="1000"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </SettingsSection>
+
           <SettingsSaveBar
             :form="form"
             :submitting="submitting"
@@ -612,6 +646,9 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
+// Matches get_leaderboard.sql's fallback.
+const LEADERBOARD_MIN_MATCHES = 3;
+
 export default {
   data() {
     return {
@@ -622,6 +659,12 @@ export default {
             dedicated_servers_min_role_to_connect: z
               .string()
               .default(e_player_roles_enum.user),
+            leaderboard_min_matches: z
+              .number()
+              .int()
+              .min(1)
+              .max(1000)
+              .default(LEADERBOARD_MIN_MATCHES),
             public: z.object({
               player_name_registration: z.string().default("false"),
               create_matches_role: z.string().default(e_player_roles_enum.user),
@@ -640,6 +683,13 @@ export default {
       handler(newVal: Array<{ name: string; value: string | null }>) {
         for (const setting of newVal) {
           if (setting.value == null || setting.value === "") {
+            continue;
+          }
+          if (setting.name === "leaderboard_min_matches") {
+            const value = Number(setting.value);
+            if (Number.isInteger(value)) {
+              (this.form.setFieldValue as any)(setting.name, value);
+            }
             continue;
           }
           (this.form.setFieldValue as any)(setting.name, setting.value);
@@ -707,6 +757,12 @@ export default {
                     name: "dedicated_servers_min_role_to_connect",
                     value: this.roleOrDefault(
                       values.dedicated_servers_min_role_to_connect,
+                    ),
+                  },
+                  {
+                    name: "leaderboard_min_matches",
+                    value: String(
+                      values.leaderboard_min_matches ?? LEADERBOARD_MIN_MATCHES,
                     ),
                   },
                 ],

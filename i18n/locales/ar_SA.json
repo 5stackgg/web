@@ -2677,6 +2677,9 @@
         "matchmaking_type_description": "فعّل Matchmaking لكل نوع تريد السماح للاعبين بالانضمام إليه لهذا النوع من المباريات.",
         "players": {
           "permissions_section": "صلاحيات الأدوار",
+          "leaderboard_section": "لوحات المتصدرين",
+          "leaderboard_section_description": "لا يظهر اللاعبون في لوحة المتصدرين إلا بعد لعب هذا العدد من المباريات خلال الموسم أو الفترة المعروضة. لا تتأثر لوحات الكؤوس وFaceit وPremier بهذا الحد.",
+          "leaderboard_min_matches": "الحد الأدنى للمباريات",
           "force_name_registration": "إلزام اللاعبين بتسجيل الاسم",
           "force_name_registration_description": "عند إلزام اللاعبين بالتسجيل، سيُطلب من اللاعب إدخال اسم يُستخدم داخل المنصة.",
           "refresh_all_title": "إعادة بناء فهرس البحث",

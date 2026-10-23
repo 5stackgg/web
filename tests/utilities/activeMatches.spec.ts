@@ -1,16 +1,22 @@
 import { describe, expect, it, vi } from "vitest";
 import gql from "graphql-tag";
 import { print } from "graphql";
-import { fromActiveMatches } from "~/utilities/activeMatches";
+import {
+  fromActiveMatches,
+  fromMyActiveMatches,
+} from "~/utilities/activeMatches";
 
-const api = vi.hoisted(() => ({ servesActiveMatches: true }));
+const api = vi.hoisted(() => ({
+  servesActiveMatches: true,
+  servesMyActiveMatches: true,
+}));
 
 vi.mock("~/utilities/schemaHasType", () => ({
   schemaHasType: async () => false,
   schemaHasField: async (_client: unknown, type: string, field: string) =>
-    api.servesActiveMatches &&
     type === "subscription_root" &&
-    field === "active_matches",
+    ((field === "active_matches" && api.servesActiveMatches) ||
+      (field === "my_active_matches" && api.servesMyActiveMatches)),
 }));
 
 const client = {} as any;
@@ -57,6 +63,41 @@ describe("fromActiveMatches", () => {
   it("leaves the document alone until the API serves active_matches", async () => {
     api.servesActiveMatches = false;
     expect(await fromActiveMatches(client, document)).toBe(document);
+    api.servesActiveMatches = true;
+  });
+});
+
+describe("fromMyActiveMatches", () => {
+  const myMatches = gql`
+    subscription {
+      matches(where: { is_in_lineup: { _eq: true } }) {
+        id
+      }
+    }
+  `;
+
+  it("reads my matches from my_active_matches under the matches key", async () => {
+    expect(print(await fromMyActiveMatches(client, myMatches))).toBe(
+      print(myMatches).replace(
+        /^  matches\(/m,
+        "  matches: my_active_matches(",
+      ),
+    );
+  });
+
+  it("reads them from active_matches until the API serves my_active_matches", async () => {
+    api.servesMyActiveMatches = false;
+    expect(print(await fromMyActiveMatches(client, myMatches))).toBe(
+      print(myMatches).replace(/^  matches\(/m, "  matches: active_matches("),
+    );
+    api.servesMyActiveMatches = true;
+  });
+
+  it("leaves the document alone when the API serves neither", async () => {
+    api.servesMyActiveMatches = false;
+    api.servesActiveMatches = false;
+    expect(await fromMyActiveMatches(client, myMatches)).toBe(myMatches);
+    api.servesMyActiveMatches = true;
     api.servesActiveMatches = true;
   });
 });

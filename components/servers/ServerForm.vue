@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { Switch } from "~/components/ui/switch";
 import { Fold } from "~/components/ui/transitions";
 import {
   FormControl,
@@ -738,6 +739,33 @@ const iconBoxClasses =
           </div>
         </Fold>
 
+        <Fold :open="offersTv">
+          <FormField v-slot="{ value }" name="tv_enabled">
+            <FormItem
+              class="flex flex-row items-center justify-between gap-4 rounded-lg border p-3"
+            >
+              <div class="space-y-0.5">
+                <FormLabel>{{ $t("server.form.gotv") }}</FormLabel>
+                <FormDescription class="text-xs">
+                  {{
+                    useGameServerNode
+                      ? $t("server.form.gotv_description")
+                      : $t("server.form.gotv_external_description")
+                  }}
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  :model-value="!!value"
+                  @update:model-value="
+                    (on: boolean) => form.setFieldValue('tv_enabled', on)
+                  "
+                />
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </Fold>
+
         <Fold :open="isManagedRankedServer">
           <p :class="noteClasses">
             <Lock
@@ -816,7 +844,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { order_by } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 
 import { toast } from "@/components/ui/toast";
@@ -876,6 +904,7 @@ export default {
             description: true,
             enabled: true,
             supported_runtimes: [{}, true],
+            valve_mode: true,
           },
         ],
       }),
@@ -933,6 +962,25 @@ export default {
           }
         },
       },
+      // Administrator-only columns: the server page shares its subscription
+      // with moderators, so it can't carry them.
+      serverSecrets: {
+        query: typedGql("subscription")({
+          servers_by_pk: [
+            { id: $("serverId", "uuid!") },
+            { connect_password: true, tv_enabled: true },
+          ],
+        }),
+        variables: function () {
+          return { serverId: this.server?.id };
+        },
+        skip: function () {
+          return !this.server?.id;
+        },
+        result: function ({ data }: { data: any }) {
+          this.serverSecrets = data?.servers_by_pk ?? null;
+        },
+      },
     },
   },
   data() {
@@ -945,6 +993,10 @@ export default {
       isDirty: false,
       gameServerNodes: [],
       gameModes: [] as Array<Record<string, any>>,
+      serverSecrets: null as {
+        connect_password: string | null;
+        tv_enabled: boolean;
+      } | null,
       form: useForm({
         validationSchema: toTypedSchema(
           z
@@ -969,6 +1021,7 @@ export default {
               tv_port: z.number().min(2).max(65535).optional().default(27020),
               rcon_password: z.string().optional(),
               max_players: z.number().min(1).max(32).optional().default(16),
+              tv_enabled: z.boolean().default(false),
             })
             .refine(
               (data) => {
@@ -1036,6 +1089,29 @@ export default {
           this.populateServer(server);
         }
       },
+    },
+    serverSecrets(secrets) {
+      if (!this.server || !secrets) {
+        return;
+      }
+      if (!this.isDirty) {
+        this.populateServer(this.server);
+        return;
+      }
+      // Mid-edit, only a field the admin hasn't touched takes the new value,
+      // and it counts as saved.
+      const baseline = JSON.parse(this.baseline);
+      const loaded = {
+        connect_password: secrets.connect_password || "",
+        tv_enabled: !!secrets.tv_enabled,
+      };
+      for (const [field, value] of Object.entries(loaded)) {
+        if (this.form.values[field] === baseline[field]) {
+          baseline[field] = value;
+          this.form.setFieldValue(field, value);
+        }
+      }
+      this.baseline = JSON.stringify(baseline);
     },
     ["form.values"]: {
       deep: true,
@@ -1128,6 +1204,20 @@ export default {
     },
     isManagedRankedServer() {
       return this.form.values.type === SERVER_TYPE_RANKED;
+    },
+    // Mirrors the api's server_runs_tv(): a match runs GOTV on Ranked, the
+    // practice plugin turns it off, and CS:GO and Rush have no config to
+    // switch it on in.
+    offersTv(): boolean {
+      const selected = this.form.values.type;
+      return (
+        selected !== SERVER_TYPE_RANKED &&
+        selected !== SERVER_TYPE_PRACTICE &&
+        this.form.values.game !== "csgo" &&
+        !this.gameModes.some(
+          (mode) => mode.id === selected && mode.valve_mode === "rush",
+        )
+      );
     },
     useGameServerNode() {
       return this.form.values.use_game_server_node;
@@ -1553,7 +1643,6 @@ export default {
         tv_port,
         region,
         type,
-        connect_password,
         game_server_node_id,
         game_mode_id,
         max_players,
@@ -1572,8 +1661,9 @@ export default {
           ? game_server_node_id.toString()
           : undefined,
         type: game_mode_id || type || "Ranked",
-        connect_password: connect_password || "",
+        connect_password: this.serverSecrets?.connect_password || "",
         max_players: max_players || 32,
+        tv_enabled: !!this.serverSecrets?.tv_enabled,
       });
       this.dropStaleMode();
       this.takeSnapshot();
@@ -1628,8 +1718,14 @@ export default {
                     label: formValues.label,
                     game: formValues.game || "cs2",
                     rcon_password: formValues.rcon_password,
-                    connect_password: formValues.connect_password,
                     max_players: formValues.max_players,
+                    // Until they load, the form holds blanks for these.
+                    ...(this.serverSecrets
+                      ? {
+                          connect_password: formValues.connect_password,
+                          tv_enabled: formValues.tv_enabled,
+                        }
+                      : {}),
                     ...(!this.server.game_server_node_id
                       ? {
                           host: formValues.host,
@@ -1692,6 +1788,7 @@ export default {
                   rcon_password: formValues.rcon_password,
                   connect_password: formValues.connect_password,
                   max_players: formValues.max_players,
+                  tv_enabled: formValues.tv_enabled,
                 },
               },
               {

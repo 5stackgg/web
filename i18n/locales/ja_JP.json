@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "サーバーに参加",
+    "watch_gotv": "GOTVで観戦",
+    "copy_gotv": "GOTV接続コマンドをコピー",
     "form": {
       "where_it_runs": "稼働場所",
       "what_it_plays": "プレイ内容",
@@ -12562,6 +12564,9 @@
       "tv_port": "TV ポート",
       "max_players": "最大プレイヤー数",
       "max_players_description": "サーバーに接続できるプレイヤーの上限数",
+      "gotv": "GOTV",
+      "gotv_description": "参加できる人は誰でも TV ポートから観戦できます。",
+      "gotv_external_description": "参加できる人に TV ポートを表示します。GOTV 自体はサーバー側の設定で有効にしてください。",
       "edit_mode_link": "モードを編集"
     },
     "rcon": {

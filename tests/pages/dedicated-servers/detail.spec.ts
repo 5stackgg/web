@@ -241,6 +241,36 @@ describe("dedicated server header", () => {
     expect(join.element.parentElement?.textContent).toContain("10.0.0.5:27015");
   });
 
+  it("links GOTV next to Join, or copies it when it needs the password", async () => {
+    const linked = await mountAs("moderator", {
+      server: {
+        connection_string: "connect 10.0.0.5:27015",
+        connection_link: "steam://connect/10.0.0.5:27015",
+        tv_connection_string: "connect 10.0.0.5:27020",
+        tv_connection_link: "steam://connect/10.0.0.5:27020",
+      },
+    });
+
+    expect(linked.find('[data-testid="watch-gotv"]').attributes("href")).toBe(
+      "steam://connect/10.0.0.5:27020",
+    );
+    linked.unmount();
+
+    const locked = await mountAs("moderator", {
+      server: {
+        connection_string: "connect 10.0.0.5:27015; password hunter2",
+        tv_connection_string: "connect 10.0.0.5:27020; password hunter2",
+      },
+    });
+
+    expect(locked.find('[data-testid="watch-gotv"]').exists()).toBe(false);
+    expect(
+      locked
+        .find('[data-testid="copy-gotv"] [data-clipboard-text]')
+        .attributes("data-clipboard-text"),
+    ).toBe("connect 10.0.0.5:27020; password hunter2");
+  });
+
   it("has no Join without a link to launch", async () => {
     const wrapper = await mountAs("moderator", {
       server: { connection_string: "connect 10.0.0.5:27015" },

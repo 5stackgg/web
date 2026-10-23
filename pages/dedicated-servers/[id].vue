@@ -8,6 +8,7 @@ import {
   EyeOff,
   FolderOpen,
   TriangleAlert,
+  Tv,
 } from "lucide-vue-next";
 import {
   AlertDialog,
@@ -174,6 +175,27 @@ const runtimeOptions = [
               <ExternalLink class="size-3.5" />
               {{ $t("pages.dedicated_servers.join_server") }}
             </Button>
+            <Button
+              v-if="server.tv_connection_link"
+              as="a"
+              :href="server.tv_connection_link"
+              size="sm"
+              variant="outline"
+              data-testid="watch-gotv"
+            >
+              <Tv class="size-3.5" />
+              {{ $t("server.watch_gotv") }}
+            </Button>
+            <Clipboard
+              v-else-if="server.tv_connection_string"
+              :data="server.tv_connection_string"
+              class="h-8 w-8 shrink-0 [&_svg]:size-3.5"
+              :title="$t('server.copy_gotv')"
+              :aria-label="$t('server.copy_gotv')"
+              data-testid="copy-gotv"
+            >
+              <Tv />
+            </Clipboard>
 
             <template v-if="isManager">
               <span class="mx-1 h-5 w-px bg-border" aria-hidden="true" />
@@ -656,6 +678,8 @@ export default {
               game_mode_id: true,
               connection_link: true,
               connection_string: true,
+              tv_connection_link: true,
+              tv_connection_string: true,
               offline_at: true,
               max_players: true,
               current_match: { id: true },

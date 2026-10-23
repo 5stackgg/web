@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { print } from "graphql";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -78,6 +79,7 @@ function rootField(query: any): string | undefined {
 async function mount(
   gameServerNodes = nodes,
   props: Record<string, unknown> = {},
+  serverSecrets: Record<string, unknown> | null = null,
 ) {
   useApplicationSettingsStore().settings = [
     { name: "public.game_plugins_enabled", value: "false" },
@@ -89,6 +91,11 @@ async function mount(
       if (rootField(options.query) === "game_server_nodes") {
         Promise.resolve().then(() =>
           observer.next({ data: { game_server_nodes: gameServerNodes } }),
+        );
+      }
+      if (rootField(options.query) === "servers_by_pk" && serverSecrets) {
+        Promise.resolve().then(() =>
+          observer.next({ data: { servers_by_pk: serverSecrets } }),
         );
       }
       return { unsubscribe() {}, closed: false };
@@ -411,5 +418,118 @@ describe("ServerForm server type", () => {
     expect(
       document.body.querySelector('[data-testid="edit-game-mode"]'),
     ).toBeNull();
+  });
+});
+
+describe("ServerForm GOTV", () => {
+  const casual = {
+    id: "server-1",
+    label: "Casual #1",
+    type: "Casual",
+    game_mode_id: null,
+    game: "cs2",
+    port: 27015,
+    tv_port: 27020,
+    max_players: 10,
+    game_server_node_id: "node-1",
+  };
+
+  const gotvSwitch = () =>
+    Array.from(document.body.querySelectorAll("label")).find(
+      (label) => label.textContent?.trim() === "GOTV",
+    );
+
+  const save = async (wrapper: any) => {
+    const mutate = vi
+      .spyOn((useNuxtApp() as any).$apollo.defaultClient, "mutate")
+      .mockResolvedValue({
+        data: { update_servers_by_pk: { __typename: "servers" } },
+      } as any);
+
+    await wrapper.vm.updateCreateServer();
+    await flushPromises();
+
+    return print(mutate.mock.calls[0][0].mutation);
+  };
+
+  it("offers GOTV on a community server", async () => {
+    const wrapper = await mount(nodes, { server: casual });
+
+    expect(gotvSwitch()).toBeDefined();
+
+    (wrapper.vm as any).form.setFieldValue("type", "Ranked");
+    await flushPromises();
+    expect(gotvSwitch()).toBeUndefined();
+  });
+
+  // Neither has a config the api can switch GOTV on in.
+  it("does not offer GOTV on CS:GO or a Rush mode", async () => {
+    const wrapper = await mount(nodes, { server: casual });
+    const vm = wrapper.vm as any;
+
+    vm.form.setFieldValue("game", "csgo");
+    await flushPromises();
+    expect(gotvSwitch()).toBeUndefined();
+
+    vm.form.setFieldValue("game", "cs2");
+    vm.gameModes = [{ ...modes[1], valve_mode: "rush" }];
+    vm.form.setFieldValue("type", modes[1].id);
+    await flushPromises();
+    expect(gotvSwitch()).toBeUndefined();
+  });
+
+  // A reconnect makes the subscription deliver the row again.
+  it("keeps an edit when the saved settings arrive again", async () => {
+    const wrapper = await mount(
+      nodes,
+      { server: casual },
+      { connect_password: null, tv_enabled: false },
+    );
+    const vm = wrapper.vm as any;
+
+    vm.form.setFieldValue("tv_enabled", true);
+    await flushPromises();
+    vm.serverSecrets = { connect_password: "hunter2", tv_enabled: false };
+    await flushPromises();
+
+    expect(vm.form.values.tv_enabled).toBe(true);
+    expect(vm.form.values.connect_password).toBe("hunter2");
+
+    vm.form.setFieldValue("tv_enabled", false);
+    await flushPromises();
+    expect(vm.isDirty).toBe(false);
+  });
+
+  it("reads the saved GOTV switch and keeps it on save", async () => {
+    const wrapper = await mount(
+      nodes,
+      { server: casual },
+      { connect_password: null, tv_enabled: true },
+    );
+
+    expect((wrapper.vm as any).form.values.tv_enabled).toBe(true);
+    expect(await save(wrapper)).toContain("tv_enabled: true");
+  });
+
+  // The server page's own subscription is shared with moderators, so it
+  // never carries the connect password: the form opened blank, and saving it
+  // took the password off the server.
+  it("keeps a saved connect password when the form is saved", async () => {
+    const wrapper = await mount(
+      nodes,
+      { server: casual },
+      { connect_password: "hunter2", tv_enabled: false },
+    );
+
+    expect((wrapper.vm as any).form.values.connect_password).toBe("hunter2");
+    expect(await save(wrapper)).toContain('connect_password: "hunter2"');
+  });
+
+  it("leaves the password and GOTV alone until they have loaded", async () => {
+    const wrapper = await mount(nodes, { server: casual });
+
+    const sent = await save(wrapper);
+    expect(sent).not.toContain("connect_password");
+    expect(sent).not.toContain("tv_enabled");
   });
 });

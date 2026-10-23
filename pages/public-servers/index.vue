@@ -331,6 +331,8 @@ export default {
               hibernating: true,
               connection_link: true,
               connection_string: true,
+              tv_connection_link: true,
+              tv_connection_string: true,
               max_players: true,
               game_mode: {
                 slug: true,

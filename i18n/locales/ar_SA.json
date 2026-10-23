@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "انضم للسيرفر",
+    "watch_gotv": "شاهد عبر GOTV",
+    "copy_gotv": "نسخ أمر اتصال GOTV",
     "form": {
       "where_it_runs": "مكان التشغيل",
       "what_it_plays": "ما يُلعب عليه",
@@ -12562,6 +12564,9 @@
       "tv_port": "منفذ TV",
       "max_players": "أقصى عدد لاعبين",
       "max_players_description": "أقصى عدد لاعبين يمكنهم الاتصال بالسيرفر",
+      "gotv": "GOTV",
+      "gotv_description": "يمكن لكل من يستطيع الانضمام المشاهدة عبر منفذ TV.",
+      "gotv_external_description": "يعرض منفذ TV لكل من يستطيع الانضمام. يُفعَّل GOTV نفسه من إعدادات السيرفر الخاصة.",
       "edit_mode_link": "تعديل الوضع"
     },
     "rcon": {

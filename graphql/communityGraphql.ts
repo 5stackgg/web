@@ -233,6 +233,8 @@ export const PUBLIC_SERVER_SUBSCRIPTION = gql`
       connected
       connection_link
       connection_string
+      tv_connection_link
+      tv_connection_string
       max_players
       game_mode {
         slug

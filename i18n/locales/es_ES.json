@@ -12510,6 +12510,8 @@
   },
   "server": {
     "join_server": "Entrar al servidor",
+    "watch_gotv": "Ver por GOTV",
+    "copy_gotv": "Copiar comando de conexión de GOTV",
     "form": {
       "where_it_runs": "Dónde se ejecuta",
       "what_it_plays": "Qué se juega",
@@ -12562,6 +12564,9 @@
       "tv_port": "Puerto TV",
       "max_players": "Jugadores máx.",
       "max_players_description": "Número máximo de jugadores que pueden conectarse al servidor",
+      "gotv": "GOTV",
+      "gotv_description": "Quien pueda entrar puede verlo por el puerto TV.",
+      "gotv_external_description": "Muestra el puerto TV a quien pueda entrar. GOTV se activa en la propia configuración del servidor.",
       "edit_mode_link": "Editar modo"
     },
     "rcon": {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ExternalLink, Copy } from "lucide-vue-next";
+import { ExternalLink, Copy, Tv } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
 
@@ -7,6 +7,7 @@ export default {
   components: {
     ExternalLink,
     Copy,
+    Tv,
     ClipBoard,
     Button,
   },
@@ -54,5 +55,20 @@ export default {
         {{ $t("server.join_server") }}
       </Button>
     </a>
+    <a v-if="server.tv_connection_link" :href="server.tv_connection_link">
+      <Button variant="outline" data-testid="watch-gotv">
+        <Tv class="w-4 h-4" />
+        {{ $t("server.watch_gotv") }}
+      </Button>
+    </a>
+    <ClipBoard
+      v-else-if="server.tv_connection_string"
+      :data="server.tv_connection_string"
+      :title="$t('server.copy_gotv')"
+      :aria-label="$t('server.copy_gotv')"
+      data-testid="copy-gotv"
+    >
+      <Tv />
+    </ClipBoard>
   </div>
 </template>

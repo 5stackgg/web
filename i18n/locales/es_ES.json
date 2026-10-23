@@ -8383,8 +8383,7 @@
             "body": "Recorta los tuyos de cualquier partida y compártelos."
           }
         },
-        "link": "Explorar highlights",
-        "example_caption": "Un highlight real: cuatro kills y un kill con cuchillo en Mirage, detectados y recortados al terminar la partida."
+        "link": "Explorar highlights"
       },
       "utility": {
         "eyebrow": "Utilidad",

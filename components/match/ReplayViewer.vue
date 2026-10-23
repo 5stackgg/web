@@ -226,6 +226,11 @@ const props = defineProps<{
   mapTitle?: string | null;
   // Initial map view ("2d" default; "3d" for the standalone 3D page).
   initialView?: "2d" | "3d";
+  // One part of a longer page (the welcome page's demo round): the keys only
+  // work with focus inside it, there is no match to share, a phone held
+  // upright still sees it, and it plays in broadcast while it is on screen
+  // without touching the viewer's saved preferences.
+  embedded?: boolean;
 }>();
 
 // CS2 defaults: 20s freezetime warmup (we anchor to the engine's
@@ -1039,6 +1044,7 @@ onUnmounted(pause);
 //   G              fog of war and sight lines (stage)
 function onKeyDown(e: KeyboardEvent) {
   const t = e.target as HTMLElement | null;
+  if (props.embedded && !layoutRootEl.value?.contains(t)) return;
   const tag = t?.tagName;
   // Only true TEXT entry should swallow shortcuts. A focused slider (the
   // seeker), <select> (speed) or <button> must NOT block Space.
@@ -1134,6 +1140,24 @@ function onKeyDown(e: KeyboardEvent) {
 }
 onMounted(() => window.addEventListener("keydown", onKeyDown));
 onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
+
+// Embedded, the round plays while it is on screen and stops off it.
+let embeddedObserver: IntersectionObserver | undefined;
+onMounted(() => {
+  if (
+    !props.embedded ||
+    !layoutRootEl.value ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
+  embeddedObserver = new IntersectionObserver(
+    ([entry]) => (entry?.isIntersecting ? play() : pause()),
+    { threshold: 0.5 },
+  );
+  embeddedObserver.observe(layoutRootEl.value);
+});
+onUnmounted(() => embeddedObserver?.disconnect());
 
 // Focus target: clicking a player in the roster or on the stage follows
 // them. Click again to clear. Single-select — focusing a new player swaps
@@ -1348,7 +1372,9 @@ watch(
 // slow motion on the big moments. Moving the camera by hand, or following a
 // player, pauses it until the toggle (or B) resumes it; the preference
 // itself stays on.
-const broadcastOn = persistedBool("5s.replay.broadcast", false);
+const broadcastOn = props.embedded
+  ? ref(true)
+  : persistedBool("5s.replay.broadcast", false);
 const broadcastSlowmo = persistedBool("5s.replay.broadcast_slowmo", true);
 const broadcastPaused = ref(false);
 const broadcastShot = shallowRef<DirectorLabel | null>(null);
@@ -1777,7 +1803,9 @@ function syncMobileEnv() {
 const mobileChrome = computed(() => isCoarsePointer.value);
 // Block the viewer while a touch device is held portrait — the wide layout is
 // unusable that narrow, so we ask the user to rotate instead of cramming it.
-const needsRotate = computed(() => isCoarsePointer.value && isPortrait.value);
+const needsRotate = computed(
+  () => !props.embedded && isCoarsePointer.value && isPortrait.value,
+);
 
 onMounted(() => {
   if (typeof window === "undefined" || !window.matchMedia) return;
@@ -2667,7 +2695,7 @@ const replayShare = useReplayShare({
         :on-condensed="() => (broadcastCondensed = !broadcastCondensed)"
         :clip-marks="replayShare.chromeMarks"
       >
-        <template #share>
+        <template v-if="!embedded" #share>
           <ReplayShareMenu :share="replayShare" />
         </template>
       </ReplayChrome>

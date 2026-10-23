@@ -308,6 +308,33 @@ const scorePanelStyle = computed(() => {
   const top = props.mobile ? 8 : 14;
   return { maxHeight: `calc(100% - ${top + barHeight.value + 12}px)` };
 });
+// The left column stops above the bar too; the play-by-play scrolls inside it.
+const leftStyle = scorePanelStyle;
+
+// A short stage (an embed, a small window) cannot hold both full rosters, so
+// the rows tighten and the dead fold to their name line. Decided from the
+// height the full board needs, so it does not flip back and forth.
+const chromeEl = ref<HTMLElement | null>(null);
+const chromeHeight = ref(0);
+let chromeRO: ResizeObserver | null = null;
+onMounted(() => {
+  if (!chromeEl.value || typeof ResizeObserver === "undefined") return;
+  chromeRO = new ResizeObserver(() => {
+    chromeHeight.value = chromeEl.value?.clientHeight ?? 0;
+  });
+  chromeRO.observe(chromeEl.value);
+});
+onBeforeUnmount(() => chromeRO?.disconnect());
+
+const FULL_ROW_PX = 62;
+const TEAM_CHROME_PX = 40;
+const denseRoster = computed(() => {
+  if (!chromeHeight.value) return false;
+  const top = props.mobile ? 8 : 14;
+  const room = chromeHeight.value - top - barHeight.value - 12;
+  const rows = props.teamA.length + props.teamB.length;
+  return room < rows * FULL_ROW_PX + 2 * TEAM_CHROME_PX + 9;
+});
 
 // Custom pointer scrubber for the seek bar. Native <input type=range> on iOS
 // only drags from the (4px) thumb and otherwise lets the touch scroll the page,
@@ -416,7 +443,7 @@ const utilClusters = computed(() => {
 
 <template>
   <TooltipProvider :delay-duration="250">
-    <div class="bp-chrome" :class="{ 'is-mobile': mobile }">
+    <div ref="chromeEl" class="bp-chrome" :class="{ 'is-mobile': mobile }">
       <!-- HUD -->
       <div ref="hudEl" class="bp-hud">
         <span class="bp-score"
@@ -441,7 +468,7 @@ const utilClusters = computed(() => {
       </div>
 
       <!-- left column: controls row (2D/3D | camera) + play-by-play -->
-      <div class="bp-left">
+      <div class="bp-left" :style="leftStyle">
         <div class="bp-controls">
           <div class="bp-viewtoggle">
             <Tooltip
@@ -782,6 +809,7 @@ const utilClusters = computed(() => {
         <div
           v-show="showScoreboard !== false"
           class="bp-score-panel"
+          :class="{ dense: denseRoster }"
           :style="scorePanelStyle"
         >
         <div
@@ -1674,6 +1702,9 @@ const utilClusters = computed(() => {
   color: #ffd24d;
   font-weight: 700;
 }
+.bp-left > * {
+  flex-shrink: 0;
+}
 .bp-pbp {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -1681,6 +1712,8 @@ const utilClusters = computed(() => {
   padding: 7px 8px;
   max-height: 42vh;
   overflow-y: auto;
+  flex-shrink: 1;
+  min-height: 0;
 }
 .bp-pbp-h {
   font-size: 10px;
@@ -2081,6 +2114,51 @@ const utilClusters = computed(() => {
   font-size: 10px;
   color: #7f8fa0;
   font-variant-numeric: tabular-nums;
+}
+/* short stage: tighter rows, and the dead keep only their name line */
+.bp-score-panel.dense {
+  gap: 6px;
+}
+.bp-score-panel.dense .bp-team-h {
+  padding-bottom: 3px;
+}
+.bp-score-panel.dense .bp-prow {
+  padding: 2px 6px 6px 9px;
+}
+.bp-score-panel.dense .bp-prow.dead {
+  padding-bottom: 2px;
+}
+.bp-score-panel.dense .bp-prow + .bp-prow {
+  margin-top: 0;
+}
+/* health and armor ride the row's bottom edge instead of a line of their own */
+.bp-score-panel.dense .prow-bars {
+  position: absolute;
+  left: 9px;
+  right: 6px;
+  bottom: 1px;
+  margin: 0;
+  gap: 1px;
+}
+.bp-score-panel.dense .hpw {
+  height: 3px;
+}
+.bp-score-panel.dense .armw {
+  height: 1px;
+}
+.bp-score-panel.dense .prow-gear {
+  margin-top: 2px;
+  min-height: 16px;
+}
+.bp-score-panel.dense .prow-gear .eq {
+  height: 14px;
+}
+.bp-score-panel.dense .prow-gear .eq.gun {
+  height: 16px;
+}
+.bp-score-panel.dense .bp-prow.dead .prow-bars,
+.bp-score-panel.dense .bp-prow.dead .prow-gear {
+  display: none;
 }
 /* controls row: 2D/3D | cam dock — single line (overflows the 264px column) */
 .bp-controls {

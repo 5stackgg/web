@@ -43,8 +43,8 @@ const LandingBracket = defineAsyncComponent(
 const LandingStream = defineAsyncComponent(
   () => import("~/components/landing/LandingStream.vue"),
 );
-const LandingHighlights = defineAsyncComponent(
-  () => import("~/components/landing/LandingHighlights.vue"),
+const LandingReplay = defineAsyncComponent(
+  () => import("~/components/landing/LandingReplay.vue"),
 );
 const LandingUtility = defineAsyncComponent(
   () => import("~/components/landing/LandingUtility.vue"),
@@ -399,6 +399,7 @@ const outlineButton =
 
         <LandingSection
           id="rewatch"
+          wide
           v-bind="copy('rewatch')"
           :points="sections.rewatch"
           :link="
@@ -407,8 +408,8 @@ const outlineButton =
               : null
           "
         >
-          <LandingDefer :placeholder="520">
-            <LandingHighlights />
+          <LandingDefer :placeholder="720">
+            <LandingReplay />
           </LandingDefer>
         </LandingSection>
 

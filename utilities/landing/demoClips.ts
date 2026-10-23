@@ -1,10 +1,8 @@
 import type { Clip } from "~/types/clip";
 
-// Real highlights rendered on 5stack.gg, kept in the repo so the welcome page
-// can play them on any instance: nuggets' Deagle ace on Dust II, and rawr's
-// four kills and a knife kill on Mirage.
+// A real highlight rendered on 5stack.gg, kept in the repo so the welcome page
+// can play it on any instance: nuggets' Deagle ace on Dust II.
 export const EXAMPLE_CLIP_VIDEO = "/landing/highlight.mp4";
-export const KNIFE_CLIP_VIDEO = "/landing/highlight-knife.mp4";
 
 function clip(
   id: string,
@@ -59,38 +57,3 @@ export const EXAMPLE_CLIP = clip(
     score: [13, 10],
   },
 );
-
-export const KNIFE_CLIP = clip(
-  "00000000-0000-0000-0002-000000000005",
-  "rawr",
-  "de_mirage",
-  {
-    title: "rawr — Best Round (4K) + 1 Knife Kill",
-    duration_ms: 18227,
-    kills_count: 5,
-    round: 19,
-    thumbnail: "/landing/highlight-knife.webp",
-    score: [14, 16],
-  },
-);
-
-export const DEMO_CLIPS: Clip[] = [
-  clip("00000000-0000-0000-0002-000000000002", "Saffron", "de_inferno", {
-    title: "Saffron — Best Round (4K)",
-    duration_ms: 19000,
-    kills_count: 4,
-    round: 7,
-  }),
-  clip("00000000-0000-0000-0002-000000000003", "kuro", "de_ancient", {
-    title: "kuro — 1v3 Clutch",
-    duration_ms: 31000,
-    kills_count: 3,
-    round: 22,
-  }),
-  clip("00000000-0000-0000-0002-000000000004", "Moritz", "de_mirage", {
-    title: "Moritz — Best Round (3K)",
-    duration_ms: 14000,
-    kills_count: 3,
-    round: 4,
-  }),
-];

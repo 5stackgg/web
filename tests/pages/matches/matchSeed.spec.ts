@@ -53,7 +53,13 @@ const draftMatch = () =>
     draft_games: [{ id: "draft-1" }],
   });
 
+// A moderator reads the whole match on one subscription, which is what these
+// pin; signed-in players and visitors read it split (sharedLive.spec.ts).
 async function mountMatch() {
+  useAuthStore().me = {
+    steam_id: "76561198000000001",
+    role: "moderator",
+  } as any;
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   provideApolloClient(client);
 
@@ -101,6 +107,7 @@ async function answerLive(row: Record<string, unknown> | null) {
 }
 
 afterEach(() => {
+  useAuthStore().me = undefined;
   mounted?.unmount();
   mounted = null;
   liveObserver = null;

@@ -14,11 +14,13 @@ import {
 // what depends on who is asking, on the viewer's own session.
 //
 // For these roles every table these pages read gives the rows a guest gets.
-// Moderators and above see more, and read the whole document as before.
+// A signed-out visitor is a guest on both halves, so they share the same poll
+// rather than one of their own. Moderators and above see more, and read the
+// whole document as before.
 const SHARED_ROLES = new Set(["user", "verified_user", "streamer"]);
 
 export function readsShared(role: string | null | undefined): boolean {
-  return !!role && SHARED_ROLES.has(role);
+  return !role || SHARED_ROLES.has(role);
 }
 
 const keyOf = (field: FieldNode) => (field.alias ?? field.name).value;

@@ -3,7 +3,8 @@ import { Kind, visit, type ASTNode, type DocumentNode } from "graphql";
 // Everyone watching a match reads the same rounds, kills and lineups. For
 // these roles every table the match page reads gives the rows a guest gets,
 // so they read the match as a guest, sharing one Hasura poll with every other
-// viewer, and only what is theirs on their own session. Moderators and above
+// viewer, and only what is theirs on their own session. A signed-out visitor
+// is a guest on both halves, so they share that poll too. Moderators and above
 // see more of the match than a guest, and read it whole as before.
 const SHARED_ROLES = new Set(["user", "verified_user", "streamer"]);
 
@@ -28,7 +29,7 @@ const PERSONAL_LINEUP_FIELDS = [
 const LINEUPS = ["lineup_1", "lineup_2"];
 
 export function readsMatchShared(role: string | null | undefined): boolean {
-  return !!role && SHARED_ROLES.has(role);
+  return !role || SHARED_ROLES.has(role);
 }
 
 function at(ancestors: ReadonlyArray<ASTNode | ReadonlyArray<ASTNode>>) {

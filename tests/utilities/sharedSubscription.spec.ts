@@ -140,14 +140,16 @@ describe("joinShared", () => {
 });
 
 describe("readsShared", () => {
-  it("shares for players, verified players and streamers only", () => {
+  it("shares for signed-out visitors, players, verified players and streamers", () => {
     expect(
-      ["user", "verified_user", "streamer"].map((role) => readsShared(role)),
-    ).toEqual([true, true, true]);
-    expect(
-      [undefined, null, "moderator", "match_organizer", "administrator"].map(
-        (role) => readsShared(role),
+      [undefined, null, "user", "verified_user", "streamer"].map((role) =>
+        readsShared(role),
       ),
-    ).toEqual([false, false, false, false, false]);
+    ).toEqual([true, true, true, true, true]);
+    expect(
+      ["moderator", "match_organizer", "administrator"].map((role) =>
+        readsShared(role),
+      ),
+    ).toEqual([false, false, false]);
   });
 });

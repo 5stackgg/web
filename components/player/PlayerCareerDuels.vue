@@ -425,6 +425,7 @@ watch(loading, (isLoading) => {
           >
             <RadialStat
               :value="fmtPct(overallWinPct)"
+              :percentage="overallWinPct"
               :label="$t('pages.players.detail.career_duels.win_label')"
               :score="statScore(overallWinPct, 58, 42)"
               :level="statLevelFor(winTier, overallWinPct)"

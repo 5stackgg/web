@@ -7,12 +7,12 @@ import { toneColor, type StatLevel } from "~/utils/statTiers";
 const props = defineProps<{
   value: string | number;
   label: string;
-  // Raw fill 0–100. Used only when `score` is not supplied.
-  percentage?: number;
+  // Raw fill 0–100. Always wins the arc length, so a 54% stat reads as a
+  // half ring no matter how good 54% is for that stat.
+  percentage?: number | null;
   // 0..1 quality on this stat's own scale. When given it drives the ring's
-  // color (red→amber→green), its opacity (faint when bad → solid when good),
-  // and its arc length — so a mediocre stat reads as a short, dim, reddish arc
-  // instead of a loud full white ring.
+  // color (red→amber→green) and opacity (faint when bad → solid when good),
+  // plus the arc length when there's no `percentage` (e.g. a rating).
   score?: number | null;
   strokeColor?: string;
   // Quality of this stat, rendered as a chevron inside the ring.
@@ -27,11 +27,11 @@ const t = computed(() =>
   hasScore.value ? Math.min(Math.max(props.score as number, 0), 1) : 0,
 );
 
-// Arc length follows the quality scale when scored, else the raw percentage.
+// Arc length is the raw percentage when given, else the quality scale.
 const fillPct = computed(() =>
-  hasScore.value
-    ? t.value * 100
-    : Math.min(Math.max(props.percentage ?? 0, 0), 100),
+  props.percentage != null
+    ? Math.min(Math.max(props.percentage, 0), 100)
+    : t.value * 100,
 );
 
 const ringColor = computed(() =>

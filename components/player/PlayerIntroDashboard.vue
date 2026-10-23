@@ -1320,6 +1320,7 @@ function tooltipAfter(index: number | undefined): string[] {
                   <div class="flex cursor-help flex-col items-center">
                     <RadialStat
                       :value="fmtPct(aggregate.kast)"
+                      :percentage="aggregate.kast"
                       :label="$t('pages.players.detail.intro.series.kast')"
                       :score="statScore(aggregate.kast, 80, 55)"
                       :level="statLevelFromRange(aggregate.kast, 75, 55)"
@@ -1362,6 +1363,7 @@ function tooltipAfter(index: number | undefined): string[] {
               <div class="flex flex-col items-center">
                 <RadialStat
                   :value="fmtPct(aggregate.hsPct)"
+                  :percentage="aggregate.hsPct"
                   :label="$t('pages.players.detail.intro.hs_pct')"
                   :score="statScore(aggregate.hsPct, 55, 5)"
                   :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"

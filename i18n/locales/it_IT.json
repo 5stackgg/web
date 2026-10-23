@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "Attiva il matchmaking per ogni tipo, così i giocatori potranno entrare in coda per quel tipo di match.",
         "players": {
           "permissions_section": "Permessi dei ruoli",
+          "leaderboard_section": "Classifiche",
+          "leaderboard_section_description": "I giocatori compaiono in una classifica solo dopo aver raggiunto questi minimi nella stagione o nel periodo visualizzato. Il minimo di round si applica solo a Rating HLTV, ADR, KPR, KAST e UDR. Trofei, Faceit e Premier li ignorano entrambi.",
+          "leaderboard_min_matches": "Match minimi",
+          "leaderboard_min_rounds": "Round minimi",
           "force_name_registration": "Forza la registrazione del nome giocatore",
           "force_name_registration_description": "Se la registrazione è forzata, il giocatore dovrà inserire un nome che verrà usato sulla piattaforma.",
           "refresh_all_title": "Reindicizza l'indice di ricerca",

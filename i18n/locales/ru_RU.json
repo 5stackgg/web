@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "Включи подбор игры для каждого типа, чтобы разрешить игрокам искать матчи этого типа.",
         "players": {
           "permissions_section": "Права ролей",
+          "leaderboard_section": "Таблицы лидеров",
+          "leaderboard_section_description": "Игроки попадают в таблицу лидеров, только набрав эти минимумы за просматриваемый сезон или период. Минимум раундов действует только для Рейтинга HLTV, ADR, KPR, KAST и UDR. Награды, Faceit и Premier не учитывают ни один из них.",
+          "leaderboard_min_matches": "Минимум матчей",
+          "leaderboard_min_rounds": "Минимум раундов",
           "force_name_registration": "Обязательная регистрация имени игрока",
           "force_name_registration_description": "Если регистрация имени обязательна, игроку нужно будет указать имя, которое будет использоваться на платформе.",
           "refresh_all_title": "Переиндексировать поиск",

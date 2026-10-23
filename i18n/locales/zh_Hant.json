@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "為每種比賽類型切換配對功能，允許玩家加入該類比賽的配對。",
         "players": {
           "permissions_section": "角色權限",
+          "leaderboard_section": "排行榜",
+          "leaderboard_section_description": "玩家需在目前檢視的賽季或時間範圍內達到這些最低要求，才會出現在排行榜上。最少回合數僅適用於 HLTV 評分、ADR、KPR、KAST 和 UDR。獎項、Faceit 和 Premier 不受兩者影響。",
+          "leaderboard_min_matches": "最少比賽數",
+          "leaderboard_min_rounds": "最少回合數",
           "force_name_registration": "強制玩家名稱註冊",
           "force_name_registration_description": "若強制要求玩家註冊，玩家將必須提交一個在平台上使用的名稱。",
           "refresh_all_title": "重建搜尋索引",

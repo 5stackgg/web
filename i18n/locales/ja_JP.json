@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "種類ごとにマッチメイキングを切り替えると、プレイヤーはその種類の試合のマッチメイキングに参加できます。",
         "players": {
           "permissions_section": "ロール権限",
+          "leaderboard_section": "ランキング",
+          "leaderboard_section_description": "表示中のシーズンまたは期間でこれらの最低条件を満たしたプレイヤーのみがランキングに表示されます。最低ラウンド数はHLTVレーティング、ADR、KPR、KAST、UDRにのみ適用されます。アワード、Faceit、Premierにはどちらも適用されません。",
+          "leaderboard_min_matches": "最低試合数",
+          "leaderboard_min_rounds": "最低ラウンド数",
           "force_name_registration": "プレイヤー名の登録を必須にする",
           "force_name_registration_description": "登録を必須にすると、プラットフォーム上で使用する名前の入力がプレイヤーに求められます。",
           "refresh_all_title": "検索インデックスの再構築",

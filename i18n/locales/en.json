@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
         "players": {
           "permissions_section": "Role permissions",
+          "leaderboard_section": "Leaderboards",
+          "leaderboard_section_description": "Players appear on a leaderboard only once they meet these minimums in the season or time range being viewed. Minimum rounds applies only to HLTV Rating, ADR, KPR, KAST and UDR. Awards, Faceit and Premier ignore both.",
+          "leaderboard_min_matches": "Minimum matches",
+          "leaderboard_min_rounds": "Minimum rounds",
           "force_name_registration": "Force player name registration",
           "force_name_registration_description": "If forced to have player registration, the player will be required to submit a name that will be used on the platform.",
           "refresh_all_title": "Reindex search index",

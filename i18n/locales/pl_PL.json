@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "Przełącz matchmaking dla każdego typu, aby umożliwić graczom dołączanie do matchmakingu dla tego typu meczu.",
         "players": {
           "permissions_section": "Uprawnienia ról",
+          "leaderboard_section": "Rankingi",
+          "leaderboard_section_description": "Gracze pojawiają się w rankingu dopiero po osiągnięciu tych minimów w wyświetlanym sezonie lub okresie. Minimalna liczba rund dotyczy tylko HLTV Rating, ADR, KPR, KAST i UDR. Nagrody, Faceit i Premier ignorują oba progi.",
+          "leaderboard_min_matches": "Minimalna liczba meczów",
+          "leaderboard_min_rounds": "Minimalna liczba rund",
           "force_name_registration": "Wymuś rejestrację nazwy gracza",
           "force_name_registration_description": "Jeśli wymuszona jest rejestracja gracza, gracz będzie musiał podać nazwę, która będzie używana na platformie.",
           "refresh_all_title": "Przebuduj indeks wyszukiwania",

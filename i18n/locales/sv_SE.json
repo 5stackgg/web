@@ -2677,6 +2677,10 @@
         "matchmaking_type_description": "Slå på matchmaking för varje typ för att låta spelare gå med i matchmaking för den matchtypen.",
         "players": {
           "permissions_section": "Rollbehörigheter",
+          "leaderboard_section": "Topplistor",
+          "leaderboard_section_description": "Spelare visas på en topplista först när de når dessa minimikrav under den säsong eller period som visas. Minsta antal ronder gäller bara HLTV Rating, ADR, KPR, KAST och UDR. Utmärkelser, Faceit och Premier ignorerar båda.",
+          "leaderboard_min_matches": "Minsta antal matcher",
+          "leaderboard_min_rounds": "Minsta antal ronder",
           "force_name_registration": "Tvinga registrering av spelarnamn",
           "force_name_registration_description": "Om spelarregistrering krävs måste spelaren ange ett namn som används på plattformen.",
           "refresh_all_title": "Reindexera sökindex",

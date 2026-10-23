@@ -1312,6 +1312,18 @@ socket.listen("friend-presence", (presence) => {
   useMatchmakingStore().setFriendPresence(presence);
 });
 
+socket.listen("lan-roster", (roster) => {
+  useMatchmakingStore().setLanRoster(roster);
+});
+
+socket.listen("lan-presence", (presence) => {
+  useMatchmakingStore().applyLanPresence(presence);
+});
+
+socket.listen("players-online:check", (reply) => {
+  useMatchmakingStore().setOnlineCheck(reply);
+});
+
 socket.listen("players-online:count", (count) => {
   useMatchmakingStore().setOnlineCount(count);
 });

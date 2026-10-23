@@ -8569,7 +8569,8 @@
       "preferred": "首选区域",
       "skips_over": "匹配会跳过延迟超过 {ms} ms 的区域。",
       "uses_starred": "匹配会使用你标星的区域。",
-      "sign_in": "登录后可查看你到各区域的延迟。"
+      "sign_in": "登录后可查看你到各区域的延迟。",
+      "players_online": "{count} 人在线"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "已请求，取消请求",
       "incoming_requests": "收到的请求",
       "sent_requests": "已发送的请求",
-      "just_online": "刚刚上线"
+      "just_online": "刚刚上线",
+      "team_section": "战队 · {name}"
     },
     "others": {
       "title": "其他"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "不允许匹配。",
       "role_required": "你没有加入此队列的权限。",
       "queue_busy": "你的大厅仍在加入队列，请重试。"
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "这里所有在线的人",
+      "search_placeholder": "搜索此 LAN...",
+      "just_arrived": "刚刚到达",
+      "at_this_lan": "在此 LAN",
+      "left": "已离开 LAN",
+      "empty_title": "这里还没有其他人",
+      "empty_description": "此 LAN 上的玩家在线时会显示在这里。"
     }
   },
   "game_server": {

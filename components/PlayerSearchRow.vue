@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
-defineProps<{
-  player: any;
-  active?: boolean;
-  // When set the row is rendered dimmed and non-selectable, and this sentence
-  // is shown underneath explaining why.
-  reason?: string;
-  tag?: string;
-}>();
+withDefaults(
+  defineProps<{
+    player: any;
+    active?: boolean;
+    // When set the row is rendered dimmed and non-selectable, and this
+    // sentence is shown underneath explaining why.
+    reason?: string;
+    tag?: string;
+    online?: boolean;
+  }>(),
+  { online: undefined },
+);
 
 const emit = defineEmits<{ select: []; hover: [] }>();
 </script>
@@ -28,7 +32,7 @@ const emit = defineEmits<{ select: []; hover: [] }>();
     @mouseenter="emit('hover')"
   >
     <div class="flex items-center justify-between gap-2">
-      <PlayerDisplay :player="player" />
+      <PlayerDisplay :player="player" :online="online" />
       <span
         v-if="tag"
         class="shrink-0 rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"

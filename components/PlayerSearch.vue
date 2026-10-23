@@ -87,6 +87,7 @@ const { height: viewportHeight } = useVisualViewport();
                         : undefined
                     "
                     :player="player"
+                    :online="onlineFor(player)"
                     :active="indexOfPlayer(player) === selectedIndex"
                     :reason="reasonFor(player)"
                     :tag="tagFor(player)"
@@ -112,6 +113,7 @@ const { height: viewportHeight } = useVisualViewport();
                 :key="`player-${player.steam_id}`"
                 :ref="index === selectedIndex ? setActiveRow : undefined"
                 :player="player"
+                :online="onlineFor(player)"
                 :active="index === selectedIndex"
                 :reason="reasonFor(player)"
                 :tag="tagFor(player)"
@@ -288,6 +290,7 @@ const { height: viewportHeight } = useVisualViewport();
                         : undefined
                     "
                     :player="player"
+                    :online="onlineFor(player)"
                     :active="indexOfPlayer(player) === selectedIndex"
                     :reason="reasonFor(player)"
                     :tag="tagFor(player)"
@@ -319,6 +322,7 @@ const { height: viewportHeight } = useVisualViewport();
                   :key="`player-${player.steam_id}`"
                   :ref="index === selectedIndex ? setActiveRow : undefined"
                   :player="player"
+                  :online="onlineFor(player)"
                   :active="index === selectedIndex"
                   :reason="reasonFor(player)"
                   :tag="tagFor(player)"
@@ -462,6 +466,8 @@ export default {
       visibleCount: PAGE_SIZE,
       // Guards against a slow early request overwriting a newer one.
       searchToken: 0,
+      // Which loaded results the api says are online.
+      onlineResultIds: new Set<string>(),
       observer: null as IntersectionObserver | null,
       debouncedSearch: debounce((query: string) => {
         this.searchPlayers(query);
@@ -789,6 +795,7 @@ export default {
       this.page = 1;
       this.visibleCount = PAGE_SIZE;
       this.searchToken += 1;
+      this.onlineResultIds = new Set();
       const token = this.searchToken;
 
       if (this.onlineOnly) {
@@ -807,6 +814,7 @@ export default {
         this.players = players;
         this.totalFound = found;
         this.selectedIndex = this.firstSelectableIndex();
+        void this.checkOnline(players, token);
       } finally {
         if (token === this.searchToken) {
           this.searching = false;
@@ -843,6 +851,7 @@ export default {
         this.players = (this.players ?? []).concat(
           players.filter((p) => !seen.has(String(p.steam_id))),
         );
+        void this.checkOnline(players, token);
       } finally {
         this.loadingMore = false;
         // If the freshly appended page didn't push the sentinel out of the
@@ -850,6 +859,23 @@ export default {
         // re-reports an already-intersecting target.
         this.$nextTick(() => this.ensureObserver());
       }
+    },
+    async checkOnline(players: Player[], token: number) {
+      if (!players.length || !this.me) {
+        return;
+      }
+      const { online } = await useMatchmakingStore().checkOnline(
+        players.map((player) => String(player.steam_id)),
+      );
+      if (token !== this.searchToken) {
+        return;
+      }
+      this.onlineResultIds = new Set([...this.onlineResultIds, ...online]);
+    },
+    onlineFor(player: Player) {
+      return this.onlineResultIds.has(String(player.steam_id))
+        ? true
+        : undefined;
     },
     ensureObserver() {
       this.observer?.disconnect();

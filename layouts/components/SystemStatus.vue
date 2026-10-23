@@ -30,9 +30,9 @@ const toneText: Record<Tone, string> = {
 const statusTone = (status: string): Tone =>
   status === "Online" ? "ok" : status === "Offline" ? "bad" : "warn";
 
-// Admins also see how many players are online across the instance.
-const isAdmin = computed(() =>
-  authStore.isRoleAbove(e_player_roles_enum.administrator),
+// Match organizers and above also see how many players are online.
+const seesOnlineCount = computed(() =>
+  authStore.isRoleAbove(e_player_roles_enum.match_organizer),
 );
 const playersOnline = computed(() => matchmaking.onlineCount);
 
@@ -88,12 +88,12 @@ const statusLabel = computed(() =>
       <button
         type="button"
         class="inline-flex h-8 shrink-0 animate-in fade-in-0 items-center justify-center rounded-md transition-colors duration-150 [animation-duration:240ms] focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.1)]"
-        :class="isAdmin ? 'gap-1 px-1.5' : 'w-8'"
+        :class="seesOnlineCount ? 'gap-1 px-1.5' : 'w-8'"
         :aria-label="statusLabel"
       >
         <Globe class="h-4 w-4" :class="toneText[overallTone]" />
         <span
-          v-if="isAdmin"
+          v-if="seesOnlineCount"
           data-testid="players-online-count"
           class="font-mono text-[0.7rem] tabular-nums text-muted-foreground"
         >
@@ -101,7 +101,7 @@ const statusLabel = computed(() =>
         </span>
       </button>
     </template>
-    <template v-if="isAdmin" #header>
+    <template v-if="seesOnlineCount" #header>
       <p
         data-testid="players-online-line"
         class="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.12em] tabular-nums text-muted-foreground"
@@ -181,12 +181,12 @@ const statusLabel = computed(() =>
       <button
         type="button"
         class="inline-flex h-8 shrink-0 animate-in fade-in-0 items-center justify-center rounded-md transition-colors duration-150 [animation-duration:240ms] focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.1)]"
-        :class="isAdmin ? 'gap-1 px-1.5' : 'w-8'"
+        :class="seesOnlineCount ? 'gap-1 px-1.5' : 'w-8'"
         :aria-label="statusLabel"
       >
         <Globe class="h-4 w-4" :class="toneText[overallTone]" />
         <span
-          v-if="isAdmin"
+          v-if="seesOnlineCount"
           data-testid="players-online-count"
           class="font-mono text-[0.7rem] tabular-nums text-muted-foreground"
         >
@@ -202,7 +202,7 @@ const statusLabel = computed(() =>
       class="w-[320px] max-w-[calc(100vw-1.5rem)] space-y-4"
     >
       <p
-        v-if="isAdmin"
+        v-if="seesOnlineCount"
         data-testid="players-online-line"
         class="font-mono text-[0.7rem] uppercase tracking-[0.12em] tabular-nums text-muted-foreground"
       >

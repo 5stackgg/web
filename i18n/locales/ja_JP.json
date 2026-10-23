@@ -8569,7 +8569,8 @@
       "preferred": "優先リージョン",
       "skips_over": "マッチメイキングは {ms} ms を超えるリージョンを除外します。",
       "uses_starred": "マッチメイキングはスターを付けたリージョンを使用します。",
-      "sign_in": "ログインすると各リージョンへのPingを確認できます。"
+      "sign_in": "ログインすると各リージョンへのPingを確認できます。",
+      "players_online": "{count}人がオンライン"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "申請中、申請を取消",
       "incoming_requests": "申請",
       "sent_requests": "送信済み",
-      "just_online": "オンラインになったばかり"
+      "just_online": "オンラインになったばかり",
+      "team_section": "チーム · {name}"
     },
     "others": {
       "title": "その他"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "マッチメイキングは許可されていません。",
       "role_required": "このキューに参加する権限がありません。",
       "queue_busy": "ロビーはまだキューに参加中です。もう一度お試しください。"
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "ここでオンラインの全員",
+      "search_placeholder": "このLANを検索...",
+      "just_arrived": "到着したばかり",
+      "at_this_lan": "このLAN内",
+      "left": "LANから離れました",
+      "empty_title": "まだ他に誰もいません",
+      "empty_description": "このLANのプレイヤーはオンライン中ここに表示されます。"
     }
   },
   "game_server": {

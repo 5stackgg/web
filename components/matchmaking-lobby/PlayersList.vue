@@ -185,6 +185,28 @@ const rowTransition = computed(() =>
       </section>
       </Transition>
 
+      <!-- A section per team I'm on -->
+      <section
+        v-for="team in teamSections"
+        :key="`team-${team.id}`"
+        class="pb-4"
+      >
+        <div class="friend-section-label">
+          <span class="h-[2px] w-2 bg-muted-foreground/40" />
+          {{ $t("matchmaking.friends.team_section", { name: team.name }) }}
+          <span class="ml-auto tabular-nums opacity-70">
+            {{ team.online }}/{{ team.members.length }}
+          </span>
+        </div>
+        <div class="flex flex-col">
+          <FriendListItem
+            v-for="member in team.members"
+            :key="`team-${team.id}-${member.steam_id}`"
+            :player="member"
+            :muted="!isOnline(member)"
+          />
+        </div>
+      </section>
       <!-- Offline -->
       <Transition
         enter-active-class="friend-section-fold"
@@ -298,6 +320,9 @@ export default {
       syncing: false,
     };
   },
+  mounted() {
+    useMatchmakingStore().ensureMyTeams();
+  },
   computed: {
     friends() {
       return useMatchmakingStore().friends as any[];
@@ -355,8 +380,41 @@ export default {
           matchesSearch(p, this.searchQuery) && this.passesRegisteredFilter(p),
       );
     },
+    // Every team I'm on, with its other members online first.
+    teamSections(): Array<{
+      id: string;
+      name: string;
+      members: any[];
+      online: number;
+    }> {
+      const me = String(this.me?.steam_id);
+      return (useMatchmakingStore().myTeams as any[])
+        .map((team: any) => {
+          const members = (team.roster ?? [])
+            .map((member: any) => member.player)
+            .filter(
+              (player: any) =>
+                player &&
+                String(player.steam_id) !== me &&
+                matchesSearch(player, this.searchQuery),
+            )
+            .sort(
+              (a: any, b: any) =>
+                Number(this.isOnline(b)) - Number(this.isOnline(a)),
+            );
+          return {
+            id: team.id,
+            name: team.name,
+            members,
+            online: members.filter((member: any) => this.isOnline(member))
+              .length,
+          };
+        })
+        .filter((team) => team.members.length > 0);
+    },
     isEmpty(): boolean {
       return (
+        this.teamSections.length === 0 &&
         this.incomingRequests.length === 0 &&
         this.filteredOnlinePlayers.length === 0 &&
         this.filteredOfflinePlayers.length === 0 &&
@@ -368,6 +426,11 @@ export default {
     },
   },
   methods: {
+    isOnline(player: any) {
+      return useMatchmakingStore().onlinePlayerSteamIds.includes(
+        String(player.steam_id),
+      );
+    },
     passesRegisteredFilter(player: any) {
       if (!this.registeredFriendsOnly) {
         return true;

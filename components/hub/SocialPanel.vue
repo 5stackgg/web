@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
-import HubEmptyState from "~/components/hub/HubEmptyState.vue";
+import LanPlayersList from "~/components/hub/LanPlayersList.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useInvites } from "@/composables/useInvites";
 
@@ -14,8 +14,19 @@ const { hasSocialInvites } = useInvites();
 const onlineFriends = computed(() => matchmakingStore.onlineFriends);
 const offlineFriends = computed(() => matchmakingStore.offlineFriends);
 
-// The paged list of everyone else online comes later; the tab shows the count.
-const othersCount = computed(() => matchmakingStore.onlineCount);
+// Only while this tab is on a LAN: everyone online at it.
+const onLan = computed(() => !!matchmakingStore.lanRegion);
+const lanCount = computed(
+  () =>
+    (matchmakingStore.lanPlayers as any[]).length -
+    (matchmakingStore.lanLeft as string[]).length,
+);
+
+watch(onLan, (on) => {
+  if (!on && activeTab.value === "lan") {
+    activeTab.value = "friends";
+  }
+});
 </script>
 
 <template>
@@ -44,12 +55,14 @@ const othersCount = computed(() => matchmakingStore.onlineCount);
             />
           </TabsTrigger>
           <TabsTrigger
-            value="online"
+            v-if="onLan"
+            value="lan"
+            data-testid="lan-tab"
             class="flex-1 text-[0.7rem] font-semibold tracking-[0.1em] uppercase px-2 py-[0.35rem]"
           >
-            {{ $t("matchmaking.others.title") }}
+            {{ $t("matchmaking.lan.title") }}
             <span class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums">
-              {{ othersCount }}
+              {{ lanCount }}
             </span>
           </TabsTrigger>
         </TabsList>
@@ -63,13 +76,11 @@ const othersCount = computed(() => matchmakingStore.onlineCount);
         <PlayersList />
       </TabsContent>
       <TabsContent
-        value="online"
-        class="mt-0 flex flex-1 flex-col min-h-0 px-3 data-[state=inactive]:hidden"
+        v-if="onLan"
+        value="lan"
+        class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3 data-[state=inactive]:hidden"
       >
-        <HubEmptyState
-          :title="$t('layouts.hub.empty.others_title')"
-          :description="$t('layouts.hub.empty.others_description')"
-        />
+        <LanPlayersList />
       </TabsContent>
     </Tabs>
   </div>

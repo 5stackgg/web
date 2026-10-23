@@ -8569,7 +8569,8 @@
       "preferred": "선호 지역",
       "skips_over": "매치메이킹은 {ms} ms를 초과하는 지역을 제외합니다.",
       "uses_starred": "매치메이킹은 별표한 지역을 사용합니다.",
-      "sign_in": "로그인하면 각 지역의 핑을 확인할 수 있습니다."
+      "sign_in": "로그인하면 각 지역의 핑을 확인할 수 있습니다.",
+      "players_online": "{count}명 온라인"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "요청함, 요청 취소",
       "incoming_requests": "받은 요청",
       "sent_requests": "보낸 요청",
-      "just_online": "방금 접속함"
+      "just_online": "방금 접속함",
+      "team_section": "팀 · {name}"
     },
     "others": {
       "title": "기타"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "매치메이킹이 허용되지 않습니다.",
       "role_required": "이 대기열에 참가할 권한이 없습니다.",
       "queue_busy": "로비가 아직 대기열에 참가하는 중입니다. 다시 시도해 주세요."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "여기 접속 중인 모두",
+      "search_placeholder": "이 LAN 검색...",
+      "just_arrived": "방금 도착",
+      "at_this_lan": "이 LAN에 있음",
+      "left": "LAN을 떠남",
+      "empty_title": "아직 다른 사람이 없습니다",
+      "empty_description": "이 LAN의 플레이어가 온라인일 때 여기에 표시됩니다."
     }
   },
   "game_server": {

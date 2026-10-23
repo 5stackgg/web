@@ -12479,7 +12479,8 @@
       "cancel_request_aria": "Requested, Cancel Request",
       "incoming_requests": "Requests",
       "sent_requests": "Sent",
-      "just_online": "Just came online"
+      "just_online": "Just came online",
+      "team_section": "Team · {name}"
     },
     "others": {
       "title": "Others"
@@ -12518,6 +12519,16 @@
       "queue_disabled": "Matchmaking is not allowed.",
       "role_required": "You do not have permission to join this queue.",
       "queue_busy": "Your lobby is still joining the queue, try again."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "everyone online here",
+      "search_placeholder": "Search this LAN...",
+      "just_arrived": "Just arrived",
+      "at_this_lan": "At this LAN",
+      "left": "Left the LAN",
+      "empty_title": "Nobody else is here yet",
+      "empty_description": "Players on this LAN show up here while they're online."
     }
   },
   "game_server": {

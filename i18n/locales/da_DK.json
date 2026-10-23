@@ -8569,7 +8569,8 @@
       "preferred": "Foretrukken region",
       "skips_over": "Matchmaking springer regioner over {ms} ms over.",
       "uses_starred": "Matchmaking bruger dine stjernemarkerede regioner.",
-      "sign_in": "Log ind for at se dit ping til hver region."
+      "sign_in": "Log ind for at se dit ping til hver region.",
+      "players_online": "{count} online"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "Anmodet, Annuller anmodning",
       "incoming_requests": "Anmodninger",
       "sent_requests": "Sendt",
-      "just_online": "Lige kommet online"
+      "just_online": "Lige kommet online",
+      "team_section": "Hold · {name}"
     },
     "others": {
       "title": "Andre"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "Matchmaking er ikke tilladt.",
       "role_required": "Du har ikke tilladelse til at deltage i denne kø.",
       "queue_busy": "Din lobby er stadig ved at komme i kø, prøv igen."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "alle online her",
+      "search_placeholder": "Søg på dette LAN...",
+      "just_arrived": "Lige ankommet",
+      "at_this_lan": "På dette LAN",
+      "left": "Har forladt LAN'et",
+      "empty_title": "Ingen andre er her endnu",
+      "empty_description": "Spillere på dette LAN vises her, mens de er online."
     }
   },
   "game_server": {

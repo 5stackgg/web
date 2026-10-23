@@ -8569,7 +8569,8 @@
       "preferred": "Preferowany region",
       "skips_over": "Matchmaking pomija regiony powyżej {ms} ms.",
       "uses_starred": "Matchmaking korzysta z regionów oznaczonych gwiazdką.",
-      "sign_in": "Zaloguj się, aby zobaczyć swój ping do każdego regionu."
+      "sign_in": "Zaloguj się, aby zobaczyć swój ping do każdego regionu.",
+      "players_online": "{count} online"
     },
     "match_lobby": {
       "versus": "VS"
@@ -12478,7 +12479,8 @@
       "cancel_request_aria": "Wysłano, Anuluj zaproszenie",
       "incoming_requests": "Zaproszenia",
       "sent_requests": "Wysłane",
-      "just_online": "Właśnie online"
+      "just_online": "Właśnie online",
+      "team_section": "Drużyna · {name}"
     },
     "others": {
       "title": "Inni"
@@ -12517,6 +12519,16 @@
       "queue_disabled": "Matchmaking jest niedozwolony.",
       "role_required": "Nie masz uprawnień, aby dołączyć do tej kolejki.",
       "queue_busy": "Twoje lobby wciąż dołącza do kolejki, spróbuj ponownie."
+    },
+    "lan": {
+      "title": "LAN",
+      "everyone_here": "wszyscy online tutaj",
+      "search_placeholder": "Szukaj w tym LAN...",
+      "just_arrived": "Właśnie dołączyli",
+      "at_this_lan": "W tym LAN",
+      "left": "Opuścił LAN",
+      "empty_title": "Nikogo innego jeszcze tu nie ma",
+      "empty_description": "Gracze z tego LAN pojawiają się tutaj, gdy są online."
     }
   },
   "game_server": {

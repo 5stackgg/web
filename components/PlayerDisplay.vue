@@ -352,6 +352,12 @@ export default {
       type: Boolean,
       default: true,
     },
+    // Presence from elsewhere (a search result's check); otherwise only
+    // friends and teammates are known.
+    online: {
+      type: Boolean,
+      default: undefined,
+    },
     pingStatus: {
       type: Boolean,
       default: false,
@@ -516,6 +522,10 @@ export default {
     isOnline() {
       if (!this.player) {
         return false;
+      }
+
+      if (this.online !== undefined) {
+        return this.online;
       }
 
       return useMatchmakingStore().onlinePlayerSteamIds.includes(

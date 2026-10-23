@@ -35,8 +35,12 @@ async function mountAs(role: e_player_roles_enum) {
 }
 
 describe("the online count on the status globe", () => {
-  it("shows an administrator how many players are online", async () => {
-    const wrapper = await mountAs(e_player_roles_enum.administrator);
+  it.each([
+    e_player_roles_enum.match_organizer,
+    e_player_roles_enum.tournament_organizer,
+    e_player_roles_enum.administrator,
+  ])("shows a %s how many players are online", async (role) => {
+    const wrapper = await mountAs(role);
 
     expect(wrapper.get('[data-testid="players-online-count"]').text()).toBe(
       "42",
@@ -51,8 +55,13 @@ describe("the online count on the status globe", () => {
     ).toContain("42 online");
   });
 
-  it("shows a player no online count", async () => {
-    const wrapper = await mountAs(e_player_roles_enum.user);
+  it.each([
+    e_player_roles_enum.user,
+    e_player_roles_enum.verified_user,
+    e_player_roles_enum.streamer,
+    e_player_roles_enum.moderator,
+  ])("shows a %s no online count", async (role) => {
+    const wrapper = await mountAs(role);
 
     expect(wrapper.find('[data-testid="players-online-count"]').exists()).toBe(
       false,

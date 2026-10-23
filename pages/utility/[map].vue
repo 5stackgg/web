@@ -2077,7 +2077,7 @@ function selectLineup(id: string | null) {
       <!-- Capped at the map's own size, so the control row above fits the
            window with it and shares its edges. -->
       <div
-        class="relative mx-auto w-full min-w-0 max-w-[min(1000px,calc(100dvh-var(--header-height,4rem)-5rem))] md:sticky md:top-4 md:flex md:min-h-[calc(100dvh-var(--header-height,4rem)-2rem)] md:flex-col md:self-start"
+        class="relative mx-auto w-full min-w-0 max-w-[min(1000px,calc(100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-5rem))] md:sticky md:top-4 md:flex md:min-h-[calc(100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-2rem)] md:flex-col md:self-start"
       >
         <!-- Centred on the line the rail is, when the window is taller than
              the map needs. Auto margins rather than justify-center: they fall
@@ -2280,7 +2280,7 @@ function selectLineup(id: string | null) {
         ref="sheet"
         :enabled="isMobile"
         :class="arriving ? 'utility-arrive' : ''"
-        class="utility-card flex min-h-0 flex-col overflow-hidden md:sticky md:top-4 md:h-[calc(100dvh-var(--header-height,4rem)-2rem)] md:self-start md:rounded-2xl md:border md:border-white/[0.08] md:bg-sidebar md:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
+        class="utility-card flex min-h-0 flex-col overflow-hidden md:sticky md:top-4 md:h-[calc(100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-2rem)] md:self-start md:rounded-2xl md:border md:border-white/[0.08] md:bg-sidebar md:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
       >
         <template #peek>
           <div

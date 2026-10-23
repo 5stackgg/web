@@ -14,8 +14,10 @@ const SOMEONE = "76561198000000002";
 
 type Observer = { next: (result: any) => void };
 
-let liveObservers: Record<string, Observer> = {};
-let liveFields: Record<string, string[]> = {};
+// A signed-in player reads the match on two subscriptions, the shared one as
+// a guest and their own fields on their session; each gets its own fields.
+let liveObservers: Record<string, { observer: Observer; fields: string[] }[]> =
+  {};
 let answers: Record<string, Record<string, unknown>> = {};
 let staticQueries: {
   matchId: string;
@@ -93,10 +95,9 @@ function signIn(steamId = ME, role = "user") {
 }
 
 function emitLive(match: Record<string, unknown>) {
-  const id = String(match.id);
-  liveObservers[id].next({
-    data: { matches_by_pk: project(match, liveFields[id]) },
-  });
+  for (const { observer, fields } of liveObservers[String(match.id)]) {
+    observer.next({ data: { matches_by_pk: project(match, fields) } });
+  }
 }
 
 function staticFor(matchId: string) {
@@ -115,15 +116,20 @@ async function mountMatch(answer: Record<string, unknown>) {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   provideApolloClient(client);
 
-  vi.spyOn(client, "subscribe").mockImplementation((options: any) => ({
-    subscribe(observer: Observer) {
-      if (operation(options.query).field === "matches_by_pk") {
-        liveObservers[options.variables.matchId] = observer;
-        liveFields[options.variables.matchId] = fieldsOf(options.query);
-      }
-      return { unsubscribe() {}, closed: false };
-    },
-  }));
+  for (const live of [client, (useApollo().clients as any).public]) {
+    vi.spyOn(live, "subscribe").mockImplementation((options: any) => ({
+      subscribe(observer: Observer) {
+        if (operation(options.query).field === "matches_by_pk") {
+          const id = options.variables.matchId;
+          liveObservers[id] = [
+            ...(liveObservers[id] ?? []),
+            { observer, fields: fieldsOf(options.query) },
+          ];
+        }
+        return { unsubscribe() {}, closed: false };
+      },
+    }));
+  }
 
   vi.spyOn(client, "watchQuery").mockImplementation((options: any) => {
     const isStatic = operation(options.query).field === "matches_by_pk";
@@ -191,7 +197,6 @@ afterEach(() => {
   mounted?.unmount();
   mounted = null;
   liveObservers = {};
-  liveFields = {};
   answers = {};
   staticQueries = [];
   useAuthStore().me = undefined;

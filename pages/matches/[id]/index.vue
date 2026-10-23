@@ -485,6 +485,11 @@ import { chatThreadKey } from "~/utilities/chatThread";
 import socket from "~/web-sockets/Socket";
 import { vetoBoardUp } from "~/utilities/vetoStage";
 import { withRoundEvents } from "~/utilities/matchRoundEvents";
+import {
+  joinMatchHalves,
+  readsMatchShared,
+  splitMatchSubscription,
+} from "~/utilities/matchLiveSplit";
 import { vetoHandoffPhase } from "~/composables/useVetoHandoff";
 
 const matchSubscription = typedGql("subscription")({
@@ -698,6 +703,18 @@ function seedableMatch(data: Record<string, any>) {
   return !!data.matches_by_pk && !draftRoomFor(data.matches_by_pk);
 }
 
+const { shared: sharedMatchSubscription, personal: personalMatchSubscription } =
+  splitMatchSubscription(matchSubscription);
+
+function seedableShared(data: Record<string, any>) {
+  return !!data.matches_by_pk;
+}
+
+// Without the status here, any draft lobby could be one to leave for.
+function seedablePersonal(data: Record<string, any>) {
+  return !!data.matches_by_pk && !data.matches_by_pk.draft_games?.length;
+}
+
 // Page width at which the chat moves to its own rail. The rail takes 392px,
 // and below this the stats column would drop under ~780px.
 const CHAT_RAIL_MIN_WIDTH = 1600;
@@ -744,6 +761,11 @@ export default {
     };
   },
   watch: {
+    "$route.params.id"() {
+      this.liveShared = undefined;
+      this.livePersonal = undefined;
+      this.matchFallback = false;
+    },
     matchContext: {
       immediate: true,
       handler(context) {
@@ -820,6 +842,9 @@ export default {
   data() {
     return {
       matchLive: undefined,
+      liveShared: undefined as Record<string, any> | null | undefined,
+      livePersonal: undefined as Record<string, any> | null | undefined,
+      matchFallback: false,
       matchStatic: undefined,
       cameraReady: false,
       cameraOverlayDismissed: false,
@@ -840,8 +865,40 @@ export default {
         },
         query: matchSubscription,
         context: { seed: seedableMatch },
+        skip: function (this: any): boolean {
+          return this.readsShared;
+        },
         result: function ({ data }) {
           this.setMatchLive(withRoundEvents(data.matches_by_pk));
+        },
+      },
+      matchShared: {
+        client: "public",
+        variables: function (this: any) {
+          return this.matchVariables();
+        },
+        query: sharedMatchSubscription,
+        context: { seed: seedableShared },
+        skip: function (this: any): boolean {
+          return !this.readsShared;
+        },
+        result: function (this: any, { data }: any) {
+          this.liveShared = data.matches_by_pk;
+          this.joinMatch();
+        },
+      },
+      matchPersonal: {
+        variables: function (this: any) {
+          return { matchId: this.$route.params.id };
+        },
+        query: personalMatchSubscription,
+        context: { seed: seedablePersonal },
+        skip: function (this: any): boolean {
+          return !this.readsShared;
+        },
+        result: function (this: any, { data }: any) {
+          this.livePersonal = data.matches_by_pk;
+          this.joinMatch();
         },
       },
     },
@@ -944,6 +1001,9 @@ export default {
     },
     viewerRole() {
       return useAuthStore().me?.role;
+    },
+    readsShared(): boolean {
+      return readsMatchShared(useAuthStore().me?.role) && !this.matchFallback;
     },
     matchContext(): Record<string, any> | null {
       if (!this.match) {
@@ -1158,6 +1218,27 @@ export default {
         order_by_round_kills: order_by.asc,
         order_by_round: order_by.desc,
       };
+    },
+    joinMatch() {
+      const shared = this.liveShared;
+      const personal = this.livePersonal;
+      if (shared === undefined || personal === undefined) {
+        return;
+      }
+      if (personal === null) {
+        this.setMatchLive(null);
+        return;
+      }
+      // Hidden from guests (still picking players, canceled) but not from
+      // this viewer: read whole on their session, as before.
+      if (shared === null) {
+        this.matchFallback = true;
+        return;
+      }
+      if (shared.id !== personal.id) {
+        return;
+      }
+      this.setMatchLive(withRoundEvents(joinMatchHalves(shared, personal)));
     },
     setMatchLive(match: any) {
       if (!match) {

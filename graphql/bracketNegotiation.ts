@@ -11,7 +11,6 @@ const proposalFields = {
   message: true,
   proposed_by_steam_id: true,
   proposed_by: {
-    steam_id: true,
     name: true,
   },
 };

@@ -48,3 +48,22 @@ export const playerFields = Selector("players")({
  * elo, and swapping the selector under one silently blanks it.
  */
 export const playerFieldsWithoutElo = Selector("players")(playerIdentityFields);
+
+const {
+  premier_rank: _premierRank,
+  premier_rank_updated_at: _premierRankUpdatedAt,
+  faceit_skill_level: _faceitSkillLevel,
+  faceit_elo: _faceitElo,
+  faceit_url: _faceitUrl,
+  faceit_nickname: _faceitNickname,
+  ...playerFieldsWithoutRankColumns
+} = playerIdentityFields;
+
+/**
+ * For a `<PlayerDisplay>` given no `match-type`: it only shows a Premier or
+ * FACEIT rank for those match types, so the rank columns are never read.
+ */
+export const playerFieldsWithoutRanks = Selector("players")({
+  ...playerFieldsWithoutRankColumns,
+  elo: true,
+});

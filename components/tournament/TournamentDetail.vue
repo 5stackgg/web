@@ -979,7 +979,11 @@ import {
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
-import { playerFields, playerFieldsWithoutElo } from "~/graphql/playerFields";
+import {
+  playerFields,
+  playerFieldsWithoutElo,
+  playerFieldsWithoutRanks,
+} from "~/graphql/playerFields";
 import {
   generateMutation,
   generateQuery,
@@ -1120,7 +1124,24 @@ const tournamentSubscription = typedGql("subscription")({
           final_map_advantage: true,
           settings: true,
           third_place_match: true,
-          options: matchOptionsFields,
+          // What the stage form and bracket cards read; the rest of a stage's
+          // match options are shown from the tournament's own.
+          options: {
+            id: true,
+            best_of: true,
+            match_mode: true,
+            tv_delay: true,
+            veto_pick_timeout: true,
+            region_veto: true,
+            regions: true,
+            check_in_setting: true,
+            ready_setting: true,
+            tech_timeout_setting: true,
+            map_pool: {
+              id: true,
+              maps: [{}, { id: true }],
+            },
+          },
           windows: [
             {},
             {
@@ -1139,25 +1160,18 @@ const tournamentSubscription = typedGql("subscription")({
               placement: true,
               wins: true,
               losses: true,
-              rounds_won: true,
-              rounds_lost: true,
-              maps_won: true,
-              maps_lost: true,
               matches_played: true,
-              matches_remaining: true,
               team: {
                 id: true,
                 name: true,
                 team: {
                   id: true,
                   name: true,
-                  avatar_url: true,
                 },
                 roster: [
                   {},
                   {
-                    role: true,
-                    player: playerFields,
+                    player: playerFieldsWithoutRanks,
                   },
                 ],
               },
@@ -1193,10 +1207,7 @@ const tournamentSubscription = typedGql("subscription")({
               team_1_seed: true,
               team_2_seed: true,
               path: true,
-              loser_parent_bracket_id: true,
-              match_options_id: true,
               options: {
-                best_of: true,
                 match_mode: true,
               },
               parent_bracket: {
@@ -1227,8 +1238,6 @@ const tournamentSubscription = typedGql("subscription")({
                 path: true,
                 parent_bracket_id: true,
                 loser_parent_bracket_id: true,
-                team_1_seed: true,
-                team_2_seed: true,
               },
               match: {
                 id: true,
@@ -1252,19 +1261,15 @@ const tournamentSubscription = typedGql("subscription")({
                     lineup_1_score: true,
                     lineup_2_score: true,
                     winning_lineup_id: true,
-                    order: true,
-                    status: true,
                   },
                 ],
                 lineup_1: {
                   id: true,
                   name: true,
-                  team_id: true,
                 },
                 lineup_2: {
                   id: true,
                   name: true,
-                  team_id: true,
                 },
               },
               team_1: {
@@ -1284,7 +1289,6 @@ const tournamentSubscription = typedGql("subscription")({
                 },
               },
               ...bracketProposalSelection,
-              created_at: true,
             },
           ],
         },

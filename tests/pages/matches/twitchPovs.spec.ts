@@ -24,7 +24,9 @@ const SOMEONE = "76561198000000002";
 
 type Observer = { next: (result: any) => void };
 
-let liveObserver: Observer | null = null;
+// A signed-in player reads the match on two subscriptions: the shared one as
+// a guest and their own fields on their session.
+let liveObservers: Observer[] = [];
 let staticAnswer: Record<string, unknown> = {};
 let mounted: { unmount: () => void } | null = null;
 
@@ -91,14 +93,16 @@ async function mountMatch(answer: Record<string, unknown>) {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   provideApolloClient(client);
 
-  vi.spyOn(client, "subscribe").mockImplementation((options: any) => ({
-    subscribe(observer: Observer) {
-      if (field(options.query) === "matches_by_pk") {
-        liveObserver = observer;
-      }
-      return { unsubscribe() {}, closed: false };
-    },
-  }));
+  for (const live of [client, (useApollo().clients as any).public]) {
+    vi.spyOn(live, "subscribe").mockImplementation((options: any) => ({
+      subscribe(observer: Observer) {
+        if (field(options.query) === "matches_by_pk") {
+          liveObservers.push(observer);
+        }
+        return { unsubscribe() {}, closed: false };
+      },
+    }));
+  }
 
   vi.spyOn(client, "watchQuery").mockImplementation((options: any) => {
     const isStatic = field(options.query) === "matches_by_pk";
@@ -144,7 +148,9 @@ async function mountMatch(answer: Record<string, unknown>) {
 }
 
 async function emitLive(match: Record<string, unknown>) {
-  liveObserver!.next({ data: { matches_by_pk: match } });
+  for (const observer of liveObservers) {
+    observer.next({ data: { matches_by_pk: match } });
+  }
   await flushPromises();
 }
 
@@ -169,7 +175,7 @@ beforeEach(() => {
 afterEach(() => {
   mounted?.unmount();
   mounted = null;
-  liveObserver = null;
+  liveObservers = [];
   staticAnswer = {};
   useAuthStore().me = undefined;
   useApplicationSettingsStore().settings = [];

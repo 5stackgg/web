@@ -6,7 +6,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { BrandCardBrand } from "../../utils/brandCard";
 
-let rendered: { version: string; png: Buffer } | null = null;
+// A card drawn with the crest because the logo fetch failed is kept this
+// long before the logo is tried again.
+const STAND_IN_MS = 60 * 1000;
+
+type Card = { version: string; expires: number; png: Promise<Buffer> };
+
+let card: Card | null = null;
 let fontFile: Promise<string> | null = null;
 
 // resvg only loads fonts from files, and server assets are bundled into the
@@ -28,7 +34,7 @@ async function brandLogo(brand: BrandCardBrand) {
     try {
       const logo = await $fetch<ArrayBuffer>(
         `https://${process.env.NUXT_PUBLIC_API_DOMAIN}/branding/logo`,
-        { responseType: "arrayBuffer" },
+        { responseType: "arrayBuffer", timeout: 5000 },
       );
       return { png: Buffer.from(logo), standIn: false };
     } catch (err) {
@@ -39,17 +45,28 @@ async function brandLogo(brand: BrandCardBrand) {
   return { png: Buffer.from(crest), standIn: !!brand.logo };
 }
 
+// Requests that arrive while a card is drawing wait on the same render.
+function drawCard(brand: BrandCardBrand, version: string) {
+  const entry = { version, expires: Infinity } as Card;
+  entry.png = (async () => {
+    const logo = await brandLogo(brand);
+    if (logo.standIn) entry.expires = Date.now() + STAND_IN_MS;
+    return renderBrandCard(brand, logo.png, await brandFont());
+  })();
+  entry.png.catch(() => {
+    if (card === entry) card = null;
+  });
+  return entry;
+}
+
 export default defineEventHandler(async (event) => {
   const brand = brandCardBrand(await loadPublicSettings());
   const version = brandCardVersion(brand);
 
-  let png = rendered?.version === version ? rendered.png : null;
-  if (!png) {
-    const logo = await brandLogo(brand);
-    png = renderBrandCard(brand, logo.png, await brandFont());
-    // A failed logo fetch draws the crest for now and tries again next time.
-    if (!logo.standIn) rendered = { version, png };
+  if (!card || card.version !== version || Date.now() > card.expires) {
+    card = drawCard(brand, version);
   }
+  const png = await card.png;
 
   setResponseHeaders(event, {
     "Content-Type": "image/png",

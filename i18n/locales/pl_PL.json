@@ -11162,6 +11162,8 @@
       "resume": "Wznów mecz",
       "match_paused": "Mecz wstrzymany",
       "match_resumed": "Mecz wznowiony",
+      "pause_not_applied": "Serwer nie wstrzymał meczu. Może trwać przerwa lub resetowanie rundy.",
+      "resume_not_applied": "Serwer nie wznowił meczu. Może trwać przerwa lub resetowanie rundy.",
       "forced_ready": "Gracze wymuszeni jako gotowi",
       "skipped_knife": "Knife round pominięty",
       "start_live": "Rozpocznij transmisję na żywo",

@@ -11162,6 +11162,8 @@
       "resume": "Reprendre le match",
       "match_paused": "Match en pause",
       "match_resumed": "Match repris",
+      "pause_not_applied": "Le serveur n'a pas mis le match en pause. Un temps mort ou une réinitialisation de manche est peut-être en cours.",
+      "resume_not_applied": "Le serveur n'a pas repris le match. Un temps mort ou une réinitialisation de manche est peut-être en cours.",
       "forced_ready": "Joueurs forcés prêts",
       "skipped_knife": "Knife round passé",
       "start_live": "Lancer le live",

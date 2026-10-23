@@ -11162,6 +11162,8 @@
       "resume": "⏯ Despausar Partida",
       "match_paused": "Partida Pausada",
       "match_resumed": "Partida Retomada",
+      "pause_not_applied": "O servidor não pausou a partida. Pode haver um timeout ou um reinício de round em andamento.",
+      "resume_not_applied": "O servidor não retomou a partida. Pode haver um timeout ou um reinício de round em andamento.",
       "forced_ready": "Jogadores forçados como prontos",
       "skipped_knife": "Rodada de faca pulada",
       "start_live": "Iniciar Live Stream",

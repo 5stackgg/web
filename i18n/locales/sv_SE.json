@@ -11162,6 +11162,8 @@
       "resume": "Återuppta match",
       "match_paused": "Matchen pausad",
       "match_resumed": "Matchen återupptagen",
+      "pause_not_applied": "Servern pausade inte matchen. En timeout eller återställning av rundan kan pågå.",
+      "resume_not_applied": "Servern återupptog inte matchen. En timeout eller återställning av rundan kan pågå.",
       "forced_ready": "Spelarna tvingades redo",
       "skipped_knife": "Knivronden hoppades över",
       "start_live": "Starta livesändning",

@@ -11162,6 +11162,8 @@
       "resume": "Riprendi il match",
       "match_paused": "Match in pausa",
       "match_resumed": "Match ripreso",
+      "pause_not_applied": "Il server non ha messo in pausa il match. Potrebbe essere in corso un timeout o il ripristino di un round.",
+      "resume_not_applied": "Il server non ha ripreso il match. Potrebbe essere in corso un timeout o il ripristino di un round.",
       "forced_ready": "Giocatori forzati pronti",
       "skipped_knife": "Knife round saltato",
       "start_live": "Avvia live stream",

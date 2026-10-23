@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { reactive } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
@@ -8,16 +9,25 @@ import socket from "~/web-sockets/Socket";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
+const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast,
+}));
+
 let mutate: ReturnType<typeof vi.fn>;
 let rcon: ReturnType<typeof vi.spyOn>;
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined;
+let current: ReturnType<typeof match>;
 
 function match(mapStatus: string, overrides: Record<string, any> = {}) {
-  return {
+  return reactive({
     id: "m-1",
     status: "Live",
     is_organizer: true,
     is_in_lineup: false,
+    is_coach: false,
     is_server_online: true,
     can_cancel: true,
     can_start: false,
@@ -31,27 +41,43 @@ function match(mapStatus: string, overrides: Record<string, any> = {}) {
     lineup_2: { id: "l-2", name: "Ember Six", lineup_players: [] },
     winning_lineup_id: null,
     ...overrides,
-  };
+  });
 }
 
 async function mountActions(
   role: e_player_roles_enum,
   mapStatus: string,
-  overrides: Record<string, any> = {},
+  { dock = false, ...overrides }: Record<string, any> = {},
 ) {
   useAuthStore().me = { steam_id: "76561198000000001", role } as any;
+  current = match(mapStatus, overrides);
   wrapper = await mountSuspended(MatchActions, {
-    props: { match: match(mapStatus, overrides) },
+    props: { match: current, dock },
     global: { mixins: (useNuxtApp().vueApp as any)._context.mixins },
   });
   await flushPromises();
   return wrapper;
 }
 
-const pauseButton = () => {
-  const button = wrapper!.findComponent(MatchPauseButton);
-  return button.exists() && (button.props("show") as boolean);
+const pauseButton = () => wrapper!.findComponent(MatchPauseButton);
+
+const shown = () =>
+  pauseButton().exists() && (pauseButton().props("show") as boolean);
+
+const toggle = async () => {
+  pauseButton().vm.$emit("toggle");
+  await flushPromises();
 };
+
+const flip = async (mapStatus: string) => {
+  current.match_maps[0].status = mapStatus;
+  await flushPromises();
+};
+
+const sentPauses = () =>
+  mutate.mock.calls.filter(([{ mutation }]) =>
+    print(mutation).includes("setMatchPaused"),
+  );
 
 beforeEach(() => {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
@@ -61,47 +87,131 @@ beforeEach(() => {
     subscribe: () => ({ unsubscribe() {}, closed: false }),
   }));
   rcon = vi.spyOn(socket, "event").mockImplementation(() => {});
+  toast.mockClear();
 });
 
 afterEach(() => {
   wrapper?.unmount();
   wrapper = undefined;
   useAuthStore().me = undefined;
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
 describe("match actions pause and resume", () => {
   it.each([
-    ["Live", true],
-    ["Paused", false],
+    ["Live", true, "Paused", "Match paused"],
+    ["Paused", false, "Live", "Match resumed"],
   ])(
     "lets an organizer without RCON toggle a %s map through setMatchPaused",
-    async (mapStatus, paused) => {
+    async (mapStatus, paused, flipped, done) => {
       await mountActions(e_player_roles_enum.user, mapStatus);
 
-      expect(pauseButton()).toBe(true);
+      expect(shown()).toBe(true);
 
-      wrapper!.findComponent(MatchPauseButton).vm.$emit("toggle");
-      await flushPromises();
+      await toggle();
 
-      expect(mutate).toHaveBeenCalledTimes(1);
-      expect(print(mutate.mock.calls[0][0].mutation)).toContain(
+      expect(sentPauses()).toHaveLength(1);
+      expect(print(sentPauses()[0][0].mutation)).toContain(
         "setMatchPaused(match_id: $matchId, paused: $paused)",
       );
-      expect(mutate.mock.calls[0][0].variables).toEqual({
-        matchId: "m-1",
-        paused,
-      });
+      expect(sentPauses()[0][0].variables).toEqual({ matchId: "m-1", paused });
       expect(rcon).not.toHaveBeenCalled();
+
+      await flip(flipped);
+
+      expect(toast).toHaveBeenCalledWith({ title: done });
     },
   );
+
+  it("keeps the button busy until the map's status flips", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+
+    await toggle();
+
+    expect(pauseButton().props("loading")).toBe(true);
+    expect(toast).not.toHaveBeenCalled();
+
+    await flip("Paused");
+
+    expect(pauseButton().props("loading")).toBe(false);
+  });
+
+  it("ignores another click while the first is still waiting", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+
+    await toggle();
+    await toggle();
+
+    expect(sentPauses()).toHaveLength(1);
+  });
+
+  it.each([
+    ["Live", "The server didn't pause the match"],
+    ["Paused", "The server didn't resume the match"],
+  ])(
+    "says so when a %s map hasn't flipped after 8 seconds",
+    async (mapStatus, message) => {
+      await mountActions(e_player_roles_enum.user, mapStatus);
+      vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+
+      await toggle();
+      vi.advanceTimersByTime(7_999);
+      expect(toast).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(1);
+      await flushPromises();
+
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: "destructive",
+          title: expect.stringContaining(message),
+        }),
+      );
+      expect(pauseButton().props("loading")).toBe(false);
+    },
+  );
+
+  it("frees the button at once when the api refuses", async () => {
+    await mountActions(e_player_roles_enum.user, "Live");
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    mutate.mockRejectedValueOnce(new Error("there is no live map to pause"));
+
+    await toggle();
+
+    expect(pauseButton().props("loading")).toBe(false);
+    vi.advanceTimersByTime(10_000);
+    await flushPromises();
+    expect(toast).not.toHaveBeenCalled();
+  });
 
   it("keeps the button from anyone who doesn't organize the match", async () => {
     await mountActions(e_player_roles_enum.administrator, "Live", {
       is_organizer: false,
     });
 
-    expect(pauseButton()).toBe(false);
+    expect(shown()).toBe(false);
+  });
+
+  // The api refuses these the same way it refuses their restore or restart.
+  it.each([
+    ["is in a lineup", { is_in_lineup: true }],
+    ["coaches a lineup", { is_coach: true }],
+  ])(
+    "keeps the button from an organizer below moderator who %s",
+    async (_label, overrides) => {
+      await mountActions(e_player_roles_enum.user, "Live", overrides);
+
+      expect(shown()).toBe(false);
+    },
+  );
+
+  it("still gives it to a moderator in a lineup", async () => {
+    await mountActions(e_player_roles_enum.moderator, "Live", {
+      is_in_lineup: true,
+    });
+
+    expect(shown()).toBe(true);
   });
 
   it.each(["Warmup", "Knife", "Finished"])(
@@ -109,7 +219,27 @@ describe("match actions pause and resume", () => {
     async (mapStatus) => {
       await mountActions(e_player_roles_enum.user, mapStatus);
 
-      expect(pauseButton()).toBe(false);
+      expect(shown()).toBe(false);
     },
   );
+
+  it("pauses from the admin dock and holds its button until the map flips", async () => {
+    await mountActions(e_player_roles_enum.user, "Live", { dock: true });
+    const dockButton = () =>
+      wrapper!
+        .findAll("button")
+        .find((button) => button.text().includes("Pause Match"));
+
+    expect(dockButton()?.exists()).toBe(true);
+
+    await dockButton()!.trigger("click");
+    await flushPromises();
+
+    expect(sentPauses()).toHaveLength(1);
+    expect(dockButton()!.attributes("disabled")).toBeDefined();
+
+    await flip("Paused");
+
+    expect(toast).toHaveBeenCalledWith({ title: "Match paused" });
+  });
 });

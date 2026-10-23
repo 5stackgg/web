@@ -16,6 +16,7 @@ import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
 import MatchFixProblemButton from "~/components/match/MatchFixProblemButton.vue";
 import MatchPauseButton from "~/components/match/MatchPauseButton.vue";
+import { Spinner } from "~/components/ui/spinner";
 import MatchRestartDialog from "~/components/match/MatchRestartDialog.vue";
 import MatchVetoFixDialog from "~/components/match/veto/MatchVetoFixDialog.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
@@ -58,7 +59,8 @@ const menuLabel =
     <MatchPauseButton
       :show="canPauseResume && !dock"
       :paused="isPaused"
-      :disabled="!match.is_server_online || pausing"
+      :loading="pausing"
+      :disabled="!match.is_server_online"
       @toggle="togglePause"
     />
 
@@ -115,7 +117,12 @@ const menuLabel =
           "
           :compact="compact"
         >
-          <component :is="isPaused ? Play : Pause" class="h-3 w-3 shrink-0" />
+          <Spinner v-if="pausing" class="h-3 w-3 shrink-0" />
+          <component
+            :is="isPaused ? Play : Pause"
+            v-else
+            class="h-3 w-3 shrink-0"
+          />
         </MatchDockLabel>
       </button>
       <button
@@ -551,6 +558,8 @@ const RESTART_MATCH_MAP = gql`
   }
 `;
 
+const PAUSE_APPLY_TIMEOUT_MS = 8_000;
+
 const SET_MATCH_PAUSED = gql`
   mutation SetMatchPaused($matchId: uuid!, $paused: Boolean!) {
     setMatchPaused(match_id: $matchId, paused: $paused) {
@@ -642,6 +651,8 @@ export default {
       renderSummarySub: undefined as { unsubscribe: () => void } | undefined,
       startingMatch: false,
       pausing: false,
+      pauseTarget: null as boolean | null,
+      pauseTimer: undefined as ReturnType<typeof setTimeout> | undefined,
       cancellingMatch: false,
       deletingMatch: false,
       togglingLive: false,
@@ -660,11 +671,23 @@ export default {
     socket.on("rcon", this.onRconResponse);
   },
   beforeUnmount() {
+    clearTimeout(this.pauseTimer);
     socket.removeListener("rcon", this.onRconResponse);
     this.renderSummarySub?.unsubscribe();
     this.vetoPicksSub?.unsubscribe();
   },
   watch: {
+    isPaused(paused: boolean) {
+      if (this.pauseTarget !== paused) {
+        return;
+      }
+      this.finishPause();
+      toast({
+        title: paused
+          ? this.$t("match.actions.match_paused")
+          : this.$t("match.actions.match_resumed"),
+      });
+    },
     vetoPicksScope: {
       immediate: true,
       handler() {
@@ -1240,25 +1263,47 @@ export default {
         command: resolveRconCommand(action, pluginRuntime),
       });
     },
+    // The plugin drops a console pause or resume without a word while a
+    // timeout or a round reset is running, so the action succeeding is not
+    // enough: it is done once the map's status flips.
     async togglePause() {
       if (this.pausing) {
         return;
       }
       const paused = !this.isPaused;
       this.pausing = true;
+      this.pauseTarget = paused;
       try {
         await this.$apollo.mutate({
           mutation: SET_MATCH_PAUSED,
           variables: { matchId: this.match.id, paused },
         });
-        toast({
-          title: paused
-            ? this.$t("match.actions.match_paused")
-            : this.$t("match.actions.match_resumed"),
-        });
-      } finally {
-        this.pausing = false;
+      } catch {
+        this.finishPause();
+        return;
       }
+      if (this.pauseTarget === paused) {
+        this.pauseTimer = setTimeout(
+          this.pauseNotApplied,
+          PAUSE_APPLY_TIMEOUT_MS,
+        );
+      }
+    },
+    finishPause() {
+      clearTimeout(this.pauseTimer);
+      this.pauseTimer = undefined;
+      this.pauseTarget = null;
+      this.pausing = false;
+    },
+    pauseNotApplied() {
+      const paused = this.pauseTarget;
+      this.finishPause();
+      toast({
+        variant: "destructive",
+        title: paused
+          ? this.$t("match.actions.pause_not_applied")
+          : this.$t("match.actions.resume_not_applied"),
+      });
     },
     forceReady() {
       this.sendRcon(
@@ -1659,6 +1704,14 @@ export default {
     },
     canPauseResume() {
       if (!this.match.is_organizer) {
+        return false;
+      }
+      // The api refuses an organizer on one of the teams below moderator, as
+      // it does their restore or restart.
+      if (
+        (this.match.is_in_lineup || this.match.is_coach) &&
+        !useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
+      ) {
         return false;
       }
       if (this.match.status !== e_match_status_enum.Live) {

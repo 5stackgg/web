@@ -11162,6 +11162,8 @@
       "resume": "Match fortsetzen",
       "match_paused": "Match pausiert",
       "match_resumed": "Match fortgesetzt",
+      "pause_not_applied": "Der Server hat das Match nicht pausiert. Möglicherweise läuft gerade ein Timeout oder ein Runden-Reset.",
+      "resume_not_applied": "Der Server hat das Match nicht fortgesetzt. Möglicherweise läuft gerade ein Timeout oder ein Runden-Reset.",
       "forced_ready": "Spieler zwangsweise bereit gesetzt",
       "skipped_knife": "Knife-Runde übersprungen",
       "start_live": "Live-Stream starten",

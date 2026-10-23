@@ -167,6 +167,7 @@ describe("role change", () => {
     useAuthStore().me = undefined;
 
     await useAuthStore().getMe();
+    await flushPromises();
 
     expect(subscriptionsTo("matches")).toHaveLength(1);
     expect(organizerBranch(subscriptionsTo("matches")[0].options)).not.toMatch(

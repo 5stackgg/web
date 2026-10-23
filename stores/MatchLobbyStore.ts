@@ -11,7 +11,10 @@ import {
 } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { fromActiveMatches } from "~/utilities/activeMatches";
+import {
+  fromActiveMatches,
+  fromMyActiveMatches,
+} from "~/utilities/activeMatches";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
 import { FINISHED_TOURNAMENT_CHAT_MS } from "~/constants/chat";
@@ -368,7 +371,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
 
     const client = getGraphqlClient();
     const subscription = client.subscribe({
-      query: await fromActiveMatches(
+      query: await fromMyActiveMatches(
         client,
         generateSubscription({
           matches: [

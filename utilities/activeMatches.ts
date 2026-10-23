@@ -21,6 +21,31 @@ export async function fromActiveMatches(
   if (!(await schemaHasField(client, "subscription_root", "active_matches"))) {
     return document;
   }
+  return reroot(document, ROOTS);
+}
+
+// "My matches" from my_active_matches: the signed-in player's own active
+// matches, found from their lineups rather than by checking every active
+// match on the site for each player. Until the API serves it, as
+// fromActiveMatches.
+export async function fromMyActiveMatches(
+  client: ApolloClient<any>,
+  document: DocumentNode,
+): Promise<DocumentNode> {
+  if (
+    !(await schemaHasField(client, "subscription_root", "my_active_matches"))
+  ) {
+    return fromActiveMatches(client, document);
+  }
+  return reroot(document, { matches: "my_active_matches" });
+}
+
+// The top-level fields named in roots, read from their new root under the key
+// they had.
+function reroot(
+  document: DocumentNode,
+  roots: Record<string, string>,
+): DocumentNode {
   return {
     ...document,
     definitions: document.definitions.map((definition) =>
@@ -31,13 +56,13 @@ export async function fromActiveMatches(
             selectionSet: {
               ...definition.selectionSet,
               selections: definition.selectionSet.selections.map((selection) =>
-                selection.kind === Kind.FIELD && ROOTS[selection.name.value]
+                selection.kind === Kind.FIELD && roots[selection.name.value]
                   ? {
                       ...selection,
                       alias: selection.alias ?? selection.name,
                       name: {
                         ...selection.name,
-                        value: ROOTS[selection.name.value],
+                        value: roots[selection.name.value],
                       },
                     }
                   : selection,

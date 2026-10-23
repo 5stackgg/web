@@ -287,6 +287,14 @@ describe("the check-in list for a signed-in player", () => {
     ]);
   });
 
+  it("leaves elo out of the check-in list, which never shows it", async () => {
+    await mountCheckIn("moderator");
+
+    const [list] = checkIn();
+    expect(print(list.query)).toContain("is_banned");
+    expect(print(list.query)).not.toMatch(/^\s*elo\b/m);
+  });
+
   it("reads the whole list on one subscription for a moderator", async () => {
     await mountCheckIn("moderator");
 

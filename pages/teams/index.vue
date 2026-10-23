@@ -4,8 +4,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TeamsYourTeams from "~/components/teams/TeamsYourTeams.vue";
 import TeamsPlayingNow from "~/components/teams/TeamsPlayingNow.vue";
 import TeamsLookingForScrims from "~/components/teams/TeamsLookingForScrims.vue";
-import TeamsDirectory from "~/components/teams/TeamsDirectory.vue";
-import TeamsTournamentTeams from "~/components/teams/TeamsTournamentTeams.vue";
+import TeamsBrowse from "~/components/teams/TeamsBrowse.vue";
 import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
 import { useAuthStore } from "~/stores/AuthStore";
 
@@ -18,8 +17,8 @@ const sectionClasses = ["mt-8", tacticalSectionSeparatorClasses];
 // left out of "Looking for scrims".
 const myTeamIds = ref<string[]>([]);
 
-// Signed out there's no "Your teams" to lead with, so the directory does: the
-// page opens on its search, like the other list pages.
+// Signed out there's no "Your teams" to lead with, so the team lists do: the
+// page opens on their search, like the other list pages.
 const auth = useAuthStore();
 const directoryFirst = computed(() => !auth.me);
 </script>
@@ -29,30 +28,23 @@ const directoryFirst = computed(() => !auth.me);
 
   <div class="[&>*:first-child]:!mt-0">
     <PageTransition v-if="directoryFirst">
-      <TeamsDirectory :class="sectionClasses" :show-create="false" />
+      <TeamsBrowse :class="sectionClasses" :show-create="false" />
     </PageTransition>
 
     <PageTransition>
       <TeamsYourTeams :class="sectionClasses" @team-ids="myTeamIds = $event" />
     </PageTransition>
 
-    <PageTransition :delay="50">
+    <PageTransition :step="1">
       <TeamsPlayingNow :class="sectionClasses" :my-team-ids="myTeamIds" />
     </PageTransition>
 
-    <PageTransition :delay="100">
+    <PageTransition :step="2">
       <TeamsLookingForScrims :class="sectionClasses" :my-team-ids="myTeamIds" />
     </PageTransition>
 
-    <PageTransition v-if="!directoryFirst" :delay="150">
-      <TeamsDirectory
-        :class="sectionClasses"
-        :show-create="!myTeamIds.length"
-      />
-    </PageTransition>
-
-    <PageTransition :delay="200">
-      <TeamsTournamentTeams :class="sectionClasses" />
+    <PageTransition v-if="!directoryFirst" :step="3">
+      <TeamsBrowse :class="sectionClasses" :show-create="!myTeamIds.length" />
     </PageTransition>
   </div>
 </template>

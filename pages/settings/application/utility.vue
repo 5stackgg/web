@@ -11,7 +11,7 @@ import UtilityRescanPanel from "~/components/utility/UtilityRescanPanel.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="library"
         :title="$t('pages.settings.application.utility.library_section')"
@@ -62,7 +62,7 @@ import UtilityRescanPanel from "~/components/utility/UtilityRescanPanel.vue";
       </SettingsSection>
     </PageTransition>
 
-    <PageTransition :delay="60">
+    <PageTransition :step="1">
       <SettingsSection
         id="practice"
         :title="$t('pages.settings.application.utility.practice_section')"
@@ -121,7 +121,7 @@ import UtilityRescanPanel from "~/components/utility/UtilityRescanPanel.vue";
       </SettingsSection>
     </PageTransition>
 
-    <PageTransition :delay="120">
+    <PageTransition :step="2">
       <SettingsSection
         id="import"
         :title="$t('pages.settings.application.utility.import_section')"
@@ -142,7 +142,7 @@ import UtilityRescanPanel from "~/components/utility/UtilityRescanPanel.vue";
       </SettingsSection>
     </PageTransition>
 
-    <PageTransition :delay="120">
+    <PageTransition :step="2">
       <SettingsSection
         id="rescan"
         :title="$t('pages.settings.application.utility.rescan_section')"

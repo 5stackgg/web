@@ -44,7 +44,7 @@ definePageMeta({
       @stats="onNodeStats"
     />
 
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="flex flex-wrap items-center gap-2">
         <AdminSearch
           v-model="search"
@@ -90,7 +90,7 @@ definePageMeta({
 
     <!-- Triage and Services share one left-aligned measure; a full-width
          table would leave the Service column mostly empty. -->
-    <PageTransition :delay="40">
+    <PageTransition :step="1">
       <FadeSwap class="max-w-[960px]">
         <div
           v-if="!attentionReady"
@@ -128,7 +128,7 @@ definePageMeta({
       </FadeSwap>
     </PageTransition>
 
-    <PageTransition :delay="80">
+    <PageTransition :step="2">
       <ManageSection
         class="max-w-[960px]"
         :label="$t('pages.system_metrics.services')"

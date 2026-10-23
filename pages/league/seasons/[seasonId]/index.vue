@@ -1043,7 +1043,7 @@ function formatDate(value: string | null): string {
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="space-y-5 py-6">
       <div v-if="loading" class="py-12 text-center text-muted-foreground">
         {{ $t("common.loading") }}

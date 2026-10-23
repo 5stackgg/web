@@ -8358,6 +8358,7 @@
         "regions": "地區",
         "servers": "伺服器",
         "dedicated_servers": "專用伺服器",
+        "practice_servers": "練習伺服器",
         "game_server_nodes": "遊戲伺服器節點",
         "gpu_nodes": "GPU 節點",
         "app_settings": "應用程式設定",

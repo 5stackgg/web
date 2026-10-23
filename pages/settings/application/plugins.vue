@@ -58,7 +58,7 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="space-y-6">
         <SettingsSection
           id="plugins"

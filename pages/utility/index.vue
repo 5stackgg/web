@@ -6,7 +6,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilityMapPreviewTile from "~/components/utility/UtilityMapPreviewTile.vue";
 import UtilityMapRail from "~/components/utility/UtilityMapRail.vue";
-import UtilityPracticeServersPanel from "~/components/utility/UtilityPracticeServersPanel.vue";
 import {
   arriveUtilityPage,
   leaveUtilityPage,
@@ -74,7 +73,9 @@ const legendSpan = computed(
   () => (COLUMNS - (mapCount.value % COLUMNS)) % COLUMNS || COLUMNS,
 );
 const rows = computed(() =>
-  Math.ceil((mapCount.value + (loading.value ? 0 : legendSpan.value)) / COLUMNS),
+  Math.ceil(
+    (mapCount.value + (loading.value ? 0 : legendSpan.value)) / COLUMNS,
+  ),
 );
 // Whole class names, so the build can see them.
 const LEGEND_SPAN: Record<number, string> = {
@@ -91,8 +92,7 @@ const LEGEND_SPAN: Record<number, string> = {
          that. Pick a map and the board arrives in exactly the room the maps
          were in, with the card beside it -- nothing changes size on the way.
          Until a map is picked there is nothing to put in a card, so its
-         column is empty, unless staff are looking: then it lists the running
-         practice servers. -->
+         column is simply empty. -->
     <div
       class="grid w-full gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]"
     >
@@ -171,7 +171,10 @@ const LEGEND_SPAN: Record<number, string> = {
                    over of the last row. -->
               <div
                 class="flex min-h-0 flex-col justify-center gap-2.5 rounded-[10px] border border-dashed border-border px-3.5 py-3"
-                :class="[LEGEND_SPAN[legendSpan], arriving ? 'utility-arrive' : '']"
+                :class="[
+                  LEGEND_SPAN[legendSpan],
+                  arriving ? 'utility-arrive' : '',
+                ]"
               >
                 <p class="text-xs leading-relaxed text-muted-foreground">
                   {{ $t("pages.utility.picker.legend") }}
@@ -197,7 +200,7 @@ const LEGEND_SPAN: Record<number, string> = {
         </div>
       </div>
 
-      <UtilityPracticeServersPanel class="lg:sticky lg:top-4 lg:self-start" />
+      <div aria-hidden="true" class="hidden lg:block" />
     </div>
   </PageTransition>
 </template>

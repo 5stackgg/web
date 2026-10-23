@@ -746,13 +746,13 @@ onBeforeUnmount(() => stopTier?.());
        the column, from the top. With less room it opens as a sheet. -->
   <div ref="page" class="gsn-page" :data-tier="tier" :data-dock="lastDock">
     <div class="min-w-0">
-      <PageTransition v-if="currentGameVersion" :delay="0" class="gsn-cap">
+      <PageTransition v-if="currentGameVersion" class="gsn-cap">
         <Cs2BuildCard :current-version="currentGameVersion" />
       </PageTransition>
 
       <PageTransition
         v-if="!supportsGameServerNodes"
-        :delay="40"
+        :step="1"
         class="gsn-cap mt-4"
       >
         <div
@@ -777,7 +777,7 @@ onBeforeUnmount(() => stopTier?.());
         </div>
       </PageTransition>
 
-      <PageTransition :delay="80" class="mt-4">
+      <PageTransition :step="2" class="mt-4">
         <DeferredLoading :loading="loading" v-slot="{ skeleton }">
           <FadeSwap>
             <div

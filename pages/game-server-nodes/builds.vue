@@ -317,7 +317,7 @@ onUnmounted(() => {
 <template>
   <h1 class="sr-only">{{ $t("pages.game_server_nodes.cs2_build.history") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-0">
       <div class="grid min-w-0 content-start gap-3">
         <div :class="[tacticalSectionLabelClasses, 'mb-0']">

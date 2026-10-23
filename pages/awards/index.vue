@@ -63,7 +63,7 @@ const ledgerKeys = useListKeyboard({
 <template>
   <h1 class="sr-only">{{ $t("pages.awards.title") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="grid gap-4">
       <div
         v-if="loadingAwards || awards.length"

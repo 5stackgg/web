@@ -380,7 +380,7 @@ function startRepair(row: UtilityDriftResultView) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="60" class="mt-4">
+  <PageTransition :step="1" class="mt-4">
     <div
       class="flex items-start gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] p-3"
     >
@@ -396,7 +396,7 @@ function startRepair(row: UtilityDriftResultView) {
     </div>
   </PageTransition>
 
-  <PageTransition :delay="80" class="mt-4">
+  <PageTransition :step="2" class="mt-4">
     <div
       class="flex flex-wrap items-end gap-2 rounded-md border border-border bg-card/40 p-3 [backdrop-filter:blur(6px)]"
     >
@@ -457,7 +457,7 @@ function startRepair(row: UtilityDriftResultView) {
     </div>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-4">
+  <PageTransition :step="3" class="mt-4">
     <div class="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
       <div class="flex flex-col gap-2">
         <span

@@ -331,7 +331,7 @@ onMounted(async () => {
         <PageTransition
           v-for="(column, index) in columns"
           :key="column.key"
-          :delay="index * 60"
+          :step="index"
         >
           <div
             data-chat-log-column

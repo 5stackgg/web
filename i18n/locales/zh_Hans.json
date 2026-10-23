@@ -8358,6 +8358,7 @@
         "regions": "地区",
         "servers": "服务器",
         "dedicated_servers": "专用服务器",
+        "practice_servers": "练习服务器",
         "game_server_nodes": "游戏服务器节点",
         "gpu_nodes": "GPU 节点",
         "app_settings": "应用设置",

@@ -132,7 +132,7 @@ const runtimeOptions = [
 
 <template>
   <template v-if="canManage">
-    <PageTransition :delay="0">
+    <PageTransition>
       <header v-if="server" class="grid min-w-0 gap-1.5">
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2.5">
           <div class="flex min-w-[min(100%,14rem)] flex-1 items-center gap-2.5">
@@ -302,7 +302,7 @@ const runtimeOptions = [
 
     <PageTransition
       v-if="server && isAdmin && visibleMigration"
-      :delay="50"
+      :step="1"
       class="mt-5"
     >
       <ServerMigrationPanel
@@ -312,7 +312,7 @@ const runtimeOptions = [
       />
     </PageTransition>
 
-    <PageTransition v-if="server" :delay="100" class="mt-4">
+    <PageTransition v-if="server" :step="2" class="mt-4">
       <Tabs v-model="activeTab" :scroll-floor="false">
         <div
           class="sticky top-0 z-20 -mx-1 bg-background/90 px-1 backdrop-blur-sm"

@@ -8358,6 +8358,7 @@
         "regions": "지역",
         "servers": "서버",
         "dedicated_servers": "데디케이티드 서버",
+        "practice_servers": "연습 서버",
         "game_server_nodes": "게임 서버 노드",
         "gpu_nodes": "GPU 노드",
         "app_settings": "앱 설정",

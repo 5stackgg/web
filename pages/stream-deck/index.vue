@@ -551,7 +551,7 @@ const toolButton =
     {{ $t("layouts.app_nav.administration.control_room") }}
   </h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
       <p class="min-w-0 text-sm text-muted-foreground" aria-live="polite">
         <template v-if="!hasLoaded">&nbsp;</template>
@@ -640,7 +640,7 @@ const toolButton =
     </div>
   </PageTransition>
 
-  <PageTransition :delay="80">
+  <PageTransition :step="1">
     <div
       class="mt-5 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]"
     >

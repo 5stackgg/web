@@ -11,7 +11,7 @@ const TWITCH_CONSOLE_URL = "https://dev.twitch.tv/console/apps";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="twitch-app"

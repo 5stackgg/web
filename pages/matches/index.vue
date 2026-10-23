@@ -433,7 +433,7 @@ function optionRowClass(active: boolean) {
     </FilterBar>
   </PageTransition>
 
-  <PageTransition :delay="150" class="mt-6">
+  <PageTransition :step="1" class="mt-6">
     <div
       class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
     >
@@ -485,7 +485,7 @@ function optionRowClass(active: boolean) {
     </div>
   </PageTransition>
 
-  <PageTransition :delay="200" class="mt-4">
+  <PageTransition :step="2" class="mt-4">
     <DeferredLoading
       :loading="loading"
       v-slot="{ skeleton, refreshing, loaded }"

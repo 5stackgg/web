@@ -66,7 +66,13 @@ describe("admin entries", () => {
     ).toEqual([]);
   });
 
-  it("gives an organizer who can grant awards Awards and Control Room", () => {
+  it("opens Practice Servers to a moderator, behind the same gate as its middleware", () => {
+    expect(
+      ids(visibleAdminEntries(accessAs(e_player_roles_enum.moderator))),
+    ).toEqual(["practice-servers", "control-room"]);
+  });
+
+  it("gives an organizer who can grant awards Awards, Practice Servers and Control Room", () => {
     expect(
       ids(
         visibleAdminEntries(
@@ -75,7 +81,7 @@ describe("admin entries", () => {
           }),
         ),
       ),
-    ).toEqual(["awards", "control-room"]);
+    ).toEqual(["awards", "practice-servers", "control-room"]);
   });
 
   it("follows the feature settings", () => {
@@ -132,6 +138,7 @@ describe("admin entries", () => {
     expect(ids(groups[2].entries)).toEqual([
       "game-server-nodes",
       "dedicated-servers",
+      "practice-servers",
       "gpu-nodes",
       "regions",
     ]);

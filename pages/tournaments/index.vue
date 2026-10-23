@@ -827,7 +827,7 @@ const agendaMonthLabelClasses =
             />
           </PageTransition>
 
-          <PageTransition :delay="50">
+          <PageTransition :step="1">
             <section v-if="live.length" :class="sectionClasses">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
@@ -849,7 +849,7 @@ const agendaMonthLabelClasses =
             </section>
           </PageTransition>
 
-          <PageTransition :delay="100">
+          <PageTransition :step="2">
             <section v-if="agendaComing.length" :class="sectionClasses">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
@@ -874,7 +874,7 @@ const agendaMonthLabelClasses =
             </section>
           </PageTransition>
 
-          <PageTransition :delay="150">
+          <PageTransition :step="3">
             <section v-if="recent.length" :class="sectionClasses">
               <div
                 :class="[

@@ -12,7 +12,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
 <template>
   <!-- API Keys -->
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="space-y-5">
       <!-- Section header -->
       <div class="flex items-start justify-between gap-4">

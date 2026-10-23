@@ -153,7 +153,7 @@ onMounted(() => {
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="web-push"
         :title="$t('pages.settings.application.web_push.section')"

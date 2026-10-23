@@ -9,7 +9,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <StorageBreakdown>
         <template #action>
           <OrphanedUploadsButton />
@@ -17,7 +17,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       </StorageBreakdown>
     </PageTransition>
 
-    <PageTransition :delay="100">
+    <PageTransition :step="1">
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="highlights"

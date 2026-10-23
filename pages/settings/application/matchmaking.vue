@@ -11,7 +11,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="matchmaking"

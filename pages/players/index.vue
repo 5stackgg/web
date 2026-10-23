@@ -343,7 +343,7 @@ const { isMobile } = useSidebar();
     </FilterBar>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
+  <PageTransition :step="1" class="mt-6">
     <DeferredLoading
       :loading="loading"
       v-slot="{ skeleton, refreshing, loaded }"

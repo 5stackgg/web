@@ -118,7 +118,7 @@ const showSeeAll = computed(
 
 <template>
   <Transition
-    enter-active-class="transition-[opacity,transform] [transition-duration:520ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms]"
+    enter-active-class="transition-[opacity,transform] [transition-duration:520ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
     enter-from-class="opacity-0 translate-y-4 motion-reduce:translate-y-0"
     leave-active-class="transition-[opacity] [transition-duration:200ms]"
     leave-to-class="opacity-0"

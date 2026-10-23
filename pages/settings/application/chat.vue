@@ -12,7 +12,7 @@ const GIPHY_DASHBOARD_URL = "https://developers.giphy.com/dashboard/";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="chat"

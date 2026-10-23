@@ -17,6 +17,7 @@ import LogServiceList from "~/components/system-logs/LogServiceList.vue";
 import LogVolumeStrip from "~/components/system-logs/LogVolumeStrip.vue";
 import LogRepeats from "~/components/system-logs/LogRepeats.vue";
 import LogStream from "~/components/system-logs/LogStream.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   LEVEL_FILTERS,
   PRESETS,
@@ -345,150 +346,153 @@ onBeforeUnmount(() => {
     <h1 class="sr-only">{{ $t("layouts.app_nav.system.logs") }}</h1>
 
     <Teleport to="body" :disabled="!maximized">
-      <div
-        class="grid min-w-0 items-start gap-4 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-stretch lg:gap-0"
-        :class="
-          maximized &&
-          'fixed inset-0 z-50 overflow-y-auto bg-background px-4 py-3.5 lg:grid-rows-[minmax(0,1fr)] lg:overflow-hidden'
-        "
-      >
-        <LogServiceList
-          class="lg:border-r lg:border-border/70 lg:pr-3"
-          :class="maximized && 'lg:max-h-full lg:overflow-y-auto'"
-          :services="SERVICES"
-          :selected="selected"
-          :pods="pods"
-          :pods-off="podsOff"
-          :stats="stats"
-          :totals="totals"
-          @toggle="toggleService"
-          @only="onlyService"
-          @preset="applyPreset"
-          @toggle-pod="togglePod"
-        />
-
-        <section
-          class="min-w-0 gap-3 lg:pl-6"
+      <PageTransition>
+        <div
+          class="grid min-w-0 items-start gap-4 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-stretch lg:gap-0"
           :class="
-            maximized
-              ? 'flex flex-col lg:h-full lg:min-h-0'
-              : 'grid content-start'
+            maximized &&
+            'fixed inset-0 z-50 overflow-y-auto bg-background px-4 py-3.5 lg:grid-rows-[minmax(0,1fr)] lg:overflow-hidden'
           "
         >
-          <div class="flex min-w-0 flex-wrap items-center gap-2">
-            <AdminSearch
-              v-model="query"
-              :placeholder="$t('pages.system_logs.filter_lines')"
-              shortcut
-            />
-            <AnimatedFilters v-model="level" square :options="levelOptions" />
+          <LogServiceList
+            class="lg:border-r lg:border-border/70 lg:pr-3"
+            :class="maximized && 'lg:max-h-full lg:overflow-y-auto'"
+            :services="SERVICES"
+            :selected="selected"
+            :pods="pods"
+            :pods-off="podsOff"
+            :stats="stats"
+            :totals="totals"
+            @toggle="toggleService"
+            @only="onlyService"
+            @preset="applyPreset"
+            @toggle-pod="togglePod"
+          />
 
-            <div class="ml-auto flex items-center gap-3">
-              <label
-                class="inline-flex cursor-pointer select-none items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <Switch v-model="follow" />
-                {{ $t("pages.system_logs.follow") }}
-              </label>
-              <label
-                class="inline-flex cursor-pointer select-none items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <Switch v-model="showTs" />
-                {{ $t("pages.system_logs.timestamps") }}
-              </label>
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child>
-                  <button
-                    type="button"
-                    class="grid h-8 w-8 place-items-center rounded-md border border-border bg-muted/30 text-muted-foreground transition-colors hover:text-foreground"
-                    :aria-label="$t('pages.system_logs.download')"
-                  >
-                    <Download class="h-3.5 w-3.5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" class="w-[240px]">
-                  <DropdownMenuItem @select="downloadVisible">
-                    <FileDown />
-                    <span class="grow">{{
-                      $t("ui.logs.download_visible")
-                    }}</span>
-                    <span class="text-xs tabular-nums text-muted-foreground">{{
-                      visible.length.toLocaleString()
-                    }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-for="service in selected"
-                    :key="service"
-                    @select="downloadFull(service)"
-                  >
-                    <Download />
-                    <span class="grow">{{
-                      selected.length > 1
-                        ? $t("pages.system_logs.full_logs_of", { service })
-                        : $t("ui.logs.download_full")
-                    }}</span>
-                    <span class="text-xs text-muted-foreground">.zip</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <FiveStackToolTip as-child :delay-duration="120">
-                <template #trigger>
-                  <button
-                    type="button"
-                    class="grid h-8 w-8 place-items-center rounded-md border border-border bg-muted/30 text-muted-foreground transition-colors hover:text-foreground"
-                    :aria-label="
-                      maximized
-                        ? $t('pages.system_logs.exit_full_screen')
-                        : $t('pages.system_logs.full_screen')
-                    "
-                    @click="maximized = !maximized"
-                  >
-                    <Minimize2 v-if="maximized" class="h-3.5 w-3.5" />
-                    <Maximize2 v-else class="h-3.5 w-3.5" />
-                  </button>
-                </template>
-                {{
-                  maximized
-                    ? $t("pages.system_logs.exit_full_screen")
-                    : $t("pages.system_logs.full_screen")
-                }}
-              </FiveStackToolTip>
+          <section
+            class="min-w-0 gap-3 lg:pl-6"
+            :class="
+              maximized
+                ? 'flex flex-col lg:h-full lg:min-h-0'
+                : 'grid content-start'
+            "
+          >
+            <div class="flex min-w-0 flex-wrap items-center gap-2">
+              <AdminSearch
+                v-model="query"
+                :placeholder="$t('pages.system_logs.filter_lines')"
+                shortcut
+              />
+              <AnimatedFilters v-model="level" square :options="levelOptions" />
+
+              <div class="ml-auto flex items-center gap-3">
+                <label
+                  class="inline-flex cursor-pointer select-none items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Switch v-model="follow" />
+                  {{ $t("pages.system_logs.follow") }}
+                </label>
+                <label
+                  class="inline-flex cursor-pointer select-none items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Switch v-model="showTs" />
+                  {{ $t("pages.system_logs.timestamps") }}
+                </label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger as-child>
+                    <button
+                      type="button"
+                      class="grid h-8 w-8 place-items-center rounded-md border border-border bg-muted/30 text-muted-foreground transition-colors hover:text-foreground"
+                      :aria-label="$t('pages.system_logs.download')"
+                    >
+                      <Download class="h-3.5 w-3.5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" class="w-[240px]">
+                    <DropdownMenuItem @select="downloadVisible">
+                      <FileDown />
+                      <span class="grow">{{
+                        $t("ui.logs.download_visible")
+                      }}</span>
+                      <span
+                        class="text-xs tabular-nums text-muted-foreground"
+                        >{{ visible.length.toLocaleString() }}</span
+                      >
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      v-for="service in selected"
+                      :key="service"
+                      @select="downloadFull(service)"
+                    >
+                      <Download />
+                      <span class="grow">{{
+                        selected.length > 1
+                          ? $t("pages.system_logs.full_logs_of", { service })
+                          : $t("ui.logs.download_full")
+                      }}</span>
+                      <span class="text-xs text-muted-foreground">.zip</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <FiveStackToolTip as-child :delay-duration="120">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="grid h-8 w-8 place-items-center rounded-md border border-border bg-muted/30 text-muted-foreground transition-colors hover:text-foreground"
+                      :aria-label="
+                        maximized
+                          ? $t('pages.system_logs.exit_full_screen')
+                          : $t('pages.system_logs.full_screen')
+                      "
+                      @click="maximized = !maximized"
+                    >
+                      <Minimize2 v-if="maximized" class="h-3.5 w-3.5" />
+                      <Maximize2 v-else class="h-3.5 w-3.5" />
+                    </button>
+                  </template>
+                  {{
+                    maximized
+                      ? $t("pages.system_logs.exit_full_screen")
+                      : $t("pages.system_logs.full_screen")
+                  }}
+                </FiveStackToolTip>
+              </div>
             </div>
-          </div>
 
-          <LogVolumeStrip :buckets="buckets" @jump="jumpTo" />
+            <LogVolumeStrip :buckets="buckets" @jump="jumpTo" />
 
-          <LogRepeats
-            :groups="groups"
-            :active="sigFilter"
-            @show="sigFilter = $event"
-          />
+            <LogRepeats
+              :groups="groups"
+              :active="sigFilter"
+              @show="sigFilter = $event"
+            />
 
-          <LogStream
-            ref="streamRef"
-            v-model:follow="follow"
-            :class="maximized && 'flex-1 lg:min-h-0'"
-            :lines="visible"
-            :flush="lastFlush"
-            :matches="matches"
-            :filter-key="filterKey"
-            :query="debouncedQuery"
-            :show-ts="showTs"
-            :since="since"
-            :earlier="earlier"
-            :live="liveState"
-            :rate="liveRate"
-            :offline="offline"
-            :empty="emptyKind"
-            :maximized="maximized"
-            @load-earlier="streams.loadEarlier()"
-            @tag="showOnlyFromTag"
-            @clear-filters="clearFilters"
-            @show-core="applyPreset('core')"
-            @search="searchFor"
-          />
-        </section>
-      </div>
+            <LogStream
+              ref="streamRef"
+              v-model:follow="follow"
+              :class="maximized && 'flex-1 lg:min-h-0'"
+              :lines="visible"
+              :flush="lastFlush"
+              :matches="matches"
+              :filter-key="filterKey"
+              :query="debouncedQuery"
+              :show-ts="showTs"
+              :since="since"
+              :earlier="earlier"
+              :live="liveState"
+              :rate="liveRate"
+              :offline="offline"
+              :empty="emptyKind"
+              :maximized="maximized"
+              @load-earlier="streams.loadEarlier()"
+              @tag="showOnlyFromTag"
+              @clear-filters="clearFilters"
+              @show-core="applyPreset('core')"
+              @search="searchFor"
+            />
+          </section>
+        </div>
+      </PageTransition>
     </Teleport>
   </div>
 </template>

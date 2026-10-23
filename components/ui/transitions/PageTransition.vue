@@ -1,6 +1,11 @@
 <script setup lang="ts">
 interface Props {
-  delay?: number
+  /**
+   * Which beat of the page's entrance this block lands on: 0 with the page,
+   * then 1, 2 and 3 for what follows. Every page runs on this one clock, so
+   * no page arrives in a rhythm of its own.
+   */
+  step?: number
   /**
    * Swapping one thing for another in the same slot -- a skeleton for the
    * content it stood in for. Without this the outgoing and incoming halves run
@@ -17,25 +22,33 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  delay: 0,
+  step: 0,
   swap: false,
   appear: true,
 })
 
+const STEP_MS = 60
+const LAST_STEP = 3
+
+// No will-change: the browser composites an opacity/transform transition by
+// itself while it runs. Promoting each block up front, then dropping it as each
+// staggered entrance ends, reshuffled Chrome's layers several times a second,
+// and blocks already on screen blinked out while they were redrawn.
 const enterActive =
-  "transition-[opacity,transform] [transition-duration:520ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+  "transition-[opacity,transform] [transition-duration:520ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
 
 // Opacity only, and quick: a skeleton is already the right shape and size, so
 // moving it on the way out only advertises that it was a placeholder.
 const swapActive =
-  "transition-opacity [transition-duration:180ms] ease-out will-change-[opacity] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+  "transition-opacity [transition-duration:180ms] ease-out motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
 
 function setEnterDelay(el: Element) {
-  if (!props.delay) {
+  const step = Math.min(Math.max(props.step, 0), LAST_STEP)
+  if (!step) {
     return
   }
 
-  ;(el as HTMLElement).style.transitionDelay = `${props.delay}ms`
+  ;(el as HTMLElement).style.transitionDelay = `${step * STEP_MS}ms`
 }
 
 function clearEnterDelay(el: Element) {

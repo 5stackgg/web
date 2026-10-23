@@ -43,6 +43,15 @@ describe("useGlobalSearch", () => {
     );
   });
 
+  it("finds Practice Servers for a moderator and not for a player", async () => {
+    expect(
+      ids((await searchAs("moderator"))("practice servers").sections),
+    ).toContain("practice-servers");
+    expect(
+      ids((await searchAs("user"))("practice servers").sections),
+    ).not.toContain("practice-servers");
+  });
+
   it("keeps admin pages and application settings from players", async () => {
     const search = await searchAs("user");
     expect(search("game server nodes").sections).toEqual([]);

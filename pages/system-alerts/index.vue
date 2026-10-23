@@ -702,7 +702,7 @@ const fieldLabel = "text-sm font-medium text-foreground";
 <template>
   <h1 class="sr-only">{{ $t("system_alerts.page_title") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
       <div
         v-if="loaded && alerts.length"
@@ -763,7 +763,7 @@ const fieldLabel = "text-sm font-medium text-foreground";
     </div>
   </PageTransition>
 
-  <PageTransition :delay="60" class="mt-5">
+  <PageTransition :step="1" class="mt-5">
     <FadeSwap>
       <div
         v-if="waiting"

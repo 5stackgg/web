@@ -2363,7 +2363,7 @@ const AwardComposer = defineAsyncComponent(
         </Fold>
       </div>
 
-      <PageTransition :delay="150">
+      <PageTransition :step="1">
         <AnimatedCard
           variant="elevated"
           class="relative flex flex-col h-full p-2.5"
@@ -2771,7 +2771,7 @@ const AwardComposer = defineAsyncComponent(
          and plugin tabs don't come from matches, so they keep a strip. -->
     <PageTransition
       v-if="player && pageContentReady && noCareerData && playerId"
-      :delay="50"
+      :step="1"
     >
       <Tabs v-model="careerlessTab" :unmount-on-hide="false" class="w-full">
         <div class="mb-3 overflow-x-auto">
@@ -3435,7 +3435,7 @@ const AwardComposer = defineAsyncComponent(
           <PageTransition v-if="playerId">
             <PlayerTournaments :player-steam-id="playerId" />
           </PageTransition>
-          <PageTransition :delay="500">
+          <PageTransition :step="1">
             <div>
               <div
                 class="mb-4 flex flex-wrap items-center justify-between gap-3"

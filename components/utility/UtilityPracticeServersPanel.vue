@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
-import { Server } from "lucide-vue-next";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { HeightSwap } from "~/components/ui/transitions";
 import UtilityPracticeServerRow from "~/components/utility/UtilityPracticeServerRow.vue";
@@ -14,6 +13,10 @@ import {
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { badgePopTransition } from "~/utilities/badgeCount";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 import type { UtilityRunningPracticeSession } from "~/types/utility";
 
 const auth = useAuthStore();
@@ -105,18 +108,15 @@ const rowEnter =
   "transition-[grid-template-rows,opacity] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] [&>*]:overflow-hidden motion-reduce:transition-none";
 const rowLeave =
   "transition-[grid-template-rows,opacity] [transition-duration:110ms] ease-in [&>*]:overflow-hidden motion-reduce:transition-none";
+const emptyPanel =
+  "rounded-md border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground";
 </script>
 
 <template>
-  <section
-    v-if="isStaff"
-    class="rounded-[10px] border border-border bg-muted/20 p-3.5"
-  >
-    <header class="mb-2.5 flex min-h-5 items-center gap-2">
-      <Server class="size-3.5 text-muted-foreground" />
-      <h2
-        class="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em]"
-      >
+  <section v-if="isStaff">
+    <header class="mb-3 flex min-h-5 items-center gap-2">
+      <h2 :class="[tacticalSectionLabelClasses, 'mb-0']">
+        <span :class="tacticalSectionTickClasses" />
         {{ $t("pages.utility.practice_servers.title") }}
       </h2>
       <Transition v-bind="badgePopTransition">
@@ -156,21 +156,17 @@ const rowLeave =
         />
       </ul>
 
-      <p
-        v-else-if="!heard"
-        key="failed"
-        class="pb-2 text-xs text-muted-foreground"
-      >
-        {{ $t("pages.utility.practice_servers.failed") }}
-      </p>
+      <div v-else-if="!heard" key="failed" class="pb-2">
+        <p :class="emptyPanel">
+          {{ $t("pages.utility.practice_servers.failed") }}
+        </p>
+      </div>
 
-      <p
-        v-else-if="!sessions.length"
-        key="empty"
-        class="pb-2 text-xs text-muted-foreground"
-      >
-        {{ $t("pages.utility.practice_servers.empty") }}
-      </p>
+      <div v-else-if="!sessions.length" key="empty" class="pb-2">
+        <p :class="emptyPanel">
+          {{ $t("pages.utility.practice_servers.empty") }}
+        </p>
+      </div>
 
       <TransitionGroup
         v-else

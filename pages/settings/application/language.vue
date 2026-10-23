@@ -9,7 +9,7 @@ const { locales } = useI18n();
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <form class="space-y-6" @submit.prevent="updateSettings">
         <SettingsSection
           id="language"

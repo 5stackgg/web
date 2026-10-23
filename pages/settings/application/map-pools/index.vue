@@ -38,7 +38,7 @@ const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div
       class="flex flex-col items-start gap-4 mb-6 md:flex-row md:items-center md:justify-between"
     >
@@ -68,7 +68,7 @@ const { isMobile } = useSidebar();
     </div>
   </PageTransition>
 
-  <PageTransition :delay="100">
+  <PageTransition :step="1">
     <div class="grid gap-3">
       <Card
         v-for="pool in map_pools"
@@ -108,7 +108,7 @@ const { isMobile } = useSidebar();
 
   <Separator v-if="showSeparators" class="mt-6" />
 
-  <PageTransition :delay="200" class="mt-6">
+  <PageTransition :step="2" class="mt-6">
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-bold">
         {{ $t("pages.map_pools.maps") }}
@@ -127,7 +127,7 @@ const { isMobile } = useSidebar();
     </div>
   </PageTransition>
 
-  <PageTransition :delay="300" class="mt-6">
+  <PageTransition :step="3" class="mt-6">
     <Card variant="gradient" class="p-4">
       <div class="relative w-full overflow-auto">
         <Table>
@@ -155,7 +155,7 @@ const { isMobile } = useSidebar();
     </Card>
   </PageTransition>
 
-  <PageTransition v-if="deletedMaps.length > 0" :delay="400" class="mt-6">
+  <PageTransition v-if="deletedMaps.length > 0" :step="3" class="mt-6">
     <Card variant="gradient" class="p-4">
       <div class="flex items-center gap-2 mb-2">
         <Trash2 class="h-4 w-4 text-muted-foreground" />

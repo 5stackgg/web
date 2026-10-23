@@ -196,7 +196,7 @@ function resetPeers() {
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="max-w-2xl space-y-6">
       <div
         class="flex items-start gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.06)] px-4 py-3"

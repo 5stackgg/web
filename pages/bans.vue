@@ -572,7 +572,7 @@ const optionClasses =
     </div>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-2 block">
+  <PageTransition :step="1" class="mt-2 block">
     <FadeSwap>
       <div v-if="skeleton" key="loading" class="grid gap-2" aria-busy="true">
         <Skeleton class="h-8 w-full rounded-md" />

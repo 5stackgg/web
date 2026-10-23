@@ -17,7 +17,7 @@ import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
     />
   </PageTransition>
 
-  <PageTransition :delay="50">
+  <PageTransition :step="1">
     <WatchStreamStage
       v-if="!feedIsEmpty"
       :class="['mt-8', tacticalSectionSeparatorClasses]"
@@ -25,11 +25,11 @@ import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
     />
   </PageTransition>
 
-  <PageTransition v-if="feedIsEmpty" :delay="50">
+  <PageTransition v-if="feedIsEmpty" :step="1">
     <WatchColdStart :class="['mt-8', tacticalSectionSeparatorClasses]" />
   </PageTransition>
 
-  <PageTransition :delay="100">
+  <PageTransition :step="2">
     <WatchHighlights
       :class="['mt-8', tacticalSectionSeparatorClasses]"
       :compact="streamableMatchIds.length > 0"
@@ -37,7 +37,7 @@ import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
     />
   </PageTransition>
 
-  <PageTransition v-if="eventsEnabled" :delay="125">
+  <PageTransition v-if="eventsEnabled" :step="3">
     <WatchEvents
       :class="['mt-8', tacticalSectionSeparatorClasses]"
       :compact="streamableMatchIds.length > 0"
@@ -46,7 +46,7 @@ import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
     />
   </PageTransition>
 
-  <PageTransition v-if="!feedIsEmpty" :delay="150">
+  <PageTransition v-if="!feedIsEmpty" :step="3">
     <WatchTournaments
       :class="['mt-8', tacticalSectionSeparatorClasses]"
       :exclude-ids="eventTournamentIds"

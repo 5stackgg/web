@@ -456,7 +456,7 @@ const channelIconOff =
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="space-y-8">
       <p class="max-w-prose text-sm text-muted-foreground">
         {{ $t("pages.settings.notifications.description") }}

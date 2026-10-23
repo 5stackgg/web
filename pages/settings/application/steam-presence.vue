@@ -9,7 +9,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 <template>
   <SettingsPage>
     <!-- Enable / kill-switch -->
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="steam-presence"
         :title="$t('pages.settings.application.steam_presence.section')"
@@ -104,7 +104,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     </PageTransition>
 
     <!-- Bots -->
-    <PageTransition v-if="enabled" :delay="120">
+    <PageTransition v-if="enabled" :step="1">
       <SettingsSection
         id="steam-presence-bots"
         :title="$t('pages.settings.application.steam_presence.bots')"

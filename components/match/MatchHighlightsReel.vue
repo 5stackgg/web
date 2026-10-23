@@ -506,12 +506,14 @@ function clipTeamName(c: Clip): string | null {
                   loading="lazy"
                   class="h-full w-full object-cover"
                 />
+                <!-- No blur: each blurred badge is a layer of its own, and a
+                     queue of them left the stage blinking while it drew. -->
                 <ClipKillBadge
                   :kills="c.kills_count"
                   :round="c.round"
                   :title="c.title"
                   size="xs"
-                  class="absolute left-1 top-1"
+                  class="absolute left-1 top-1 !backdrop-blur-none"
                 />
                 <span
                   class="absolute bottom-1 right-1 rounded-[4px] bg-black/70 px-1 py-px text-[11px] font-semibold tabular-nums text-white"

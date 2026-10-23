@@ -22,6 +22,9 @@ const props = defineProps<{
 }>();
 
 const PAGE_SIZE = 12;
+// One grid row at each breakpoint (1, 2, then 3 across). Loading and empty
+// both take exactly this row, so finding no clips doesn't resize the tab.
+const ROW_CELLS = ["", "max-sm:hidden", "max-lg:hidden"];
 
 const steamIds = ref<string[]>([]);
 const clips = ref<Clip[]>([]);
@@ -156,17 +159,28 @@ const hasClips = computed(() => clips.value.length > 0);
       v-if="loading"
       class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
     >
-      <HighlightSkeleton v-for="i in 6" :key="i" />
+      <HighlightSkeleton v-for="cell in ROW_CELLS" :key="cell" :class="cell" />
     </div>
 
     <div
       v-else-if="!hasClips"
-      class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border px-4 py-16 text-center"
+      class="relative grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
     >
-      <Film class="h-6 w-6 text-muted-foreground" />
-      <p class="text-sm text-muted-foreground">
-        {{ $t("team.highlights.empty") }}
-      </p>
+      <div
+        v-for="cell in ROW_CELLS"
+        :key="cell"
+        aria-hidden="true"
+        class="aspect-video"
+        :class="cell"
+      />
+      <div
+        class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-md border border-dashed border-border px-4 text-center"
+      >
+        <Film class="h-6 w-6 text-muted-foreground" />
+        <p class="text-sm text-muted-foreground">
+          {{ $t("team.highlights.empty") }}
+        </p>
+      </div>
     </div>
 
     <TransitionGroup

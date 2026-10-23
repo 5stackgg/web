@@ -88,7 +88,7 @@ const dangerButtonClasses =
 <template>
   <h1 class="sr-only">{{ $t("pages.seasons.title") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div v-if="loaded" class="grid w-full max-w-[880px] gap-5">
       <Transition name="season-fade">
         <div v-if="staleOthers.length" :class="warnBannerClasses">

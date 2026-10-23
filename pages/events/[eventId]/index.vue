@@ -24,7 +24,7 @@ import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import EventHeader from "~/components/events/EventHeader.vue";
-import MobileTabSelect from "~/components/common/MobileTabSelect.vue";
+import PageTabsDock from "~/components/common/PageTabsDock.vue";
 import EventSection from "~/components/events/EventSection.vue";
 import EventLeaderboard from "~/components/events/EventLeaderboard.vue";
 import EventStandings from "~/components/events/EventStandings.vue";
@@ -141,9 +141,6 @@ const liveMatch = computed(() =>
     (TICKER_LIVE_STATUSES as readonly string[]).includes(match.status),
   ),
 );
-
-const tabTriggerClasses =
-  "h-11 rounded-none px-3 text-[0.8125rem] font-semibold text-muted-foreground hover:text-foreground focus-visible:ring-offset-0 [@media(pointer:coarse)]:h-12";
 </script>
 
 <template>
@@ -216,48 +213,33 @@ const tabTriggerClasses =
               {{ $t("event.header.share") }}
             </Button>
           </template>
-          <template #tabs>
-            <MobileTabSelect
-              v-model="activeTab"
-              :items="tabItems"
-              class="px-2 pb-4"
-            />
-            <TabsList
-              variant="underline"
-              class="h-auto w-full justify-start overflow-x-auto overscroll-x-contain [scrollbar-width:none] max-md:hidden [&::-webkit-scrollbar]:hidden"
-            >
-              <TabsTrigger value="overview" :class="tabTriggerClasses">
-                {{ $t("event.tabs.overview") }}
-              </TabsTrigger>
-              <TabsTrigger value="matches" :class="tabTriggerClasses">
-                {{ $t("event.tabs.matches") }}
-              </TabsTrigger>
-              <TabsTrigger value="players" :class="tabTriggerClasses">
-                {{ $t("event.tabs.players") }}
-              </TabsTrigger>
-              <TabsTrigger value="media" :class="tabTriggerClasses">
-                {{ $t("event.tabs.media") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="hasTournaments"
-                value="tournaments"
-                :class="tabTriggerClasses"
-              >
-                {{ $t("event.tabs.tournaments") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="event.is_organizer"
-                value="manage"
-                :class="tabTriggerClasses"
-              >
-                {{ $t("event.tabs.manage") }}
-              </TabsTrigger>
-            </TabsList>
-          </template>
         </EventHeader>
       </PageTransition>
 
-      <div class="mt-7">
+      <div class="mt-6">
+        <PageTabsDock class="mb-5 md:mb-7">
+          <TabsList variant="track">
+            <TabsTrigger value="overview">
+              {{ $t("event.tabs.overview") }}
+            </TabsTrigger>
+            <TabsTrigger value="matches">
+              {{ $t("event.tabs.matches") }}
+            </TabsTrigger>
+            <TabsTrigger value="players">
+              {{ $t("event.tabs.players") }}
+            </TabsTrigger>
+            <TabsTrigger value="media">
+              {{ $t("event.tabs.media") }}
+            </TabsTrigger>
+            <TabsTrigger v-if="hasTournaments" value="tournaments">
+              {{ $t("event.tabs.tournaments") }}
+            </TabsTrigger>
+            <TabsTrigger v-if="event.is_organizer" value="manage">
+              {{ $t("event.tabs.manage") }}
+            </TabsTrigger>
+          </TabsList>
+        </PageTabsDock>
+
         <TabsContent value="overview" class="tab-panel-in mt-0">
           <EventOverview
             :event="event"
@@ -784,16 +766,6 @@ export default {
     },
     hasTournaments(): boolean {
       return this.eventTournamentEntries.length > 0;
-    },
-    tabItems(): Array<{ value: string; label: string }> {
-      return [
-        "overview",
-        "matches",
-        "players",
-        "media",
-        ...(this.hasTournaments ? ["tournaments"] : []),
-        ...(this.event?.is_organizer ? ["manage"] : []),
-      ].map((value) => ({ value, label: this.$t(`event.tabs.${value}`) }));
     },
     membershipKey(): string {
       return [

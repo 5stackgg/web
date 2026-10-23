@@ -40,7 +40,7 @@ const wide = useMediaQuery("(min-width: 1024px)");
 <template>
   <h1 class="sr-only">{{ $t("pages.regions.title") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="grid w-full max-w-[64rem] gap-4">
       <div class="flex flex-wrap items-center gap-2">
         <AdminSearch

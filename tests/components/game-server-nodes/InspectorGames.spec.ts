@@ -201,6 +201,39 @@ describe("CS2 section", () => {
     expect(off.text()).not.toContain("Install CS2");
     expect(off.find(actions).exists()).toBe(false);
   });
+
+  it("removes a CS2 install left on a GPU-only node that doesn't render", async () => {
+    const wrapper = await mountCs2({
+      gpu: true,
+      enabled_for_match_making: false,
+      region: null,
+      gpu_rendering_enabled: false,
+    });
+    expect(wrapper.text()).toContain("Rendering is off");
+    expect(wrapper.text()).not.toContain("Update available");
+
+    const items = await menuItems(wrapper);
+    expect(item(items, "Install CS:GO")).toBeUndefined();
+    const remove = item(items, "Remove CS2")!;
+    expect(remove.hasAttribute("data-disabled")).toBe(false);
+    remove.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("remove")).toHaveLength(1);
+  });
+
+  it("says Removing on a GPU-only node that doesn't render", async () => {
+    const wrapper = await mountCs2({
+      gpu: true,
+      enabled_for_match_making: false,
+      region: null,
+      gpu_rendering_enabled: false,
+      update_status: "Removing",
+    });
+    expect(wrapper.find(".gsn-st").text()).toContain("Removing");
+    const remove = item(await menuItems(wrapper), "Remove CS2");
+    expect(remove!.hasAttribute("data-disabled")).toBe(true);
+  });
 });
 
 describe("CS:GO section", () => {
@@ -229,6 +262,24 @@ describe("CS:GO section", () => {
 
   it("asks to remove CS:GO from its menu", async () => {
     const wrapper = await mountCsgo({ csgo_build_id: 12426148 }, 12426148);
+
+    item(await menuItems(wrapper), "Remove CS:GO")!.click();
+    await flushPromises();
+
+    expect(wrapper.emitted("remove")).toHaveLength(1);
+  });
+
+  it("asks to remove CS:GO from a GPU-only node", async () => {
+    const wrapper = await mountCsgo(
+      {
+        gpu: true,
+        enabled_for_match_making: false,
+        region: null,
+        build_id: null,
+        csgo_build_id: 12426148,
+      },
+      12426148,
+    );
 
     item(await menuItems(wrapper), "Remove CS:GO")!.click();
     await flushPromises();

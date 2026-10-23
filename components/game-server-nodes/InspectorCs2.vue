@@ -48,7 +48,9 @@ import { dateLocale } from "~/utilities/dateLocale";
 
 // CS2: one status line (up to date, behind, updating, failed), then the build
 // pin and the plugin pin. The ⋮ menu holds the update log, installing CS:GO,
-// which gets its own section once it's on the node, and removing CS2.
+// which gets its own section once it's on the node, and removing CS2. A
+// GPU-only node that doesn't render keeps only the menu, to remove an install
+// left from before.
 const props = defineProps<{
   node: NodeLike & Record<string, any>;
   gameVersions: Array<Record<string, any>>;
@@ -79,6 +81,9 @@ const valClasses =
 const inSetup = computed(() => props.node.status === "Setup");
 const gpuOnly = computed(() => isGpuOnly(props.node));
 const noCs2 = computed(() => !runsCs2(props.node));
+const installed = computed(
+  () => !!(props.node.build_id || props.node.update_failed_at),
+);
 const reachable = computed(() => isReachable(props.node));
 const state = computed(() => cs2State(props.node, props.currentBuildId));
 // matches pick a node without looking at its build, so the api refuses this
@@ -150,7 +155,7 @@ const when = (value: string) =>
     <div class="flex min-h-7 items-center gap-2">
       <InspectorLabel>CS2</InspectorLabel>
       <span class="grow"></span>
-      <DropdownMenu v-if="!inSetup && !noCs2">
+      <DropdownMenu v-if="!inSetup && (!noCs2 || installed)">
         <DropdownMenuTrigger as-child>
           <Button
             variant="ghost"
@@ -182,7 +187,7 @@ const when = (value: string) =>
               </span>
             </DropdownMenuItem>
           </template>
-          <template v-if="node.build_id || node.update_failed_at">
+          <template v-if="installed">
             <DropdownMenuSeparator />
             <DropdownMenuItem
               class="items-start text-destructive focus:text-destructive"
@@ -209,9 +214,19 @@ const when = (value: string) =>
     <p v-if="inSetup" class="text-xs text-muted-foreground">
       {{ t(`${INSPECTOR}.cs2.setup`) }}
     </p>
-    <p v-else-if="noCs2" class="text-xs text-muted-foreground">
-      {{ t(`${INSPECTOR}.cs2.gpu_only`) }}
-    </p>
+    <template v-else-if="noCs2">
+      <p class="text-xs text-muted-foreground">
+        {{ t(`${INSPECTOR}.cs2.gpu_only`) }}
+      </p>
+      <GameStatus
+        v-if="node.update_status"
+        state="updating"
+        :build="node.build_id"
+        :target="target"
+        :update-status="node.update_status"
+        @open-log="emit('openLog')"
+      />
+    </template>
 
     <template v-else>
       <GameStatus

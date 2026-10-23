@@ -15,12 +15,17 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Trash2 } from "lucide-vue-next";
 import { removeGame } from "~/components/game-server-nodes/nodeActions";
+import {
+  runsCs2,
+  type NodeLike,
+} from "~/components/game-server-nodes/nodeState";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 
 // Removing CS2 or CS:GO from a node asks first. A plain Button, not
-// AlertDialogAction, so the dialog stays open while the removal starts.
+// AlertDialogAction, so the dialog stays open while the removal starts. CS2
+// updates skip a GPU-only node that doesn't render, so CS2 stays off it.
 const props = defineProps<{
-  node: { id: string; label?: string | null };
+  node: NodeLike;
   game: "cs2" | "csgo";
   open: boolean;
 }>();
@@ -73,7 +78,7 @@ async function remove() {
             node.label || node.id
           }}</span>
           {{ t(`${INSPECTOR}.remove_game.description`, { game: gameName }) }}
-          <template v-if="game === 'cs2'">
+          <template v-if="game === 'cs2' && runsCs2(node)">
             {{ t(`${INSPECTOR}.remove_game.cs2_returns`) }}
           </template>
         </AlertDialogDescription>

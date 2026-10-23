@@ -215,15 +215,14 @@ const canEditMatchSettings = (bracket: Bracket): boolean =>
   canManageBracketReset.value &&
   SETTINGS_STATUSES.includes(bracket.match?.status ?? "");
 
+// Before the draw every bracket is a placeholder the draw replaces, its own
+// settings with it; after a team lands in it, the api refuses them.
 const BRACKET_SETTINGS_STATUSES = [
-  e_tournament_status_enum.Setup,
-  e_tournament_status_enum.RegistrationOpen,
   e_tournament_status_enum.RegistrationClosed,
   e_tournament_status_enum.Live,
   e_tournament_status_enum.Paused,
 ] as string[];
 
-// The api only gives a bracket its own settings before a team lands in it.
 const canEditBracketSettings = (bracket: Bracket): boolean =>
   canManageBracketReset.value &&
   BRACKET_SETTINGS_STATUSES.includes(props.tournament?.status ?? "") &&

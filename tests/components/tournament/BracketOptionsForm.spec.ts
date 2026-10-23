@@ -107,7 +107,7 @@ describe("BracketOptionsForm", () => {
     },
   };
 
-  it("copies the stage's settings onto the bracket on the first save, rules as stored", async () => {
+  it("copies the stage's settings onto the bracket on the first save, then writes only what is open", async () => {
     const wrapper = await mountForm(inheriting);
 
     (wrapper.vm as any).form.setFieldValue("mr", "8");
@@ -124,10 +124,12 @@ describe("BracketOptionsForm", () => {
     );
     expect(update?.variables).toMatchObject({
       id: "own-options",
-      mr: 15,
       ready_setting: "Admin",
-      map_pool_id: seededPools.Competitive.id,
     });
+    for (const column of ["mr", "type", "best_of", "map_pool_id"]) {
+      expect(update?.variables).not.toHaveProperty(column);
+      expect(update?.body).not.toContain(`${column}:`);
+    }
   });
 
   it("edits the bracket's own settings in place", async () => {

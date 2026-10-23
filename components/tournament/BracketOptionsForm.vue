@@ -40,11 +40,20 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
 import {
-  keepStoredRules,
+  RULE_COLUMNS,
   setupOptions,
   setupOptionsVariables,
   setupOptionsSetMutation,
 } from "~/utilities/setupOptions";
+
+// A bracket plays its stage's rules, which a concurrent stage edit may have
+// moved since the sheet opened, so only the settings left open are written.
+const LOCKED_COLUMNS = new Set([...RULE_COLUMNS, "map_pool_id", "map_pool"]);
+
+const openColumns = (columns: Record<string, unknown>) =>
+  Object.fromEntries(
+    Object.entries(columns).filter(([column]) => !LOCKED_COLUMNS.has(column)),
+  );
 
 const cloneBracketOptions = gql`
   mutation CloneTournamentBracketOptions($bracketId: uuid!) {
@@ -187,20 +196,20 @@ export default {
           optionsId = data.clone_tournament_bracket_options[0].match_options_id;
         }
 
-        const variables = setupOptionsVariables(this.form.values, {
-          mapPoolId: this.options!.map_pool.id,
-        });
-
         await this.$apollo.mutate({
           variables: {
             id: optionsId,
-            ...keepStoredRules(variables, this.options!),
+            ...openColumns(
+              setupOptionsVariables(this.form.values, {
+                mapPoolId: this.options!.map_pool.id,
+              }),
+            ),
           },
           mutation: generateMutation({
             update_match_options_by_pk: [
               {
                 pk_columns: { id: $("id", "uuid!") },
-                _set: setupOptionsSetMutation(true),
+                _set: openColumns(setupOptionsSetMutation(true)),
               },
               { __typename: true },
             ],

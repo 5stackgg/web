@@ -73,13 +73,14 @@ function bracket(status: string) {
 async function mountCard(
   status: string,
   value: Record<string, unknown> = bracket(status),
+  tournamentStatus = "Live",
 ) {
   wrapper = await mountSuspended(TournamentMatch, {
     props: {
       round: 1,
       brackets: [value] as any,
       stage: { type: "SingleElimination", max_teams: 8, groups: 1 },
-      tournament: { is_organizer: true, status: "Live" },
+      tournament: { is_organizer: true, status: tournamentStatus },
     },
     attachTo: document.body,
   });
@@ -190,6 +191,19 @@ describe("bracket match settings", () => {
       expect.objectContaining({ variables: { bracketId: "bracket-1" } }),
     );
   });
+
+  it.each(["Setup", "RegistrationOpen"])(
+    "keeps them off a bracket the draw will replace while the tournament is %s",
+    async (tournamentStatus) => {
+      await mountCard(
+        "Scheduled",
+        { ...bracket("Scheduled"), team_1: null, team_2: null, match: null },
+        tournamentStatus,
+      );
+
+      expect(document.querySelector("button[aria-haspopup=menu]")).toBeNull();
+    },
+  );
 
   it("leaves a bracket whose teams are known to its match", async () => {
     await mountCard("Scheduled", { ...bracket("Scheduled"), match: null });

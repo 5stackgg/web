@@ -982,7 +982,7 @@ import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import {
   playerFields,
   playerFieldsWithoutElo,
-  playerFieldsWithoutRanks,
+  playerFieldsWithoutRanksOrElo,
 } from "~/graphql/playerFields";
 import {
   generateMutation,
@@ -1171,7 +1171,7 @@ const tournamentSubscription = typedGql("subscription")({
                 roster: [
                   {},
                   {
-                    player: playerFieldsWithoutRanks,
+                    player: playerFieldsWithoutRanksOrElo,
                   },
                 ],
               },

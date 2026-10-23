@@ -1,4 +1,4 @@
-import { playerFieldsWithoutRanks } from "~/graphql/playerFields";
+import { playerFieldsWithoutRanksOrElo } from "~/graphql/playerFields";
 
 /**
  * `tournament_teams.checked_in_at` is the ONE check-in signal anything
@@ -49,7 +49,7 @@ export default {
     {
       ...pendingRosterFields,
       role: true,
-      player: playerFieldsWithoutRanks,
+      player: playerFieldsWithoutRanksOrElo,
     },
   ],
 };

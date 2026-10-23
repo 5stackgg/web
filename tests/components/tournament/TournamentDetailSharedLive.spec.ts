@@ -335,6 +335,12 @@ describe("what the tournament page polls", () => {
     }
     expect(document).toContain("roster_counts: teams");
   });
+
+  it("leaves roster elo to the rows someone opens", async () => {
+    await mountDetail("moderator");
+
+    expect(print(full()[0].query)).not.toMatch(/^\s*elo\b/m);
+  });
 });
 
 describe("the tournament page for everyone else", () => {

@@ -60,10 +60,10 @@ const {
 } = playerIdentityFields;
 
 /**
- * For a `<PlayerDisplay>` given no `match-type`: it only shows a Premier or
- * FACEIT rank for those match types, so the rank columns are never read.
+ * For tournament rosters: a `<PlayerDisplay>` given no `match-type` shows no
+ * Premier or FACEIT rank, and their elo is read when a row opens
+ * (`usePlayerElos`) rather than polled for every player.
  */
-export const playerFieldsWithoutRanks = Selector("players")({
-  ...playerFieldsWithoutRankColumns,
-  elo: true,
-});
+export const playerFieldsWithoutRanksOrElo = Selector("players")(
+  playerFieldsWithoutRankColumns,
+);

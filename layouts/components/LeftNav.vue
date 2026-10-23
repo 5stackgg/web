@@ -20,7 +20,6 @@ import {
   Crosshair,
   Tv,
   Shield,
-  ChartColumn,
   Star,
   CircleHelp,
   LayoutGrid,
@@ -45,6 +44,7 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { useNavMode } from "~/composables/useNavMode";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import SmokePlumesIcon from "~/components/icons/SmokePlumesIcon.vue";
+import PodiumIcon from "~/components/icons/PodiumIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
@@ -260,7 +260,7 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
     {
       key: "leaderboard",
       label: t("layouts.app_nav.navigation.leaderboard"),
-      icon: ChartColumn,
+      icon: PodiumIcon,
       to: { name: "leaderboard" },
       active: isNamed("leaderboard"),
     },

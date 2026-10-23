@@ -227,7 +227,7 @@ export default {
             pointLabels: {
               color: "rgba(255, 255, 255, 0.9)",
               font: {
-                size: 14,
+                size: 12,
               },
             },
           },

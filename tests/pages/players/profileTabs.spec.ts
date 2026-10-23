@@ -74,20 +74,19 @@ describe("player profile tabs", () => {
     expect(wrapper.html()).not.toContain("select-trigger");
   });
 
-  it("puts the highlights below the tab panels and above tournaments", async () => {
+  it("puts the highlights above the stats tabs", async () => {
     const wrapper = await mountProfile();
 
-    const tabs = wrapper.findComponent(Tabs);
-    const highlights = tabs.findComponent(PlayerHighlights);
+    const highlights = wrapper.findComponent(PlayerHighlights);
     expect(highlights.exists()).toBe(true);
     expect(highlights.props("steamId")).toBe(TARGET);
     expect(wrapper.findAllComponents(PlayerHighlights)).toHaveLength(1);
 
-    const html = tabs.html();
-    const lastPanel = html.lastIndexOf("tabs-content");
-    expect(html.indexOf("player-highlights")).toBeGreaterThan(lastPanel);
+    const tabs = wrapper.findComponent(Tabs);
+    expect(tabs.findComponent(PlayerHighlights).exists()).toBe(false);
+    const html = wrapper.html();
     expect(html.indexOf("player-highlights")).toBeLessThan(
-      html.indexOf("player-tournaments"),
+      html.indexOf("tabs-content"),
     );
     expect(tabs.findComponent(PlayerTournaments).exists()).toBe(true);
   });

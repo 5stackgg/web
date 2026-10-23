@@ -6,12 +6,14 @@ import {
   DefaultApolloClient,
   provideApolloClient,
 } from "@vue/apollo-composable";
-import { createHttpLink, from, split } from "@apollo/client/core";
-import type { ApolloClient } from "@apollo/client/core";
-import type {
+import {
+  ApolloClient,
   InMemoryCache,
-  NormalizedCacheObject,
-} from "@apollo/client/cache";
+  createHttpLink,
+  from,
+  split,
+} from "@apollo/client/core";
+import type { NormalizedCacheObject, TypePolicies } from "@apollo/client/cache";
 import { toast } from "@/components/ui/toast";
 import { isAuthErrorMessage } from "~/graphql/isAuthError";
 import { tournamentInviteErrorKey } from "~/utilities/tournamentInvites";
@@ -42,7 +44,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const $i18n = nuxtApp.$i18n as NuxtI18n;
   const config = useRuntimeConfig();
 
-  $apollo.defaultClient.cache.policies.addTypePolicies({
+  const typePolicies: TypePolicies = {
     players: {
       keyFields: (player) => {
         if (typeof player.steam_id === "string") {
@@ -95,7 +97,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         },
       },
     },
-  });
+  };
+  $apollo.defaultClient.cache.policies.addTypePolicies(typePolicies);
 
   const errorLink = onError((error) => {
     // `context: { optional: true }` marks a document the caller expects may be
@@ -161,6 +164,46 @@ export default defineNuxtPlugin((nuxtApp) => {
       fetchPolicy: "network-only",
     },
   };
+
+  // Data that is the same for every viewer, over its own lazy socket that the
+  // api answers as a guest. A signed-in viewer's own session would make Hasura
+  // poll a separate copy for each of them; as a guest, everyone watching shares
+  // one. The socket only opens while one of these subscriptions is running.
+  const publicWsLink = new GraphQLWsLink(
+    createWatchedGraphqlWsClient({
+      url: `wss://${config.public.apiDomain}/v1/graphql`,
+      connectionParams: {
+        headers: { "x-5stack-anonymous": "1" },
+      },
+    }),
+  );
+  const publicHttpLink = createHttpLink({
+    credentials: "omit",
+    uri: `https://${config.public.apiDomain}/v1/graphql`,
+  });
+  const publicClient = new ApolloClient({
+    cache: new InMemoryCache({ typePolicies }),
+    link: from([
+      errorLink,
+      createSeedLink(publicHttpLink),
+      retryLink,
+      split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return (
+            definition.kind === "OperationDefinition" &&
+            definition.operation === "subscription"
+          );
+        },
+        publicWsLink,
+        publicHttpLink,
+      ),
+    ]),
+  });
+  (nuxtApp as any)._apolloClients.public = publicClient;
+  (
+    nuxtApp.vueApp.config.globalProperties as any
+  ).$apolloProvider.clients.public = publicClient;
 
   // Provide the client both ways: `provideApolloClient` sets the module
   // global that @vue/apollo-composable falls back to in async callbacks

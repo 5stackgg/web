@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
@@ -7,11 +8,20 @@ import { useWatchStage } from "~/composables/useWatchStage";
 
 const { subscriptions, queries } = vi.hoisted(() => ({
   subscriptions: [] as Array<{
+    client: string;
     query: string;
     variables: any;
     next: (result: any) => void;
   }>,
-  queries: [] as Array<{ query: string; variables: any }>,
+  queries: [] as Array<{ client: string; query: string; variables: any }>,
+}));
+
+const myRoles = vi.hoisted(() => ({ state: null as any }));
+
+// Fresh per test: tickers from earlier tests are still mounted.
+vi.mock("~/composables/useMyMatchRoles", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("~/composables/useMyMatchRoles")>()),
+  useMyMatchRoles: () => myRoles.state,
 }));
 
 const finished = (id: string, ended: string) => ({
@@ -40,11 +50,16 @@ const finished = (id: string, ended: string) => ({
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
-  useApolloClient: () => ({
+  useApolloClient: (id = "default") => ({
     client: {
       subscribe: ({ query, variables }: any) => ({
         subscribe: ({ next }: { next: (result: any) => void }) => {
-          subscriptions.push({ query: print(query), variables, next });
+          subscriptions.push({
+            client: id,
+            query: print(query),
+            variables,
+            next,
+          });
           return { unsubscribe() {} };
         },
       }),
@@ -52,7 +67,7 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
         if (print(query).includes("SchemaTypeFields")) {
           return { data: { __type: { fields: [{ name: "active_matches" }] } } };
         }
-        queries.push({ query: print(query), variables });
+        queries.push({ client: id, query: print(query), variables });
         return {
           data: {
             matches: [finished("r1", new Date().toISOString())],
@@ -93,6 +108,10 @@ describe("WatchTicker", () => {
   beforeEach(() => {
     subscriptions.length = 0;
     queries.length = 0;
+    myRoles.state = {
+      ready: ref<boolean | null>(false),
+      roles: ref(new Map()),
+    };
   });
 
   it("follows live and upcoming from active_matches", async () => {
@@ -105,6 +124,60 @@ describe("WatchTicker", () => {
     for (const sub of subscriptions) {
       expect(sub.query).toMatch(/^\s*matches: active_matches\(/m);
     }
+  });
+
+  it("follows live and upcoming on the viewer's own session when it can't read as a guest", async () => {
+    await mountTicker();
+
+    expect(subscriptions.map((sub) => sub.client)).toEqual([
+      "default",
+      "default",
+    ]);
+  });
+
+  // Live and upcoming are the same for every viewer, so a signed-in one reads
+  // them as a guest and shares the poll; results stay a one-off query.
+  it("follows live and upcoming as a guest once the viewer's own matches are known", async () => {
+    myRoles.state.ready.value = null;
+    await mountTicker();
+
+    expect(subscriptions).toHaveLength(0);
+
+    myRoles.state.ready.value = true;
+    await flushPromises();
+
+    expect(subscriptions.map((sub) => sub.client)).toEqual([
+      "public",
+      "public",
+    ]);
+    expect(queries.length).toBeGreaterThan(0);
+    expect(queries.every((query) => query.client === "default")).toBe(true);
+  });
+
+  it("marks the viewer's own live match from their roles", async () => {
+    myRoles.state.ready.value = true;
+    myRoles.state.roles.value = new Map([
+      ["mine", { is_in_lineup: true, is_coach: false }],
+    ]);
+    const live = (id: string) => ({
+      ...finished(id, new Date().toISOString()),
+      status: "Live",
+      ended_at: null,
+      winning_lineup_id: null,
+      is_in_lineup: false,
+    });
+    const wrapper = await mountTicker([live("mine"), live("theirs")]);
+    const cells = wrapper
+      .findAll("a")
+      .filter((a) => a.attributes("data-to")?.includes('"id"'));
+    const you = (id: string) =>
+      cells
+        .find((a) => JSON.parse(a.attributes("data-to")!).params?.id === id)!
+        .text()
+        .includes("You");
+
+    expect(you("mine")).toBe(true);
+    expect(you("theirs")).toBe(false);
   });
 
   it("counts Live and Upcoming but not All or Results", async () => {

@@ -163,6 +163,8 @@ export default {
     $subscribe: {
       liveTournaments: {
         query: () => liveBracketsSubscription,
+        // Public: every viewer shares one poll.
+        client: "public",
         variables(this: any) {
           return { ids: this.liveTournamentIds };
         },

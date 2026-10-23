@@ -48,6 +48,18 @@ export function useLeftNavState() {
     }
   }
 
+  // Drops a pin before or after another one (drag to reorder).
+  function movePin(key: string, target: string, place: "before" | "after") {
+    if (key === target || !isPinned(key) || !isPinned(target)) {
+      return;
+    }
+    const next = pins.value.filter((pinned) => pinned !== key);
+    const at = next.indexOf(target) + (place === "after" ? 1 : 0);
+    next.splice(at, 0, key);
+    pins.value = next;
+    write(PINS_KEY, next);
+  }
+
   const isOpen = (section: string) => !folded.value[section];
 
   function setOpen(section: string, open: boolean) {
@@ -64,5 +76,5 @@ export function useLeftNavState() {
     write(FOLDED_KEY, next);
   }
 
-  return { pins, lastPinned, isPinned, togglePin, isOpen, setOpen };
+  return { pins, lastPinned, isPinned, togglePin, movePin, isOpen, setOpen };
 }

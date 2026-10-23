@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Épinglés",
-        "empty": "Ajoutez une étoile à une page pour la garder ici.",
         "pin": "Épingler {page}",
-        "unpin": "Désépingler {page}"
+        "unpin": "Désépingler {page}",
+        "hint": "Ajoutez une étoile à une page pour la garder ici, puis faites-la glisser pour la réordonner."
       },
       "sign_in": {
         "prompt": "Connectez-vous pour rejoindre la file des matchs, suivre vos statistiques et participer aux tournois."

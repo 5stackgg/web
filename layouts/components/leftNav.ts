@@ -21,5 +21,4 @@ export interface LeftNavSectionData {
   items: LeftNavItem[];
   // One short line beside the name, kept while the section is folded.
   live?: { text: string; tone?: "live" } | null;
-  empty?: string;
 }

@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Sabitlenenler",
-        "empty": "Burada tutmak için herhangi bir sayfayı yıldızlayın.",
         "pin": "{page} sayfasını sabitle",
-        "unpin": "{page} sabitlemesini kaldır"
+        "unpin": "{page} sabitlemesini kaldır",
+        "hint": "Burada tutmak için herhangi bir sayfayı yıldızlayın ve sıralamak için sürükleyin."
       },
       "sign_in": {
         "prompt": "Maç sırasına girmek, istatistiklerini takip etmek ve turnuvalara katılmak için giriş yap."

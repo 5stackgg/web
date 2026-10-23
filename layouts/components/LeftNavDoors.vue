@@ -40,25 +40,28 @@ const { setOpenMobile } = useSidebar();
       </SidebarMenuItem>
     </SidebarMenu>
 
-    <div v-else class="flex flex-col gap-1">
+    <div v-else class="flex flex-col gap-2">
       <NuxtLink
         v-for="door in doors"
         :key="door.key"
         :to="door.to!"
         :data-active="door.active || undefined"
         :aria-current="door.active ? 'page' : undefined"
-        class="group/door flex h-[38px] items-center gap-2.5 rounded-lg bg-white/[0.035] px-2.5 text-sm font-semibold text-sidebar-foreground/85 outline-none ring-1 ring-inset ring-sidebar-border transition-[background-color,color,transform] duration-150 hover:bg-white/[0.06] hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring active:scale-[0.98] data-[active]:bg-[hsl(var(--tac-amber)/0.11)] data-[active]:text-sidebar-foreground data-[active]:ring-[hsl(var(--tac-amber)/0.35)] motion-reduce:transition-none"
+        class="group/door flex h-[38px] items-center gap-1.5 rounded-lg pl-1.5 pr-2 text-sm font-semibold text-sidebar-foreground/85 outline-none ring-sidebar-ring transition-[background-color,color,transform] duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 active:scale-[0.98] data-[active]:bg-[hsl(var(--tac-amber)/0.11)] data-[active]:text-sidebar-foreground motion-reduce:transition-none"
         @click="setOpenMobile(false)"
       >
-        <component
-          :is="door.icon"
-          class="size-[17px] shrink-0 transition-colors duration-200"
+        <!-- The tile marks a button at rest without the row looking chosen;
+             only the page you're on fills. -->
+        <span
+          class="grid size-6 shrink-0 place-items-center rounded-md ring-1 ring-inset transition-colors duration-200"
           :class="
             door.active
-              ? 'text-[hsl(var(--tac-amber))]'
-              : 'text-muted-foreground group-hover/door:text-sidebar-foreground/80'
+              ? 'bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] ring-[hsl(var(--tac-amber)/0.3)]'
+              : 'bg-white/[0.05] text-muted-foreground ring-sidebar-border group-hover/door:text-sidebar-foreground'
           "
-        />
+        >
+          <component :is="door.icon" class="size-4" />
+        </span>
         <span class="min-w-0 flex-1 truncate">{{ door.label }}</span>
         <span
           v-if="door.badge"

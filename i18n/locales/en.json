@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Pinned",
-        "empty": "Star any page to keep it here.",
         "pin": "Pin {page}",
-        "unpin": "Unpin {page}"
+        "unpin": "Unpin {page}",
+        "hint": "Star any page to keep it here, and drag to reorder."
       },
       "sign_in": {
         "prompt": "Sign in to queue for matches, track your stats and join tournaments."

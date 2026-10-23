@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Fästa",
-        "empty": "Stjärnmärk en sida för att ha den här.",
         "pin": "Fäst {page}",
-        "unpin": "Lossa {page}"
+        "unpin": "Lossa {page}",
+        "hint": "Stjärnmärk en sida för att ha den här och dra för att ändra ordningen."
       },
       "sign_in": {
         "prompt": "Logga in för att köa till matcher, följa din statistik och gå med i turneringar."

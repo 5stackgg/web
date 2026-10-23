@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Fastgjort",
-        "empty": "Sæt stjerne ved en side for at beholde den her.",
         "pin": "Fastgør {page}",
-        "unpin": "Frigør {page}"
+        "unpin": "Frigør {page}",
+        "hint": "Sæt stjerne ved en side for at beholde den her, og træk for at ændre rækkefølgen."
       },
       "sign_in": {
         "prompt": "Log ind for at stå i kø til kampe, følge dine statistikker og deltage i turneringer."

@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Fixados",
-        "empty": "Marque qualquer página com estrela para mantê-la aqui.",
         "pin": "Fixar {page}",
-        "unpin": "Desafixar {page}"
+        "unpin": "Desafixar {page}",
+        "hint": "Marque qualquer página com estrela para mantê-la aqui e arraste para reordenar."
       },
       "sign_in": {
         "prompt": "Entre para entrar na fila de partidas, acompanhar suas estatísticas e participar de torneios."

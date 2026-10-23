@@ -20,7 +20,6 @@ import {
   Crosshair,
   Tv,
   Shield,
-  Star,
   CircleHelp,
   LayoutGrid,
   Target,
@@ -31,6 +30,11 @@ import { SlideSwap } from "~/components/ui/transitions";
 import LeftNavLink from "~/layouts/components/LeftNavLink.vue";
 import LeftNavSection from "~/layouts/components/LeftNavSection.vue";
 import LeftNavDoors from "~/layouts/components/LeftNavDoors.vue";
+import LeftNavPins from "~/layouts/components/LeftNavPins.vue";
+import {
+  adminEntryForRoute as adminEntryFor,
+  useAdminEntries,
+} from "~/composables/adminEntries";
 import type {
   LeftNavItem,
   LeftNavSectionData,
@@ -42,7 +46,7 @@ import { placeApps } from "~/utilities/leftNavApps";
 import { signInWithSteam } from "~/utilities/loginLinks";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { useNavMode } from "~/composables/useNavMode";
-import TournamentBracket from "~/components/icons/tournament-bracket.vue";
+import BracketIcon from "~/components/icons/BracketIcon.vue";
 import LineupIcon from "~/components/icons/LineupIcon.vue";
 import PodiumIcon from "~/components/icons/PodiumIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
@@ -300,14 +304,6 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
   ];
 });
 
-// The bracket icon paints itself white; in the nav it takes the row's colour
-// (muted, or amber when you're on a tournament).
-const BracketIcon: FunctionalComponent = (_, { attrs }) =>
-  h(TournamentBracket, {
-    ...attrs,
-    class: [attrs.class, "[&_path]:!fill-current [&_path]:!stroke-current"],
-  });
-
 const pluginIcons = new Map<string | null, FunctionalComponent>();
 const pluginIcon = (name: string | null) => {
   if (!pluginIcons.has(name)) {
@@ -338,21 +334,27 @@ const navSections = computed<LeftNavSectionData[]>(() =>
     .filter((section) => section.items.length > 0),
 );
 
-const pinsSection = computed<LeftNavSectionData | null>(() => {
-  if (!authStore.me) {
-    return null;
-  }
-  const items = navSections.value.flatMap((section) => section.items);
-  return {
-    id: "pins",
-    label: t("layouts.app_nav.pins.title"),
-    icon: Star,
-    items: pins.value
-      .map((key) => items.find((item) => item.key === key))
-      .filter((item): item is LeftNavItem => !!item),
-    empty: t("layouts.app_nav.pins.empty"),
-  };
-});
+// Admin pages can be pinned too; they gather under their own label in Pinned.
+const adminEntries = useAdminEntries({ nav: true });
+const adminPinItems = computed<LeftNavItem[]>(() =>
+  authStore.me
+    ? adminEntries.value.map((entry) => ({
+        key: `admin:${entry.id}`,
+        label: t(entry.labelKey),
+        icon: entry.icon,
+        to: { name: entry.route },
+        active: adminEntryFor(route.name) === entry,
+      }))
+    : [],
+);
+const pinsFrom = (items: LeftNavItem[]) =>
+  pins.value
+    .map((key) => items.find((item) => item.key === key))
+    .filter((item): item is LeftNavItem => !!item);
+const pinnedPages = computed(() =>
+  pinsFrom(navSections.value.flatMap((section) => section.items)),
+);
+const pinnedAdmin = computed(() => pinsFrom(adminPinItems.value));
 
 // Where the guide-line marker is before the nav shows a new page, so it can
 // glide from there.
@@ -609,16 +611,20 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
             <LeftNavDoors :doors="doors" :rail="!(isMobile || sideBarOpen)" />
 
-            <template
-              v-for="(section, index) in [
-                ...(pinsSection &&
-                (pinsSection.items.length || isMobile || sideBarOpen)
-                  ? [pinsSection]
-                  : []),
-                ...navSections,
-              ]"
-              :key="section.id"
-            >
+            <LeftNavPins
+              v-if="
+                authStore.me &&
+                (pinnedPages.length ||
+                  pinnedAdmin.length ||
+                  isMobile ||
+                  sideBarOpen)
+              "
+              :items="pinnedPages"
+              :admin-items="pinnedAdmin"
+              :rail="!(isMobile || sideBarOpen)"
+            />
+
+            <template v-for="section in navSections" :key="section.id">
               <Separator
                 v-if="!(isMobile || sideBarOpen)"
                 class="mx-auto my-1 w-5"
@@ -641,7 +647,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               <LeftNavSection
                 :section="{ ...adminSection, icon: ShieldCheck }"
                 :rail="!(isMobile || sideBarOpen)"
-                :pinnable="false"
+                :pinnable="!!authStore.me"
               />
             </template>
           </div>
@@ -678,6 +684,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   :active="item.active"
                   :badge="item.badge"
                   :warning="item.warning"
+                  :pin-key="item.key"
                 />
               </SidebarMenu>
             </SidebarGroup>
@@ -948,7 +955,7 @@ export default {
         key: group.id ?? "lead",
         label: group.labelKey ? (this.$t(group.labelKey) as string) : "",
         items: group.entries.map((entry) => ({
-          key: entry.id,
+          key: `admin:${entry.id}`,
           to: { name: entry.route },
           icon: entry.icon,
           label: this.$t(entry.labelKey) as string,

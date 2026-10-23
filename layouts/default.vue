@@ -188,7 +188,7 @@ provide("adminContent", adminContent);
       class="flex flex-col overflow-y-auto overflow-x-hidden !bg-transparent"
       style="height: 100svh"
     >
-      <AppHeader class="px-6" />
+      <AppHeader class="pl-2 pr-6" />
 
       <MainContent class="flex-1">
         <ApplicationSettingsShell v-if="isApplicationSettings">

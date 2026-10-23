@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Przypięte",
-        "empty": "Oznacz dowolną stronę gwiazdką, aby mieć ją tutaj.",
         "pin": "Przypnij {page}",
-        "unpin": "Odepnij {page}"
+        "unpin": "Odepnij {page}",
+        "hint": "Oznacz dowolną stronę gwiazdką, aby mieć ją tutaj, i przeciągnij, aby zmienić kolejność."
       },
       "sign_in": {
         "prompt": "Zaloguj się, aby dołączać do kolejki meczów, śledzić statystyki i brać udział w turniejach."

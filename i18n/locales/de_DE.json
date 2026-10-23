@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Angeheftet",
-        "empty": "Markiere eine Seite mit einem Stern, um sie hier zu behalten.",
         "pin": "{page} anheften",
-        "unpin": "{page} lösen"
+        "unpin": "{page} lösen",
+        "hint": "Markiere eine Seite mit einem Stern, um sie hier zu behalten, und ziehe sie, um die Reihenfolge zu ändern."
       },
       "sign_in": {
         "prompt": "Melde dich an, um dich für Matches anzustellen, deine Statistiken zu verfolgen und an Turnieren teilzunehmen."

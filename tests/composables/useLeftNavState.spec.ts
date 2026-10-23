@@ -59,6 +59,20 @@ describe("useLeftNavState", () => {
     }
   });
 
+  it("reorders pins, and only among pins", async () => {
+    const state = await freshState();
+    ["a", "b", "c"].forEach((key) => state.togglePin(key));
+
+    state.movePin("c", "a", "before");
+    expect(state.pins.value).toEqual(["c", "a", "b"]);
+
+    state.movePin("c", "b", "after");
+    expect(state.pins.value).toEqual(["a", "b", "c"]);
+
+    state.movePin("a", "unpinned", "after");
+    expect(state.pins.value).toEqual(["a", "b", "c"]);
+  });
+
   it("falls back to the defaults when storage holds junk", async () => {
     localStorage.setItem("5stack:nav-pins", "{not json");
 

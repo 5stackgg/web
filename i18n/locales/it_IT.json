@@ -8451,9 +8451,9 @@
       },
       "pins": {
         "title": "Fissati",
-        "empty": "Aggiungi una stella a una pagina per tenerla qui.",
         "pin": "Fissa {page}",
-        "unpin": "Rimuovi {page} dai fissati"
+        "unpin": "Rimuovi {page} dai fissati",
+        "hint": "Aggiungi una stella a una pagina per tenerla qui e trascinala per riordinarla."
       },
       "sign_in": {
         "prompt": "Accedi per metterti in coda per le partite, seguire le tue statistiche e partecipare ai tornei."

@@ -24,9 +24,6 @@ const { isOpen, setOpen, isPinned, togglePin, lastPinned } = useLeftNavState();
 
 const open = computed(() => isOpen(props.section.id));
 const listId = computed(() => `left-nav-${props.section.id}`);
-// Pinned pages come from every section, so they keep their icons; a section's
-// own pages hang off its guide line as plain text.
-const isPins = computed(() => props.section.id === "pins");
 const active = computed(() => props.section.items.some((item) => item.active));
 
 const linkProps = (item: LeftNavItem) =>
@@ -86,7 +83,7 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
     <template v-else>
       <button
         type="button"
-        class="flex h-9 w-full min-w-0 items-center gap-2.5 rounded-md pl-2 pr-2 text-left text-[0.84rem] font-semibold outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2"
+        class="flex h-9 w-full min-w-0 items-center gap-2.5 rounded-md pl-2.5 pr-2 text-left text-[0.84rem] font-semibold outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2"
         :class="
           active ? 'text-sidebar-foreground' : 'text-sidebar-foreground/80'
         "
@@ -96,7 +93,7 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
       >
         <component
           :is="section.icon"
-          class="size-[17px] shrink-0 transition-colors duration-200"
+          class="size-4 shrink-0 transition-colors duration-200"
           :class="
             active ? 'text-[hsl(var(--tac-amber))]' : 'text-muted-foreground'
           "
@@ -128,18 +125,12 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
       >
         <div class="min-h-0">
           <ul
-            class="flex flex-col gap-px"
-            :class="
-              isPins
-                ? 'pb-1'
-                : 'mb-1.5 ml-[17px] border-l border-sidebar-border py-px pl-3'
-            "
+            class="mb-1.5 ml-[17.5px] flex flex-col gap-px border-l border-sidebar-border py-px pl-3"
           >
             <li
               v-for="(item, index) in section.items"
               :key="item.key"
               class="group/row relative"
-              :class="{ 'nav-pin-in': isPins && lastPinned === item.key }"
               :style="{ '--i': index }"
             >
               <component
@@ -148,9 +139,7 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
                 :data-active="item.active || undefined"
                 class="relative flex min-w-0 items-center rounded-md pr-2 outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 data-[active]:bg-sidebar-accent/70 data-[active]:text-sidebar-foreground"
                 :class="[
-                  isPins
-                    ? 'h-8 gap-2.5 pl-2 text-[0.84rem] text-sidebar-foreground/85'
-                    : 'h-[30px] gap-2 pl-2.5 text-[0.8rem] text-muted-foreground',
+                  'h-[30px] gap-2 pl-2.5 text-[0.8rem] text-muted-foreground',
                   pinnable &&
                     !item.href &&
                     'group-focus-within/row:pr-9 group-hover/row:pr-9 [@media(hover:none)]:pr-9',
@@ -158,22 +147,12 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
                 @click="setOpenMobile(false)"
               >
                 <span
-                  v-if="item.active && !isPins"
+                  v-if="item.active"
                   v-nav-marker
                   data-nav-marker
                   aria-hidden="true"
                   class="pointer-events-none absolute -left-[13.5px] bottom-1.5 top-1.5 w-0.5 rounded-full bg-[hsl(var(--tac-amber))]"
                 ></span>
-                <component
-                  :is="item.icon"
-                  v-if="isPins"
-                  class="size-4 shrink-0 transition-colors duration-200"
-                  :class="
-                    item.active
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-muted-foreground'
-                  "
-                />
                 <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
                 <AlertTriangle
                   v-if="item.warning"
@@ -209,7 +188,7 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
                 type="button"
                 class="absolute right-1 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none ring-sidebar-ring transition-[opacity,color] duration-150 hover:text-[hsl(var(--tac-amber))] focus-visible:opacity-100 focus-visible:ring-2 group-hover/row:opacity-100 aria-pressed:text-[hsl(var(--tac-amber))] [@media(hover:none)]:opacity-100"
                 :class="
-                  isPinned(item.key) && !isPins && !item.badge
+                  isPinned(item.key) && !item.badge
                     ? 'opacity-100'
                     : 'opacity-0'
                 "
@@ -232,12 +211,6 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
                   }"
                 />
               </button>
-            </li>
-            <li
-              v-if="!section.items.length && section.empty"
-              class="px-2 py-1.5 text-xs leading-snug text-muted-foreground"
-            >
-              {{ section.empty }}
             </li>
           </ul>
         </div>
@@ -279,17 +252,8 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
 .nav-chevron {
   transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-.nav-pin-in {
-  animation: nav-pin-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
-}
 .nav-star-pop {
   animation: nav-star-pop 280ms ease-out;
-}
-@keyframes nav-pin-in {
-  from {
-    opacity: 0;
-    transform: translateX(-6px);
-  }
 }
 @keyframes nav-star-pop {
   40% {
@@ -302,7 +266,6 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
   .nav-chevron {
     transition: none;
   }
-  .nav-pin-in,
   .nav-star-pop {
     animation: none;
   }

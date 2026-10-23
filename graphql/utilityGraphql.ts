@@ -1066,7 +1066,7 @@ export const deleteUtilityLineupMutation = generateMutation({
       success: true,
     },
   ],
-} as any);
+});
 
 export const deleteUtilityPlaybookMutation = generateMutation({
   deleteUtilityPlaybook: [

@@ -31306,6 +31306,7 @@ deleteNewsPost?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["
 deleteOrphanedDemos?: [{	keys?: Array<string> | undefined | null | Variable<any, string>},ValueTypes["DeleteOrphansOutput"]],
 deleteServerItem?: [{	node_id: string | Variable<any, string>,	path: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteTournament?: [{	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+deleteUtilityLineup?: [{	utility_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteUtilityLineupRender?: [{	render_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteUtilityPlaybook?: [{	playbook_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
@@ -59905,6 +59906,8 @@ migrations_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["server_migrations_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["server_migrations_aggregate"]],
 	offline_at?:boolean | `@${string}`,
+	/** A computed field, executes function "server_open_to_viewer" */
+	open_to_viewer?:boolean | `@${string}`,
 	player_management_runtime?:boolean | `@${string}`,
 	player_management_seen_at?:boolean | `@${string}`,
 	player_management_version?:boolean | `@${string}`,
@@ -59943,6 +59946,11 @@ plugin_overrides_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	server_region?:ValueTypes["server_regions"],
 	steam_relay?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
+	tv_enabled?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -60075,6 +60083,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	migrations?: ValueTypes["server_migrations_bool_exp"] | undefined | null | Variable<any, string>,
 	migrations_aggregate?: ValueTypes["server_migrations_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	open_to_viewer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_management_runtime?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_management_seen_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_management_version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -60092,6 +60101,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	reserved_by_match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	server_region?: ValueTypes["server_regions_bool_exp"] | undefined | null | Variable<any, string>,
 	steam_relay?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	tv_connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	tv_connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	tv_enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	tv_port?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_server_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
@@ -60166,6 +60178,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	reserved_by_match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	server_region?: ValueTypes["server_regions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	steam_relay?: string | undefined | null | Variable<any, string>,
+	tv_enabled?: boolean | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_server_types_enum"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
@@ -60199,6 +60212,10 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	region?:boolean | `@${string}`,
 	reserved_by_match_id?:boolean | `@${string}`,
 	steam_relay?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -60260,6 +60277,10 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	region?:boolean | `@${string}`,
 	reserved_by_match_id?:boolean | `@${string}`,
 	steam_relay?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -60348,6 +60369,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	max_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	migrations_aggregate?: ValueTypes["server_migrations_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	offline_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	open_to_viewer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_management_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_management_seen_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_management_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -60363,6 +60385,9 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	reserved_by_match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_region?: ValueTypes["server_regions_order_by"] | undefined | null | Variable<any, string>,
 	steam_relay?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tv_connection_link?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tv_connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tv_enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tv_port?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60418,6 +60443,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	region?: string | undefined | null | Variable<any, string>,
 	reserved_by_match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	steam_relay?: string | undefined | null | Variable<any, string>,
+	tv_enabled?: boolean | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_server_types_enum"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
@@ -60511,6 +60537,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	region?: string | undefined | null | Variable<any, string>,
 	reserved_by_match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	steam_relay?: string | undefined | null | Variable<any, string>,
+	tv_enabled?: boolean | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_server_types_enum"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
@@ -125164,6 +125191,7 @@ deleteNewsPost?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessO
 deleteOrphanedDemos?: [{	keys?: Array<string> | undefined | null},ResolverInputTypes["DeleteOrphansOutput"]],
 deleteServerItem?: [{	node_id: string,	path: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
 deleteTournament?: [{	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+deleteUtilityLineup?: [{	utility_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 deleteUtilityLineupRender?: [{	render_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 deleteUtilityPlaybook?: [{	playbook_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
@@ -153763,6 +153791,8 @@ migrations_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["server_migrations_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null},ResolverInputTypes["server_migrations_aggregate"]],
 	offline_at?:boolean | `@${string}`,
+	/** A computed field, executes function "server_open_to_viewer" */
+	open_to_viewer?:boolean | `@${string}`,
 	player_management_runtime?:boolean | `@${string}`,
 	player_management_seen_at?:boolean | `@${string}`,
 	player_management_version?:boolean | `@${string}`,
@@ -153801,6 +153831,11 @@ plugin_overrides_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	server_region?:ResolverInputTypes["server_regions"],
 	steam_relay?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
+	tv_enabled?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -153933,6 +153968,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	migrations?: ResolverInputTypes["server_migrations_bool_exp"] | undefined | null,
 	migrations_aggregate?: ResolverInputTypes["server_migrations_aggregate_bool_exp"] | undefined | null,
 	offline_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	open_to_viewer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	player_management_runtime?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	player_management_seen_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	player_management_version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -153950,6 +153986,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	reserved_by_match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	server_region?: ResolverInputTypes["server_regions_bool_exp"] | undefined | null,
 	steam_relay?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	tv_enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	tv_port?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_server_types_enum_comparison_exp"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
@@ -154024,6 +154063,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	reserved_by_match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	server_region?: ResolverInputTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: ResolverInputTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
@@ -154057,6 +154097,10 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	region?:boolean | `@${string}`,
 	reserved_by_match_id?:boolean | `@${string}`,
 	steam_relay?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -154118,6 +154162,10 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	region?:boolean | `@${string}`,
 	reserved_by_match_id?:boolean | `@${string}`,
 	steam_relay?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -154206,6 +154254,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	max_players?: ResolverInputTypes["order_by"] | undefined | null,
 	migrations_aggregate?: ResolverInputTypes["server_migrations_aggregate_order_by"] | undefined | null,
 	offline_at?: ResolverInputTypes["order_by"] | undefined | null,
+	open_to_viewer?: ResolverInputTypes["order_by"] | undefined | null,
 	player_management_runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	player_management_seen_at?: ResolverInputTypes["order_by"] | undefined | null,
 	player_management_version?: ResolverInputTypes["order_by"] | undefined | null,
@@ -154221,6 +154270,9 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	reserved_by_match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	server_region?: ResolverInputTypes["server_regions_order_by"] | undefined | null,
 	steam_relay?: ResolverInputTypes["order_by"] | undefined | null,
+	tv_connection_link?: ResolverInputTypes["order_by"] | undefined | null,
+	tv_connection_string?: ResolverInputTypes["order_by"] | undefined | null,
+	tv_enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	tv_port?: ResolverInputTypes["order_by"] | undefined | null,
 	type?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null
@@ -154276,6 +154328,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	region?: string | undefined | null,
 	reserved_by_match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: ResolverInputTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
@@ -154369,6 +154422,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	region?: string | undefined | null,
 	reserved_by_match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: ResolverInputTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
@@ -216434,6 +216488,8 @@ export type ModelTypes = {
 	deleteServerItem?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete a tournament and clean up demo files */
 	deleteTournament?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Delete a utility lineup and every file it has in S3 */
+	deleteUtilityLineup?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete a render and its preview clip */
 	deleteUtilityLineupRender?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete a utility playbook */
@@ -240815,6 +240871,8 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	migrations_aggregate: ModelTypes["server_migrations_aggregate"],
 	offline_at?: ModelTypes["timestamptz"] | undefined | null,
+	/** A computed field, executes function "server_open_to_viewer" */
+	open_to_viewer?: boolean | undefined | null,
 	player_management_runtime?: string | undefined | null,
 	player_management_seen_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
@@ -240837,6 +240895,11 @@ export type ModelTypes = {
 	/** An object relationship */
 	server_region?: ModelTypes["server_regions"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?: string | undefined | null,
+	tv_enabled: boolean,
 	tv_port?: number | undefined | null,
 	type: ModelTypes["e_server_types_enum"],
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -240965,6 +241028,7 @@ export type ModelTypes = {
 	migrations?: ModelTypes["server_migrations_bool_exp"] | undefined | null,
 	migrations_aggregate?: ModelTypes["server_migrations_aggregate_bool_exp"] | undefined | null,
 	offline_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	open_to_viewer?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	player_management_runtime?: ModelTypes["String_comparison_exp"] | undefined | null,
 	player_management_seen_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	player_management_version?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -240982,6 +241046,9 @@ export type ModelTypes = {
 	reserved_by_match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	server_region?: ModelTypes["server_regions_bool_exp"] | undefined | null,
 	steam_relay?: ModelTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_link?: ModelTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_string?: ModelTypes["String_comparison_exp"] | undefined | null,
+	tv_enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	tv_port?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	type?: ModelTypes["e_server_types_enum_comparison_exp"] | undefined | null,
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
@@ -241055,6 +241122,7 @@ export type ModelTypes = {
 	reserved_by_match_id?: ModelTypes["uuid"] | undefined | null,
 	server_region?: ModelTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: ModelTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -241088,6 +241156,10 @@ export type ModelTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: ModelTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?: string | undefined | null,
 	tv_port?: number | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
 };
@@ -241148,6 +241220,10 @@ export type ModelTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: ModelTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?: string | undefined | null,
 	tv_port?: number | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
 };
@@ -241234,6 +241310,7 @@ export type ModelTypes = {
 	max_players?: ModelTypes["order_by"] | undefined | null,
 	migrations_aggregate?: ModelTypes["server_migrations_aggregate_order_by"] | undefined | null,
 	offline_at?: ModelTypes["order_by"] | undefined | null,
+	open_to_viewer?: ModelTypes["order_by"] | undefined | null,
 	player_management_runtime?: ModelTypes["order_by"] | undefined | null,
 	player_management_seen_at?: ModelTypes["order_by"] | undefined | null,
 	player_management_version?: ModelTypes["order_by"] | undefined | null,
@@ -241249,6 +241326,9 @@ export type ModelTypes = {
 	reserved_by_match_id?: ModelTypes["order_by"] | undefined | null,
 	server_region?: ModelTypes["server_regions_order_by"] | undefined | null,
 	steam_relay?: ModelTypes["order_by"] | undefined | null,
+	tv_connection_link?: ModelTypes["order_by"] | undefined | null,
+	tv_connection_string?: ModelTypes["order_by"] | undefined | null,
+	tv_enabled?: ModelTypes["order_by"] | undefined | null,
 	tv_port?: ModelTypes["order_by"] | undefined | null,
 	type?: ModelTypes["order_by"] | undefined | null,
 	updated_at?: ModelTypes["order_by"] | undefined | null
@@ -241301,6 +241381,7 @@ export type ModelTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: ModelTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: ModelTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -241391,6 +241472,7 @@ export type ModelTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: ModelTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: ModelTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -300869,6 +300951,8 @@ export type GraphQLTypes = {
 	deleteServerItem?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete a tournament and clean up demo files */
 	deleteTournament?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Delete a utility lineup and every file it has in S3 */
+	deleteUtilityLineup?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete a render and its preview clip */
 	deleteUtilityLineupRender?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete a utility playbook */
@@ -326092,6 +326176,8 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	migrations_aggregate: GraphQLTypes["server_migrations_aggregate"],
 	offline_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	/** A computed field, executes function "server_open_to_viewer" */
+	open_to_viewer?: boolean | undefined | null,
 	player_management_runtime?: string | undefined | null,
 	player_management_seen_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_management_version?: string | undefined | null,
@@ -326114,6 +326200,11 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	server_region?: GraphQLTypes["server_regions"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?: string | undefined | null,
+	tv_enabled: boolean,
 	tv_port?: number | undefined | null,
 	type: GraphQLTypes["e_server_types_enum"],
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -326245,6 +326336,7 @@ export type GraphQLTypes = {
 	migrations?: GraphQLTypes["server_migrations_bool_exp"] | undefined | null,
 	migrations_aggregate?: GraphQLTypes["server_migrations_aggregate_bool_exp"] | undefined | null,
 	offline_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	open_to_viewer?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	player_management_runtime?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	player_management_seen_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	player_management_version?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -326262,6 +326354,9 @@ export type GraphQLTypes = {
 	reserved_by_match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	server_region?: GraphQLTypes["server_regions_bool_exp"] | undefined | null,
 	steam_relay?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_link?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_string?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	tv_enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	tv_port?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	type?: GraphQLTypes["e_server_types_enum_comparison_exp"] | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
@@ -326336,6 +326431,7 @@ export type GraphQLTypes = {
 	reserved_by_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	server_region?: GraphQLTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: GraphQLTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -326370,6 +326466,10 @@ export type GraphQLTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?: string | undefined | null,
 	tv_port?: number | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
 };
@@ -326431,6 +326531,10 @@ export type GraphQLTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_link" */
+	tv_connection_link?: string | undefined | null,
+	/** A computed field, executes function "get_server_tv_connection_string" */
+	tv_connection_string?: string | undefined | null,
 	tv_port?: number | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
 };
@@ -326518,6 +326622,7 @@ export type GraphQLTypes = {
 	max_players?: GraphQLTypes["order_by"] | undefined | null,
 	migrations_aggregate?: GraphQLTypes["server_migrations_aggregate_order_by"] | undefined | null,
 	offline_at?: GraphQLTypes["order_by"] | undefined | null,
+	open_to_viewer?: GraphQLTypes["order_by"] | undefined | null,
 	player_management_runtime?: GraphQLTypes["order_by"] | undefined | null,
 	player_management_seen_at?: GraphQLTypes["order_by"] | undefined | null,
 	player_management_version?: GraphQLTypes["order_by"] | undefined | null,
@@ -326533,6 +326638,9 @@ export type GraphQLTypes = {
 	reserved_by_match_id?: GraphQLTypes["order_by"] | undefined | null,
 	server_region?: GraphQLTypes["server_regions_order_by"] | undefined | null,
 	steam_relay?: GraphQLTypes["order_by"] | undefined | null,
+	tv_connection_link?: GraphQLTypes["order_by"] | undefined | null,
+	tv_connection_string?: GraphQLTypes["order_by"] | undefined | null,
+	tv_enabled?: GraphQLTypes["order_by"] | undefined | null,
 	tv_port?: GraphQLTypes["order_by"] | undefined | null,
 	type?: GraphQLTypes["order_by"] | undefined | null,
 	updated_at?: GraphQLTypes["order_by"] | undefined | null
@@ -326588,6 +326696,7 @@ export type GraphQLTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: GraphQLTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -326681,6 +326790,7 @@ export type GraphQLTypes = {
 	region?: string | undefined | null,
 	reserved_by_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	steam_relay?: string | undefined | null,
+	tv_enabled?: boolean | undefined | null,
 	tv_port?: number | undefined | null,
 	type?: GraphQLTypes["e_server_types_enum"] | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -363461,6 +363571,7 @@ export enum servers_select_column {
 	region = "region",
 	reserved_by_match_id = "reserved_by_match_id",
 	steam_relay = "steam_relay",
+	tv_enabled = "tv_enabled",
 	tv_port = "tv_port",
 	type = "type",
 	updated_at = "updated_at"
@@ -363474,7 +363585,8 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_
 	hibernating = "hibernating",
 	is_dedicated = "is_dedicated",
 	map_rotation_shuffle = "map_rotation_shuffle",
-	rcon_status = "rcon_status"
+	rcon_status = "rcon_status",
+	tv_enabled = "tv_enabled"
 }
 /** select "servers_aggregate_bool_exp_bool_or_arguments_columns" columns of table "servers" */
 export enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns {
@@ -363485,7 +363597,8 @@ export enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_c
 	hibernating = "hibernating",
 	is_dedicated = "is_dedicated",
 	map_rotation_shuffle = "map_rotation_shuffle",
-	rcon_status = "rcon_status"
+	rcon_status = "rcon_status",
+	tv_enabled = "tv_enabled"
 }
 /** update columns of table "servers" */
 export enum servers_update_column {
@@ -363524,6 +363637,7 @@ export enum servers_update_column {
 	region = "region",
 	reserved_by_match_id = "reserved_by_match_id",
 	steam_relay = "steam_relay",
+	tv_enabled = "tv_enabled",
 	tv_port = "tv_port",
 	type = "type",
 	updated_at = "updated_at"

@@ -3359,6 +3359,10 @@
               "title": "VAC / ゲーム BAN",
               "description": "Steam がプレイヤーのアカウントに VAC またはゲーム BAN を報告しています。カウント期間は Steam 自身の「最終 BAN からの日数」を基準に測定されます。"
             },
+            "faceit_ban": {
+              "title": "FACEIT のチート BAN",
+              "description": "FACEIT がプレイヤーのアカウントに有効なチート BAN を報告しています。プレイヤーのサインイン時に確認され、ここでの BAN は FACEIT の BAN が終わると終了します。"
+            },
             "tournament_no_show": {
               "title": "トーナメント不参加",
               "description": "チームが必須のトーナメントチェックインを逃しました。参加時にのみ判定されるため、進行中のブラケットにいるプレイヤーはその場所を保持します。"
@@ -11989,6 +11993,9 @@
       "steam_bans": "SteamのBAN",
       "steam_vac_bans": "VAC BAN",
       "steam_game_bans": "ゲームBAN",
+      "faceit_ban": "FACEIT の BAN",
+      "faceit_cheating": "チート",
+      "view_faceit": "FACEIT で確認",
       "permanent": "無期限",
       "active": "有効",
       "active_list": "有効: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "SteamでVAC BAN {count}件",
       "game_banned": "Steamでゲーム内BAN",
       "game_banned_count": "Steamでゲーム内BAN {count}件",
+      "faceit_banned": "FACEIT でチートにより BAN",
       "last_ban_days_ago": "最後のBANは {days} 日前",
       "view_sanctions_hint": "クリックしてすべての処分を表示",
       "not_in_cs2": "現在CS2をプレイしていません"

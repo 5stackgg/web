@@ -3359,6 +3359,10 @@
               "title": "VAC-/Game-Ban",
               "description": "Steam meldet einen VAC- oder Game-Ban für das Konto des Spielers. Der Zählzeitraum wird an Steams eigenem Wert „Tage seit dem letzten Ban“ gemessen."
             },
+            "faceit_ban": {
+              "title": "FACEIT-Cheating-Sperre",
+              "description": "FACEIT meldet eine aktive Sperre wegen Cheatens für das Konto des Spielers. Geprüft wird bei der Anmeldung des Spielers, und die Sperre hier endet, wenn die von FACEIT endet."
+            },
             "tournament_no_show": {
               "title": "Turnier-No-Show",
               "description": "Ein Team hat einen erforderlichen Turnier-Check-in verpasst. Wird nur beim Eintritt geprüft, ein Spieler in einem laufenden Bracket behält also seinen Platz."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Steam-Sperren",
       "steam_vac_bans": "VAC-Sperre(n)",
       "steam_game_bans": "Spielsperre(n)",
+      "faceit_ban": "FACEIT-Sperre",
+      "faceit_cheating": "Cheating",
+      "view_faceit": "Auf FACEIT ansehen",
       "permanent": "Permanent",
       "active": "Aktiv",
       "active_list": "Aktiv: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} VAC-Ban(s) auf Steam",
       "game_banned": "Auf Steam Game-gebannt",
       "game_banned_count": "{count} Game-Ban(s) auf Steam",
+      "faceit_banned": "Auf FACEIT wegen Cheatens gesperrt",
       "last_ban_days_ago": "Letzte Sperre vor {days} Tag(en)",
       "view_sanctions_hint": "Klicken, um alle Sanktionen zu sehen",
       "not_in_cs2": "Gerade nicht in CS2"

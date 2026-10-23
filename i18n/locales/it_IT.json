@@ -3359,6 +3359,10 @@
               "title": "Ban VAC / di gioco",
               "description": "Steam segnala un ban VAC o di gioco sull'account del giocatore. La finestra di conteggio è misurata sui giorni dall'ultimo ban forniti da Steam."
             },
+            "faceit_ban": {
+              "title": "Ban FACEIT per cheating",
+              "description": "FACEIT segnala un ban attivo per cheating sull'account del giocatore. Viene controllato quando il giocatore accede, e il ban qui termina quando termina quello di FACEIT."
+            },
             "tournament_no_show": {
               "title": "Assenza al torneo",
               "description": "Un team ha saltato un check-in obbligatorio del torneo. Viene verificato solo all'ingresso, quindi un giocatore già in un bracket in corso mantiene il suo posto."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Ban Steam",
       "steam_vac_bans": "Ban VAC",
       "steam_game_bans": "Ban di gioco",
+      "faceit_ban": "Ban FACEIT",
+      "faceit_cheating": "Cheating",
+      "view_faceit": "Vedi su FACEIT",
       "permanent": "Permanente",
       "active": "Attiva",
       "active_list": "Attive: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} ban VAC su Steam",
       "game_banned": "Ban di gioco su Steam",
       "game_banned_count": "{count} ban di gioco su Steam",
+      "faceit_banned": "Bannato su FACEIT per cheating",
       "last_ban_days_ago": "Ultimo ban {days} giorno/i fa",
       "view_sanctions_hint": "Clicca per vedere tutte le sanzioni",
       "not_in_cs2": "Non è su CS2 in questo momento"

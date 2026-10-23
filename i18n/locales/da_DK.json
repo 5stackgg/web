@@ -3359,6 +3359,10 @@
               "title": "VAC-/spiludelukkelse",
               "description": "Steam melder en VAC- eller spiludelukkelse på spillerens konto. Tælleperioden måles mod Steams eget antal dage siden seneste udelukkelse."
             },
+            "faceit_ban": {
+              "title": "FACEIT-udelukkelse for snyd",
+              "description": "FACEIT melder en aktiv udelukkelse for snyd på spillerens konto. Tjekkes, når spilleren logger ind, og udelukkelsen her slutter, når FACEITs gør."
+            },
             "tournament_no_show": {
               "title": "Udeblivelse fra turnering",
               "description": "Et hold missede et påkrævet turnerings-check-in. Tjekkes kun ved indgangen, så en spiller, der allerede er i en igangværende bracket, beholder sin plads."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Steam-udelukkelser",
       "steam_vac_bans": "VAC-udelukkelser",
       "steam_game_bans": "Spiludelukkelser",
+      "faceit_ban": "FACEIT-udelukkelse",
+      "faceit_cheating": "Snyd",
+      "view_faceit": "Se på FACEIT",
       "permanent": "Permanent",
       "active": "Aktiv",
       "active_list": "Aktive: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} VAC-ban på Steam",
       "game_banned": "Game bannet på Steam",
       "game_banned_count": "{count} game ban på Steam",
+      "faceit_banned": "Udelukket på FACEIT for snyd",
       "last_ban_days_ago": "Seneste udelukkelse for {days} dage siden",
       "view_sanctions_hint": "Klik for at se alle sanktioner",
       "not_in_cs2": "Ikke i CS2 lige nu"

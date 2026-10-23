@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { ShieldAlert, ShieldX } from "lucide-vue-next";
+import { ShieldAlert, ShieldBan, ShieldX } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 const props = withDefaults(
@@ -17,6 +17,8 @@ const props = withDefaults(
 const vacBanned = computed(() => Boolean(props.player?.vac_banned));
 
 const gameBanned = computed(() => (props.player?.game_ban_count ?? 0) > 0);
+
+const faceitBanned = computed(() => Boolean(props.player?.faceit_banned_at));
 
 const vacBanCount = computed(() => props.player?.vac_ban_count ?? 0);
 const gameBanCount = computed(() => props.player?.game_ban_count ?? 0);
@@ -35,7 +37,7 @@ const buttonClasses =
 <template>
   <!-- Hero / meta-strip: one shield, tinted by the worst ban, opens sanctions. -->
   <FiveStackToolTip
-    v-if="variant === 'button' && (vacBanned || gameBanned)"
+    v-if="variant === 'button' && (vacBanned || gameBanned || faceitBanned)"
     as-child
     :delay-duration="120"
   >
@@ -45,17 +47,20 @@ const buttonClasses =
         :aria-label="
           vacBanned
             ? $t('player.status.vac_banned')
-            : $t('player.status.game_banned')
+            : faceitBanned
+              ? $t('player.status.faceit_banned')
+              : $t('player.status.game_banned')
         "
         :class="[
           buttonClasses,
-          vacBanned
+          vacBanned || faceitBanned
             ? 'border-destructive/55 bg-destructive/15 text-destructive hover:border-destructive hover:bg-destructive/25'
             : 'border-orange-500/55 bg-orange-500/15 text-orange-400 hover:border-orange-500 hover:bg-orange-500/25',
         ]"
         @click="emit('click')"
       >
         <ShieldX v-if="vacBanned" class="h-4 w-4" />
+        <ShieldBan v-else-if="faceitBanned" class="h-4 w-4" />
         <ShieldAlert v-else class="h-4 w-4" />
       </button>
     </template>
@@ -70,7 +75,13 @@ const buttonClasses =
       <span v-if="gameBanned">
         {{ $t("player.status.game_banned_count", { count: gameBanCount }) }}
       </span>
-      <span v-if="daysSinceLastBan !== null" class="text-muted-foreground">
+      <span v-if="faceitBanned">
+        {{ $t("player.status.faceit_banned") }}
+      </span>
+      <span
+        v-if="daysSinceLastBan !== null && (vacBanned || gameBanned)"
+        class="text-muted-foreground"
+      >
         {{ $t("player.status.last_ban_days_ago", { days: daysSinceLastBan }) }}
       </span>
       <span class="text-muted-foreground">
@@ -80,7 +91,10 @@ const buttonClasses =
   </FiveStackToolTip>
 
   <!-- Inline status row (player displays): one icon per ban kind. -->
-  <div v-else-if="vacBanned || gameBanned" class="flex items-center gap-1">
+  <div
+    v-else-if="vacBanned || gameBanned || faceitBanned"
+    class="flex items-center gap-1"
+  >
     <FiveStackToolTip v-if="vacBanned" as-child :delay-duration="120">
       <template #trigger>
         <ShieldX class="w-4 h-4 text-red-500" />
@@ -113,6 +127,12 @@ const buttonClasses =
           {{ $t("player.status.last_ban_days_ago", { days: daysSinceLastBan }) }}
         </span>
       </div>
+    </FiveStackToolTip>
+    <FiveStackToolTip v-if="faceitBanned" as-child :delay-duration="120">
+      <template #trigger>
+        <ShieldBan class="w-4 h-4 text-red-500" />
+      </template>
+      <span>{{ $t("player.status.faceit_banned") }}</span>
     </FiveStackToolTip>
   </div>
 </template>

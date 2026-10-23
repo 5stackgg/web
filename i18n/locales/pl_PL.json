@@ -3359,6 +3359,10 @@
               "title": "Ban VAC / gry",
               "description": "Steam zgłasza bana VAC lub bana gry na koncie gracza. Okno zliczania mierzone jest według liczby dni od ostatniego bana podawanej przez samego Steama."
             },
+            "faceit_ban": {
+              "title": "Ban FACEIT za oszukiwanie",
+              "description": "FACEIT zgłasza aktywny ban za oszukiwanie na koncie gracza. Sprawdzane przy logowaniu gracza, a ban tutaj kończy się wraz z banem na FACEIT."
+            },
             "tournament_no_show": {
               "title": "Nieobecność na turnieju",
               "description": "Drużyna przegapiła wymagane potwierdzenie obecności na turnieju. Sprawdzane tylko przy wejściu, więc gracz już w trwającej drabince zachowuje swoje miejsce."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Bany Steam",
       "steam_vac_bans": "Bany VAC",
       "steam_game_bans": "Bany w grze",
+      "faceit_ban": "Ban FACEIT",
+      "faceit_cheating": "Oszukiwanie",
+      "view_faceit": "Zobacz na FACEIT",
       "permanent": "Stała",
       "active": "Aktywna",
       "active_list": "Aktywne: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} banów VAC na Steam",
       "game_banned": "Zbanowany w grze na Steam",
       "game_banned_count": "{count} banów w grze na Steam",
+      "faceit_banned": "Zbanowany na FACEIT za oszukiwanie",
       "last_ban_days_ago": "Ostatni ban {days} dni temu",
       "view_sanctions_hint": "Kliknij, aby zobaczyć wszystkie sankcje",
       "not_in_cs2": "Nie jest teraz w CS2"

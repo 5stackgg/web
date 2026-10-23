@@ -3359,6 +3359,10 @@
               "title": "Ban VAC / de jogo",
               "description": "A Steam informa um ban VAC ou de jogo na conta do jogador. A janela de contagem é medida pelos dias desde o último ban informados pela própria Steam."
             },
+            "faceit_ban": {
+              "title": "Ban por trapaça na FACEIT",
+              "description": "A FACEIT informa um ban ativo por trapaça na conta do jogador. Verificado quando o jogador entra, e o ban aqui termina quando o da FACEIT termina."
+            },
             "tournament_no_show": {
               "title": "Ausência em torneio",
               "description": "Uma equipe perdeu um check-in obrigatório do torneio. Verificado só na entrada, então um jogador que já está numa chave em andamento mantém a vaga."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Bans na Steam",
       "steam_vac_bans": "Bans VAC na Steam",
       "steam_game_bans": "Bans Game na Steam",
+      "faceit_ban": "Ban na FACEIT",
+      "faceit_cheating": "Trapaça",
+      "view_faceit": "Ver na FACEIT",
       "permanent": "Permanente",
       "active": "Ativo",
       "active_list": "Ativas: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} banimentos VAC na Steam",
       "game_banned": "Game Ban na Steam",
       "game_banned_count": "{count} banimentos Game Ban",
+      "faceit_banned": "Banido na FACEIT por trapaça",
       "last_ban_days_ago": "Último banimento há {days} dia(s)",
       "view_sanctions_hint": "Clique para ver todas as sanções",
       "not_in_cs2": "Não está no CS2 agora"

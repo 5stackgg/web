@@ -3359,6 +3359,10 @@
               "title": "VAC / 遊戲封鎖",
               "description": "Steam 回報該玩家帳號存在 VAC 或遊戲封鎖。計數期間依 Steam 自己提供的「距上次封鎖天數」來衡量。"
             },
+            "faceit_ban": {
+              "title": "FACEIT 作弊封鎖",
+              "description": "FACEIT 回報該玩家帳號存在有效的作弊封鎖。在玩家登入時檢查，此處的封鎖會在 FACEIT 的封鎖結束時一併結束。"
+            },
             "tournament_no_show": {
               "title": "賽事缺席",
               "description": "隊伍錯過了賽事的必要報到。僅在進入時檢查，因此已經在進行中的對戰表裡的玩家會保留位置。"
@@ -11989,6 +11993,9 @@
       "steam_bans": "Steam 封禁",
       "steam_vac_bans": "VAC 封禁",
       "steam_game_bans": "遊戲封禁",
+      "faceit_ban": "FACEIT 封鎖",
+      "faceit_cheating": "作弊",
+      "view_faceit": "在 FACEIT 上查看",
       "permanent": "永久",
       "active": "生效中",
       "active_list": "生效中：{list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "Steam 上有 {count} 筆 VAC 封鎖",
       "game_banned": "Steam 上有遊戲封鎖",
       "game_banned_count": "Steam 上有 {count} 筆遊戲封鎖",
+      "faceit_banned": "因作弊遭 FACEIT 封鎖",
       "last_ban_days_ago": "最近一次封禁在 {days} 天前",
       "view_sanctions_hint": "點擊即可查看所有處分",
       "not_in_cs2": "目前不在 CS2 中"

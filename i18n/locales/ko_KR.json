@@ -3359,6 +3359,10 @@
               "title": "VAC / 게임 차단",
               "description": "Steam이 플레이어 계정에 VAC 또는 게임 차단을 보고했습니다. 집계 기간은 Steam이 제공하는 마지막 차단 이후 경과 일수를 기준으로 측정합니다."
             },
+            "faceit_ban": {
+              "title": "FACEIT 치팅 차단",
+              "description": "FACEIT가 플레이어 계정에 활성 치팅 차단을 보고했습니다. 플레이어가 로그인할 때 확인하며, 이곳의 차단은 FACEIT의 차단이 끝나면 함께 끝납니다."
+            },
             "tournament_no_show": {
               "title": "토너먼트 불참",
               "description": "팀이 필수 토너먼트 체크인을 놓쳤습니다. 진입할 때만 확인하므로 이미 진행 중인 대진표에 있는 플레이어는 자리를 유지합니다."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Steam 차단",
       "steam_vac_bans": "VAC 차단",
       "steam_game_bans": "게임 차단",
+      "faceit_ban": "FACEIT 차단",
+      "faceit_cheating": "치팅",
+      "view_faceit": "FACEIT에서 보기",
       "permanent": "영구",
       "active": "활성",
       "active_list": "활성: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "Steam VAC 밴 {count}건",
       "game_banned": "Steam에서 게임 밴됨",
       "game_banned_count": "Steam 게임 밴 {count}건",
+      "faceit_banned": "FACEIT에서 치팅으로 밴됨",
       "last_ban_days_ago": "마지막 차단은 {days}일 전",
       "view_sanctions_hint": "클릭하면 모든 제재를 봅니다",
       "not_in_cs2": "지금은 CS2를 하고 있지 않습니다"

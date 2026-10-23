@@ -3359,6 +3359,10 @@
               "title": "Bannissement VAC / jeu",
               "description": "Steam signale un bannissement VAC ou jeu sur le compte du joueur. La fenêtre de comptage est mesurée sur le nombre de jours depuis le dernier bannissement fourni par Steam."
             },
+            "faceit_ban": {
+              "title": "Bannissement FACEIT pour triche",
+              "description": "FACEIT signale un bannissement actif pour triche sur le compte du joueur. Vérifié à la connexion du joueur ; le bannissement ici prend fin en même temps que celui de FACEIT."
+            },
             "tournament_no_show": {
               "title": "Absence en tournoi",
               "description": "Une équipe a manqué un check-in de tournoi obligatoire. Vérifié uniquement à l'entrée : un joueur déjà dans un bracket en cours garde sa place."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Bannissements Steam",
       "steam_vac_bans": "Bannissement(s) VAC",
       "steam_game_bans": "Bannissement(s) de jeu",
+      "faceit_ban": "Bannissement FACEIT",
+      "faceit_cheating": "Triche",
+      "view_faceit": "Voir sur FACEIT",
       "permanent": "Permanente",
       "active": "Active",
       "active_list": "Actives : {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} ban(s) VAC sur Steam",
       "game_banned": "Game ban sur Steam",
       "game_banned_count": "{count} game ban(s) sur Steam",
+      "faceit_banned": "Banni sur FACEIT pour triche",
       "last_ban_days_ago": "Dernier bannissement il y a {days} jour(s)",
       "view_sanctions_hint": "Cliquez pour voir toutes les sanctions",
       "not_in_cs2": "Pas sur CS2 en ce moment"

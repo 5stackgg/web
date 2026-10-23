@@ -8,7 +8,15 @@ import { touchScreen } from "../helpers/touchScreen";
 
 const PLAYER = "76561198000000001";
 
-const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
+const { toast, schema } = vi.hoisted(() => ({
+  toast: vi.fn(),
+  schema: { faceitBans: true },
+}));
+
+vi.mock("~/utilities/schemaHasType", () => ({
+  schemaHasField: async () => schema.faceitBans,
+  schemaHasType: async () => true,
+}));
 
 vi.mock("@/components/ui/toast", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/components/ui/toast")>()),
@@ -37,6 +45,7 @@ const tomorrow = () => new Date(Date.now() + 86_400_000).toISOString();
 const yesterday = () => new Date(Date.now() - 86_400_000).toISOString();
 
 let rows: any[] = [];
+let faceitBan: Record<string, string | null> | null = null;
 let removal = { enforced: false, message: "ok" };
 let mutate: ReturnType<typeof vi.fn>;
 let unmount: (() => void) | null = null;
@@ -46,6 +55,8 @@ afterEach(() => {
   unmount = null;
   useAuthStore().me = undefined;
   removal = { enforced: false, message: "ok" };
+  faceitBan = null;
+  schema.faceitBans = true;
   toast.mockReset();
   vi.restoreAllMocks();
 });
@@ -61,6 +72,9 @@ function serve() {
       return { unsubscribe() {}, closed: false };
     },
   }));
+  vi.spyOn(client, "query").mockImplementation(async () => ({
+    data: { players_by_pk: faceitBan },
+  }));
   mutate = vi.fn().mockResolvedValue({
     data: { unsanctionServerPlayer: removal },
   });
@@ -71,6 +85,7 @@ async function mountSheet(
   sanctions: any[],
   serverId?: string,
   role?: string,
+  player: Record<string, any> = {},
 ) {
   rows = sanctions;
   useAuthStore().me = {
@@ -82,7 +97,7 @@ async function mountSheet(
   const wrapper = await mountSuspended(PlayerSanctions, {
     props: {
       playerId: PLAYER,
-      player: { steam_id: PLAYER, name: "Player", role },
+      player: { steam_id: PLAYER, name: "Player", role, ...player },
       variant: "external",
       open: true,
       serverId,
@@ -403,4 +418,57 @@ describe("PlayerSanctions by role", () => {
       expect(document.body.querySelector('[role="alertdialog"]')).toBeNull();
     },
   );
+});
+
+describe("PlayerSanctions FACEIT ban", () => {
+  const FACEIT_URL = "https://www.faceit.com/en/players/Player";
+
+  it("shows FACEIT's cheating ban with a link to the FACEIT profile", async () => {
+    faceitBan = {
+      steam_id: PLAYER,
+      faceit_banned_at: yesterday(),
+      faceit_ban_ends_at: null,
+    };
+    const wrapper = await mountSheet([], undefined, undefined, {
+      faceit_url: FACEIT_URL,
+    });
+
+    const text = document.body.textContent ?? "";
+    expect(text).toContain("FACEIT Ban");
+    expect(text).toContain("Cheating");
+    expect(text).toContain("Permanent");
+    const link = Array.from(document.body.querySelectorAll("a")).find(
+      (a) => a.textContent?.trim() === "View on FACEIT",
+    );
+    expect(link?.getAttribute("href")).toBe(FACEIT_URL);
+    expect(lastSummary(wrapper)).toMatchObject({
+      available: true,
+      faceitBannedAt: faceitBan.faceit_banned_at,
+    });
+  });
+
+  it("says nothing about FACEIT until the API serves the ban", async () => {
+    schema.faceitBans = false;
+    faceitBan = {
+      steam_id: PLAYER,
+      faceit_banned_at: yesterday(),
+      faceit_ban_ends_at: null,
+    };
+    const wrapper = await mountSheet([]);
+
+    expect(document.body.textContent).not.toContain("FACEIT Ban");
+    expect(lastSummary(wrapper).faceitBannedAt).toBeNull();
+  });
+
+  it("links an automatic FACEIT ban to FACEIT, not Steam", async () => {
+    await mountSheet(
+      [{ ...sanction("ban-1", "ban"), reason: "Auto: FACEIT cheating ban" }],
+      undefined,
+      undefined,
+      { faceit_url: FACEIT_URL },
+    );
+
+    expect(card("Ban").textContent).toContain("View on FACEIT");
+    expect(card("Ban").textContent).not.toContain("View on Steam");
+  });
 });

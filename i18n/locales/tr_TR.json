@@ -3359,6 +3359,10 @@
               "title": "VAC / oyun yasağı",
               "description": "Steam, oyuncunun hesabında bir VAC veya oyun yasağı bildiriyor. Sayım penceresi, Steam’in kendi “son yasaktan bu yana geçen gün” değerine göre ölçülür."
             },
+            "faceit_ban": {
+              "title": "FACEIT hile yasağı",
+              "description": "FACEIT, oyuncunun hesabında hile nedeniyle aktif bir yasak bildiriyor. Oyuncu giriş yaptığında kontrol edilir ve buradaki yasak FACEIT’inki bittiğinde sona erer."
+            },
             "tournament_no_show": {
               "title": "Turnuvaya katılmama",
               "description": "Bir takım zorunlu turnuva katılım onayını kaçırdı. Yalnızca girişte kontrol edilir, dolayısıyla devam eden bir eşleşme tablosundaki oyuncu yerini korur."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Steam yasakları",
       "steam_vac_bans": "VAC yasakları",
       "steam_game_bans": "Oyun yasakları",
+      "faceit_ban": "FACEIT yasağı",
+      "faceit_cheating": "Hile",
+      "view_faceit": "FACEIT'te görüntüle",
       "permanent": "Kalıcı",
       "active": "Aktif",
       "active_list": "Etkin: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "Steam'de {count} VAC ban",
       "game_banned": "Steam'de oyun banlı",
       "game_banned_count": "Steam'de {count} oyun banı",
+      "faceit_banned": "FACEIT'te hile nedeniyle banlı",
       "last_ban_days_ago": "Son yasak {days} gün önce",
       "view_sanctions_hint": "Tüm yaptırımları görmek için tıkla",
       "not_in_cs2": "Şu anda CS2'de değil"

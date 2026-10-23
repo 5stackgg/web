@@ -12,6 +12,7 @@ import {
   Clock,
   Infinity as InfinityIcon,
   ShieldAlert,
+  ShieldBan,
   ShieldCheck,
   ShieldX,
   TriangleAlert,
@@ -89,6 +90,10 @@ const tabCountClasses =
           <span>{{ $t("player.sanctions.title") }}</span>
           <ShieldX
             v-if="vacBanned"
+            class="h-3.5 w-3.5 shrink-0 text-destructive"
+          />
+          <ShieldBan
+            v-else-if="faceitBannedAt"
             class="h-3.5 w-3.5 shrink-0 text-destructive"
           />
           <ShieldAlert
@@ -181,6 +186,56 @@ const tabCountClasses =
                     days: daysSinceLastBan,
                   })
                 }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="faceitBannedAt"
+          class="relative mt-5 overflow-hidden rounded-lg border border-destructive/40 bg-card/40"
+        >
+          <span class="absolute inset-y-0 left-0 w-1 bg-destructive" />
+          <div class="space-y-3 p-4 pl-5">
+            <div class="flex items-center justify-between gap-3">
+              <span
+                class="inline-flex items-center gap-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-destructive"
+              >
+                <ShieldBan class="h-4 w-4 shrink-0" />
+                {{ $t("player.sanctions.faceit_ban") }}
+              </span>
+              <a
+                v-if="faceitProfileUrl"
+                :href="faceitProfileUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex shrink-0 items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:text-[hsl(var(--tac-amber))]"
+              >
+                {{ $t("player.sanctions.view_faceit") }}
+                <ExternalLink class="h-3 w-3" />
+              </a>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                class="inline-flex items-center gap-1.5 rounded border border-destructive/45 bg-destructive/10 px-2 py-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-destructive"
+              >
+                {{ $t("player.sanctions.faceit_cheating") }}
+              </span>
+              <span
+                v-if="faceitBanEndsAt"
+                class="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+              >
+                <Clock class="h-3.5 w-3.5" />
+                {{ $t("player.sanctions.expires") }}
+                <TimeAgo :date="faceitBanEndsAt" />
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+              >
+                <InfinityIcon class="h-3.5 w-3.5" />
+                {{ $t("player.sanctions.permanent") }}
               </span>
             </div>
           </div>
@@ -436,6 +491,16 @@ const tabCountClasses =
                       <ExternalLink class="h-3.5 w-3.5" />
                       {{ $t("player.sanctions.view_steam") }}
                     </a>
+                    <a
+                      v-else-if="isAutoFaceitBan(sanction) && faceitProfileUrl"
+                      :href="faceitProfileUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 text-primary hover:underline"
+                    >
+                      <ExternalLink class="h-3.5 w-3.5" />
+                      {{ $t("player.sanctions.view_faceit") }}
+                    </a>
                   </div>
                 </div>
               </div>
@@ -675,6 +740,17 @@ import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { outranksPlayer } from "~/utilities/sanctionAuthority";
 import gql from "graphql-tag";
+import { schemaHasField } from "~/utilities/schemaHasType";
+
+const PLAYER_FACEIT_BAN = gql`
+  query PlayerFaceitBan($steamId: bigint!) {
+    players_by_pk(steam_id: $steamId) {
+      steam_id
+      faceit_banned_at
+      faceit_ban_ends_at
+    }
+  }
+`;
 
 export default {
   props: {
@@ -724,6 +800,10 @@ export default {
       removingSanction: false,
       removingAbandonedMatch: false,
       updatingSanction: false,
+      faceitBan: null as {
+        faceit_banned_at: string | null;
+        faceit_ban_ends_at: string | null;
+      } | null,
     };
   },
   apollo: {
@@ -827,16 +907,26 @@ export default {
     hasSteamBans(): boolean {
       return this.vacBanned || this.gameBanCount > 0;
     },
+    faceitBannedAt(): string | null {
+      return this.faceitBan?.faceit_banned_at ?? null;
+    },
+    faceitBanEndsAt(): string | null {
+      return this.faceitBan?.faceit_ban_ends_at ?? null;
+    },
+    faceitProfileUrl(): string | null {
+      return this.player?.faceit_url ?? null;
+    },
     shouldRender(): boolean {
       if (this.variant === "external") {
         return (
           this.sanctionCount > 0 ||
           this.abandonedMatchesCount > 0 ||
           this.hasSteamBans ||
+          !!this.faceitBannedAt ||
           this.canManageSanctions
         );
       }
-      return this.hasAnyData || this.hasSteamBans;
+      return this.hasAnyData || this.hasSteamBans || !!this.faceitBannedAt;
     },
     summary(): Record<string, any> {
       return {
@@ -845,6 +935,7 @@ export default {
         hasActive: this.hasActiveSanctions,
         hasSteamBans: this.hasSteamBans,
         vacBanned: this.vacBanned,
+        faceitBannedAt: this.faceitBannedAt,
       };
     },
     canManageSanctions() {
@@ -885,6 +976,12 @@ export default {
     },
   },
   watch: {
+    playerId: {
+      immediate: true,
+      handler() {
+        this.loadFaceitBan();
+      },
+    },
     editTime() {
       this.updateEditDateTime();
     },
@@ -944,6 +1041,36 @@ export default {
         typeof sanction.reason === "string" &&
         sanction.reason.startsWith("Auto: Steam")
       );
+    },
+    isAutoFaceitBan(sanction: any) {
+      return (
+        sanction.type === "ban" &&
+        typeof sanction.reason === "string" &&
+        sanction.reason.startsWith("Auto: FACEIT")
+      );
+    },
+    async loadFaceitBan() {
+      this.faceitBan = null;
+      const playerId = this.playerId;
+      if (!playerId || typeof window === "undefined") {
+        return;
+      }
+      const client = this.$apollo.getClient();
+      if (!(await schemaHasField(client, "players", "faceit_banned_at"))) {
+        return;
+      }
+      try {
+        const { data } = await client.query({
+          query: PLAYER_FACEIT_BAN,
+          variables: { steamId: playerId },
+          fetchPolicy: "network-only",
+        });
+        if (this.playerId === playerId) {
+          this.faceitBan = (data as any)?.players_by_pk ?? null;
+        }
+      } catch (error) {
+        console.error("[player-sanctions] faceit ban query error", error);
+      }
     },
     accentBarClass(sanction: any) {
       if (this.isExpired(sanction)) return "bg-muted-foreground/30";

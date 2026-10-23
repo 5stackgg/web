@@ -3359,6 +3359,10 @@
               "title": "VAC-/spelavstängning",
               "description": "Steam rapporterar en VAC- eller spelavstängning på spelarens konto. Räkningsperioden mäts mot Steams eget antal dagar sedan senaste avstängning."
             },
+            "faceit_ban": {
+              "title": "FACEIT-avstängning för fusk",
+              "description": "FACEIT rapporterar en aktiv avstängning för fusk på spelarens konto. Kontrolleras när spelaren loggar in, och avstängningen här upphör när FACEITs gör det."
+            },
             "tournament_no_show": {
               "title": "Utebliven i turnering",
               "description": "Ett lag missade en obligatorisk turneringsincheckning. Kontrolleras bara vid ingången, så en spelare som redan är i ett pågående slutspelsträd behåller sin plats."
@@ -11989,6 +11993,9 @@
       "steam_bans": "Steam-avstängningar",
       "steam_vac_bans": "VAC-avstängningar",
       "steam_game_bans": "Spelavstängningar",
+      "faceit_ban": "FACEIT-avstängning",
+      "faceit_cheating": "Fusk",
+      "view_faceit": "Visa på FACEIT",
       "permanent": "Permanent",
       "active": "Aktiv",
       "active_list": "Aktiva: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} VAC-avstängning(ar) på Steam",
       "game_banned": "Spelbannad på Steam",
       "game_banned_count": "{count} spelavstängning(ar) på Steam",
+      "faceit_banned": "Avstängd på FACEIT för fusk",
       "last_ban_days_ago": "Senaste avstängningen för {days} dagar sedan",
       "view_sanctions_hint": "Klicka för att se alla sanktioner",
       "not_in_cs2": "Inte i CS2 just nu"

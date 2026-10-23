@@ -3359,6 +3359,10 @@
               "title": "حظر VAC / حظر اللعبة",
               "description": "يبلّغ Steam عن حظر VAC أو حظر لعبة على حساب اللاعب. تُقاس فترة الاحتساب بعدد الأيام منذ آخر حظر كما يوفّره Steam نفسه."
             },
+            "faceit_ban": {
+              "title": "حظر غش على FACEIT",
+              "description": "يبلّغ FACEIT عن حظر نشط بسبب الغش على حساب اللاعب. يُفحص عند تسجيل دخول اللاعب، وينتهي الحظر هنا عندما ينتهي حظر FACEIT."
+            },
             "tournament_no_show": {
               "title": "التخلّف عن البطولة",
               "description": "فوّت فريق تأكيد حضور مطلوبًا في البطولة. يُفحص عند الدخول فقط، لذا يحتفظ اللاعب الموجود في شجرة جارية بمكانه."
@@ -11989,6 +11993,9 @@
       "steam_bans": "حظر Steam",
       "steam_vac_bans": "حظر VAC",
       "steam_game_bans": "حظر اللعبة",
+      "faceit_ban": "حظر FACEIT",
+      "faceit_cheating": "غش",
+      "view_faceit": "عرض على FACEIT",
       "permanent": "دائم",
       "active": "نشطة",
       "active_list": "النشطة: {list}",
@@ -12032,6 +12039,7 @@
       "vac_banned_count": "{count} حظر VAC على Steam",
       "game_banned": "محظور من اللعبة على Steam",
       "game_banned_count": "{count} حظر لعبة على Steam",
+      "faceit_banned": "محظور على FACEIT بسبب الغش",
       "last_ban_days_ago": "آخر حظر قبل {days} يوم",
       "view_sanctions_hint": "انقر لعرض كل العقوبات",
       "not_in_cs2": "ليس في CS2 حاليًا"

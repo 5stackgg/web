@@ -67,7 +67,6 @@ const STATS_QUERY = typedGql("query")({
         _event_id: $("eventId", "uuid!"),
         _category: "adr",
         _match_type: null,
-        _min_rounds: 0,
       },
       where: { player_steam_id: { _eq: $("steamIdText", "String!") } },
     },

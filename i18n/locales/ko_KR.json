@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "플러그인의 Federation 컨테이너 이름입니다 (vite federation 설정의 `name` 값).",
             "exposed_module_hint": "노출된 모듈 경로입니다 (예: ./App).",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "사이드 내비게이션에서 표시할 섹션: play, compete, watch, community. 다른 이름을 쓰면 별도 섹션이 생기며, 비워 두면 Apps에 들어갑니다.",
+            "nav_group_hint": "사이드 내비게이션에서 표시할 섹션: compete, practice, media, community. 다른 이름을 쓰면 별도 섹션이 생기며, 비워 두면 Apps에 들어갑니다.",
             "nav_order_hint": "섹션 안에서의 위치: 1은 첫 번째 페이지 뒤, 2는 두 번째 뒤입니다. 0으로 두면 맨 끝에 놓입니다.",
             "profile_tab_label": "플레이어 프로필 탭",
             "profile_tab_label_placeholder": "인벤토리",
@@ -8345,8 +8345,7 @@
         "leagues": "리그",
         "events": "이벤트",
         "utility": "유틸리티",
-        "bans": "밴",
-        "overview": "개요"
+        "bans": "밴"
       },
       "community": {
         "title": "커뮤니티"

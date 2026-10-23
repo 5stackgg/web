@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "El nombre del contenedor Federation del plugin (su `name` en la configuración de vite federation).",
             "exposed_module_hint": "La ruta del módulo expuesto, p. ej. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Sección del menú lateral donde aparece: play, compete, watch o community. Cualquier otro nombre crea su propia sección; déjalo vacío para Apps.",
+            "nav_group_hint": "Sección del menú lateral donde aparece: compete, practice, media o community. Cualquier otro nombre crea su propia sección; déjalo vacío para Apps.",
             "nav_order_hint": "Posición dentro de la sección: 1 la coloca después de la primera página, 2 después de la segunda. Deja 0 para el final.",
             "profile_tab_label": "Pestaña del perfil de jugador",
             "profile_tab_label_placeholder": "Inventario",
@@ -8345,8 +8345,7 @@
         "leagues": "Liga",
         "events": "Eventos",
         "utility": "Utilidad",
-        "bans": "Baneos",
-        "overview": "Resumen"
+        "bans": "Baneos"
       },
       "community": {
         "title": "Comunidad"

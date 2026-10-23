@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "اسم حاوية Federation للإضافة (قيمة `name` في إعداد vite federation).",
             "exposed_module_hint": "مسار الوحدة المكشوفة، مثل ‎./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "قسم القائمة الجانبية الذي يظهر فيه: play أو compete أو watch أو community. أي اسم آخر يُنشئ قسمًا خاصًا به؛ اتركه فارغًا ليظهر في Apps.",
+            "nav_group_hint": "قسم القائمة الجانبية الذي يظهر فيه: compete أو practice أو media أو community. أي اسم آخر يُنشئ قسمًا خاصًا به؛ اتركه فارغًا ليظهر في Apps.",
             "nav_order_hint": "موضعه داخل القسم: 1 يضعه بعد الصفحة الأولى، و2 بعد الثانية. اترك 0 ليظهر في النهاية.",
             "profile_tab_label": "تبويب ملف اللاعب",
             "profile_tab_label_placeholder": "Inventory",
@@ -8345,8 +8345,7 @@
         "leagues": "الدوري",
         "events": "الفعاليات",
         "utility": "الأدوات",
-        "bans": "الحظر",
-        "overview": "نظرة عامة"
+        "bans": "الحظر"
       },
       "community": {
         "title": "المجتمع"

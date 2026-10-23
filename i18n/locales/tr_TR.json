@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "Eklentinin Federation container adı (vite federation yapılandırmasındaki `name` değeri).",
             "exposed_module_hint": "Açığa çıkan modül yolu, örn. ./App.",
             "nav_group_placeholder": "Uygulamalar",
-            "nav_group_hint": "Yan menüde görüneceği bölüm: play, compete, watch veya community. Başka bir ad kendi bölümünü oluşturur; Apps için boş bırakın.",
+            "nav_group_hint": "Yan menüde görüneceği bölüm: compete, practice, media veya community. Başka bir ad kendi bölümünü oluşturur; Apps için boş bırakın.",
             "nav_order_hint": "Bölümdeki yeri: 1 ilk sayfadan sonra, 2 ikinci sayfadan sonra koyar. Sona koymak için 0 bırakın.",
             "profile_tab_label": "Oyuncu Profili Sekmesi",
             "profile_tab_label_placeholder": "Envanter",
@@ -8345,8 +8345,7 @@
         "leagues": "Lig",
         "events": "Etkinlikler",
         "utility": "Utility",
-        "bans": "Banlar",
-        "overview": "Genel bakış"
+        "bans": "Banlar"
       },
       "community": {
         "title": "Topluluk"

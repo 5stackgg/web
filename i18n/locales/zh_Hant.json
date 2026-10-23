@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "外掛的 Federation 容器名稱（vite federation 設定中的 `name`）。",
             "exposed_module_hint": "公開的模組路徑，例如 ./App。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "顯示在側邊導覽的哪個分區：play、compete、watch 或 community。其他名稱會自成一個分區；留空則放入 Apps。",
+            "nav_group_hint": "顯示在側邊導覽的哪個分區：compete、practice、media 或 community。其他名稱會自成一個分區；留空則放入 Apps。",
             "nav_order_hint": "在分區中的位置：1 表示放在第一個頁面之後，2 表示第二個之後。保留 0 則放在最後。",
             "profile_tab_label": "玩家個人檔案分頁",
             "profile_tab_label_placeholder": "庫存",
@@ -8345,8 +8345,7 @@
         "leagues": "聯賽",
         "events": "活動",
         "utility": "道具",
-        "bans": "封鎖",
-        "overview": "概覽"
+        "bans": "封鎖"
       },
       "community": {
         "title": "社群"

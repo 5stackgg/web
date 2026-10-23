@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "Pluginnets Federation-containernavn (dets `name` i vite federation-konfigurationen).",
             "exposed_module_hint": "Stien til det eksponerede modul, f.eks. ./App.",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "Sektion i sidemenuen, den vises i: play, compete, watch eller community. Ethvert andet navn får sin egen sektion; lad feltet stå tomt for Apps.",
+            "nav_group_hint": "Sektion i sidemenuen, den vises i: compete, practice, media eller community. Ethvert andet navn får sin egen sektion; lad feltet stå tomt for Apps.",
             "nav_order_hint": "Placering i sektionen: 1 sætter den efter den første side, 2 efter den anden. Lad 0 stå for at placere den sidst.",
             "profile_tab_label": "Fane på spillerprofil",
             "profile_tab_label_placeholder": "Inventar",
@@ -8345,8 +8345,7 @@
         "leagues": "Liga",
         "events": "Events",
         "utility": "Utility",
-        "bans": "Bans",
-        "overview": "Oversigt"
+        "bans": "Bans"
       },
       "community": {
         "title": "Community"

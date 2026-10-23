@@ -4,14 +4,12 @@ import {
   ChevronsUpDownIcon,
   ChevronRight,
   Server,
-  Play,
   List,
   ShieldHalf,
   ShieldX,
   Users,
   Home,
   Search,
-  Trophy,
   Swords,
   Film,
   Newspaper,
@@ -26,11 +24,14 @@ import {
   Star,
   CircleHelp,
   LayoutGrid,
+  Target,
+  MonitorPlay,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { SlideSwap } from "~/components/ui/transitions";
 import LeftNavLink from "~/layouts/components/LeftNavLink.vue";
 import LeftNavSection from "~/layouts/components/LeftNavSection.vue";
+import LeftNavDoors from "~/layouts/components/LeftNavDoors.vue";
 import type {
   LeftNavItem,
   LeftNavSectionData,
@@ -43,7 +44,7 @@ import { signInWithSteam } from "~/utilities/loginLinks";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { useNavMode } from "~/composables/useNavMode";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
-import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
+import SmokePlumesIcon from "~/components/icons/SmokePlumesIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
@@ -118,47 +119,29 @@ const isNamed = (name: string) => {
   return current === name || current.startsWith(`${name}-`);
 };
 
-// Four sections, each folding on its own. A section's line beside its name
-// says what is on right now, so a folded section still reports it.
-const builtInSections = computed<LeftNavSectionData[]>(() => {
-  const play: LeftNavItem[] = [
-    {
-      key: "play",
-      label: t("layouts.top_nav.play.find_match"),
-      icon: Play,
-      to: { name: "play" },
-      active: isNamed("play"),
-    },
-  ];
-  if (applicationSettings.scrimFinderEnabled) {
-    play.push({
-      key: "scrims",
-      label: t("layouts.app_nav.navigation.scrims"),
-      icon: Swords,
-      to: { name: "scrims" },
-      active: isNamed("scrims"),
-    });
-  }
-  if (
-    publicServersListed.value ||
-    authStore.isRoleAbove(e_player_roles_enum.moderator)
-  ) {
-    play.push({
-      key: "public-servers",
-      label: t("layouts.app_nav.navigation.public_servers"),
-      icon: Server,
-      to: { name: "public-servers" },
-      active: isNamed("public-servers"),
-    });
-  }
-  play.push({
-    key: "utility",
-    label: t("layouts.app_nav.navigation.utility"),
-    icon: HeGrenadeIcon,
-    to: { name: "utility" },
-    active: isNamed("utility"),
-  });
+// Play and Watch are the two doors at the top. Below them four sections fold
+// on their own: organised competition, practice, media and the community; a section's line beside its name says what is on right now,
+// so a folded section still reports it.
+const doors = computed<LeftNavItem[]>(() => [
+  {
+    key: "play",
+    label: t("layouts.app_nav.navigation.play"),
+    icon: Crosshair,
+    to: { name: "play" },
+    active: isNamed("play"),
+  },
+  {
+    key: "watch",
+    label: t("layouts.app_nav.navigation.watch"),
+    icon: Tv,
+    to: { name: "watch" },
+    active: isNamed("watch"),
+    badge: matchLobbyStore.liveMatchesCount || undefined,
+    badgeTone: "live",
+  },
+]);
 
+const builtInSections = computed<LeftNavSectionData[]>(() => {
   const activeTournaments =
     matchLobbyStore.liveTournamentsCount +
     matchLobbyStore.openRegistrationTournamentsCount;
@@ -167,7 +150,7 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
     compete.push({
       key: "tournaments",
       label: t("layouts.app_nav.navigation.tournaments"),
-      icon: TournamentBracket,
+      icon: BracketIcon,
       to: { name: "tournaments" },
       active: isNamed("tournaments") || matchContext?.value?.tournament != null,
       badge: activeTournaments || undefined,
@@ -194,25 +177,39 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
       active: isNamed("events"),
     });
   }
-  compete.push({
-    key: "leaderboard",
-    label: t("layouts.app_nav.navigation.leaderboard"),
-    icon: ChartColumn,
-    to: { name: "leaderboard" },
-    active: isNamed("leaderboard"),
-  });
 
-  const live = matchLobbyStore.liveMatchesCount;
-  const watch: LeftNavItem[] = [
+  const practice: LeftNavItem[] = [
     {
-      key: "watch",
-      label: t("layouts.app_nav.navigation.overview"),
-      icon: Tv,
-      to: { name: "watch" },
-      active: isNamed("watch"),
-      badge: live || undefined,
-      badgeTone: "live",
+      key: "utility",
+      label: t("layouts.app_nav.navigation.utility"),
+      icon: SmokePlumesIcon,
+      to: { name: "utility" },
+      active: isNamed("utility"),
     },
+  ];
+  if (
+    publicServersListed.value ||
+    authStore.isRoleAbove(e_player_roles_enum.moderator)
+  ) {
+    practice.push({
+      key: "public-servers",
+      label: t("layouts.app_nav.navigation.public_servers"),
+      icon: Server,
+      to: { name: "public-servers" },
+      active: isNamed("public-servers"),
+    });
+  }
+  if (applicationSettings.scrimFinderEnabled) {
+    practice.push({
+      key: "scrims",
+      label: t("layouts.app_nav.navigation.scrims"),
+      icon: Swords,
+      to: { name: "scrims" },
+      active: isNamed("scrims"),
+    });
+  }
+
+  const media: LeftNavItem[] = [
     {
       key: "matches",
       label: t("layouts.app_nav.navigation.matches"),
@@ -223,7 +220,7 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
     },
   ];
   if (showHighlightsLink.value) {
-    watch.push({
+    media.push({
       key: "highlights",
       label: t("layouts.app_nav.navigation.highlights"),
       icon: Film,
@@ -235,7 +232,7 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
     });
   }
   if (showNewsLink.value) {
-    watch.push({
+    media.push({
       key: "news",
       label:
         applicationSettings.newsLabel || t("layouts.app_nav.navigation.news"),
@@ -261,6 +258,13 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
       active: isNamed("teams"),
     },
     {
+      key: "leaderboard",
+      label: t("layouts.app_nav.navigation.leaderboard"),
+      icon: ChartColumn,
+      to: { name: "leaderboard" },
+      active: isNamed("leaderboard"),
+    },
+    {
       key: "bans",
       label: t("layouts.app_nav.navigation.bans"),
       icon: ShieldX,
@@ -271,15 +275,9 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
 
   return [
     {
-      id: "play",
-      label: t("layouts.app_nav.navigation.play"),
-      icon: Crosshair,
-      items: play,
-    },
-    {
       id: "compete",
       label: t("layouts.app_nav.groups.compete"),
-      icon: Trophy,
+      icon: BracketIcon,
       items: compete,
       live:
         matchLobbyStore.openRegistrationTournamentsCount > 0
@@ -287,17 +285,16 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
           : null,
     },
     {
-      id: "watch",
-      label: t("layouts.app_nav.navigation.watch"),
-      icon: Tv,
-      items: watch,
-      live:
-        live > 0
-          ? {
-              text: t("layouts.app_nav.live.count", { count: live }),
-              tone: "live",
-            }
-          : null,
+      id: "practice",
+      label: t("layouts.app_nav.groups.practice"),
+      icon: Target,
+      items: practice,
+    },
+    {
+      id: "media",
+      label: t("layouts.app_nav.groups.media"),
+      icon: MonitorPlay,
+      items: media,
     },
     {
       id: "community",
@@ -307,6 +304,14 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
     },
   ];
 });
+
+// The bracket icon paints itself white; in the nav it takes the row's colour
+// (muted, or amber when you're on a tournament).
+const BracketIcon: FunctionalComponent = (_, { attrs }) =>
+  h(TournamentBracket, {
+    ...attrs,
+    class: [attrs.class, "[&_path]:!fill-current [&_path]:!stroke-current"],
+  });
 
 const pluginIcons = new Map<string | null, FunctionalComponent>();
 const pluginIcon = (name: string | null) => {
@@ -607,6 +612,8 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenu>
             </SidebarGroup>
 
+            <LeftNavDoors :doors="doors" :rail="!(isMobile || sideBarOpen)" />
+
             <template
               v-for="(section, index) in [
                 ...(pinsSection &&
@@ -618,7 +625,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               :key="section.id"
             >
               <Separator
-                v-if="!(isMobile || sideBarOpen) && index > 0"
+                v-if="!(isMobile || sideBarOpen)"
                 class="mx-auto my-1 w-5"
               />
               <LeftNavSection

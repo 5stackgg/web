@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "Назва Federation-контейнера плагіна (поле `name` у конфігурації vite federation).",
             "exposed_module_hint": "Шлях відкритого модуля, напр. ./App.",
             "nav_group_placeholder": "Застосунки",
-            "nav_group_hint": "Розділ бічної панелі, у якому він з'явиться: play, compete, watch або community. Будь-яка інша назва створює окремий розділ; залиште порожнім для Apps.",
+            "nav_group_hint": "Розділ бічної панелі, у якому він з'явиться: compete, practice, media або community. Будь-яка інша назва створює окремий розділ; залиште порожнім для Apps.",
             "nav_order_hint": "Місце в розділі: 1 ставить його після першої сторінки, 2 — після другої. Залиште 0, щоб він був у кінці.",
             "profile_tab_label": "Вкладка профілю гравця",
             "profile_tab_label_placeholder": "Інвентар",
@@ -8345,8 +8345,7 @@
         "leagues": "Ліга",
         "events": "Івенти",
         "utility": "Гранати",
-        "bans": "Бани",
-        "overview": "Огляд"
+        "bans": "Бани"
       },
       "community": {
         "title": "Спільнота"

@@ -3120,7 +3120,7 @@
             "remote_scope_hint": "プラグインのFederationコンテナ名です（vite federation設定内の`name`）。",
             "exposed_module_hint": "公開モジュールのパスです（例：./App）。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "サイドナビのどのセクションに表示するか: play、compete、watch、community。それ以外の名前は独自のセクションになります。空欄なら Apps に入ります。",
+            "nav_group_hint": "サイドナビのどのセクションに表示するか: compete、practice、media、community。それ以外の名前は独自のセクションになります。空欄なら Apps に入ります。",
             "nav_order_hint": "セクション内の位置: 1 なら最初のページの後、2 なら 2 番目の後。0 のままなら末尾です。",
             "profile_tab_label": "プレイヤープロフィールタブ",
             "profile_tab_label_placeholder": "Inventory",
@@ -8345,8 +8345,7 @@
         "leagues": "リーグ",
         "events": "イベント",
         "utility": "ユーティリティ",
-        "bans": "BAN",
-        "overview": "概要"
+        "bans": "BAN"
       },
       "community": {
         "title": "コミュニティ"

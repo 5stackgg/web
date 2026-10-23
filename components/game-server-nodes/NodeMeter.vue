@@ -53,7 +53,7 @@ const scale = computed(() =>
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: hsl(var(--success));
+  background: hsl(var(--success) / 0.7);
   transform-origin: left;
   transition:
     transform 240ms cubic-bezier(0.16, 1, 0.3, 1),

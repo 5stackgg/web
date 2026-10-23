@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "更新中",
           "updating_pct": "更新中 {percent}%",
+          "removing": "削除中",
           "failed": "更新に失敗",
           "behind": "古いバージョン",
           "pinned": "固定",
@@ -5222,6 +5223,14 @@
         "more": "他{count}件",
         "remove": "ノードを削除",
         "remove_text": "このノードとその上のすべての専用サーバーを5Stackから削除します。",
+        "remove_game": {
+          "action": "{game} を削除",
+          "title": "このノードから {game} を削除しますか？",
+          "description": "ノードから {game} のファイルを削除します。再インストールするまで、このノードの試合やサーバーは {game} を使用できません。",
+          "cs2_returns": "有効なノードには、次の CS2 アップデート時に CS2 が再インストールされます。",
+          "started": "ノードから {game} を削除しています",
+          "stop_matches": "先に「マッチを受け付ける」をオフにしてください"
+        },
         "rename": "{node}の名前を変更",
         "label": "ノードのラベル",
         "close": "詳細を閉じる",
@@ -5385,6 +5394,7 @@
           "updating_to": "{build} に更新中",
           "installing": "インストール中",
           "installing_to": "{build} をインストール中",
+          "removing": "削除中",
           "installed": "インストール済み",
           "build": "ビルド {build}",
           "on_update_to": "{build} から {target} に更新",

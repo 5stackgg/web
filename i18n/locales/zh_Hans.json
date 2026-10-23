@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "更新中",
           "updating_pct": "更新中 {percent}%",
+          "removing": "移除中",
           "failed": "更新失败",
           "behind": "版本落后",
           "pinned": "已固定",
@@ -5222,6 +5223,14 @@
         "more": "另外 {count} 项",
         "remove": "移除节点",
         "remove_text": "从 5Stack 中移除该节点及其上的所有专用服务器。",
+        "remove_game": {
+          "action": "移除 {game}",
+          "title": "要从此节点移除 {game} 吗？",
+          "description": "从节点删除 {game} 的文件。重新安装之前，此节点上的比赛和服务器无法使用 {game}。",
+          "cs2_returns": "已启用的节点会在下次 CS2 更新时重新安装 CS2。",
+          "started": "正在从节点移除 {game}",
+          "stop_matches": "请先关闭“接受比赛”"
+        },
         "rename": "重命名 {node}",
         "label": "节点标签",
         "close": "关闭详情",
@@ -5385,6 +5394,7 @@
           "updating_to": "正在更新到 {build}",
           "installing": "正在安装",
           "installing_to": "正在安装 {build}",
+          "removing": "正在移除",
           "installed": "已安装",
           "build": "版本 {build}",
           "on_update_to": "当前 {build}，更新到 {target}",

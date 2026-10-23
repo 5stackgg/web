@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Opdaterer",
           "updating_pct": "Opdaterer {percent}%",
+          "removing": "Fjerner",
           "failed": "Opdatering mislykkedes",
           "behind": "Bagud",
           "pinned": "Fastlåst",
@@ -5222,6 +5223,14 @@
         "more": "{count} mere",
         "remove": "Fjern node",
         "remove_text": "Fjerner noden og alle dedikerede servere på den fra 5Stack.",
+        "remove_game": {
+          "action": "Fjern {game}",
+          "title": "Fjern {game} fra denne node?",
+          "description": "Sletter {game}-filerne fra noden. Kampe og servere kan ikke bruge {game} her, før det er installeret igen.",
+          "cs2_returns": "Aktiverede noder installerer CS2 igen ved næste CS2-opdatering.",
+          "started": "{game} fjernes fra noden",
+          "stop_matches": "Slå »Tager imod kampe« fra først"
+        },
         "rename": "Omdøb {node}",
         "label": "Nodens navn",
         "close": "Luk detaljer",
@@ -5385,6 +5394,7 @@
           "updating_to": "Opdaterer til {build}",
           "installing": "Installerer",
           "installing_to": "Installerer {build}",
+          "removing": "Fjerner",
           "installed": "Installeret",
           "build": "build {build}",
           "on_update_to": "På {build}, opdater til {target}",

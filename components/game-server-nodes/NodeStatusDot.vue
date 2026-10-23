@@ -63,7 +63,11 @@ const statusLabel = computed(() => {
 const label = computed(() =>
   [
     statusLabel.value,
-    updating.value ? t(`${INSPECTOR}.chip.updating`) : "",
+    updating.value
+      ? props.node.update_status === "Removing"
+        ? t(`${INSPECTOR}.chip.removing`)
+        : t(`${INSPECTOR}.chip.updating`)
+      : "",
     baking.value ? t("pages.gpu_nodes.node_state.baking") : "",
   ]
     .filter(Boolean)

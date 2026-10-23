@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Aktualizacja",
           "updating_pct": "Aktualizacja {percent}%",
+          "removing": "Usuwanie",
           "failed": "Aktualizacja nieudana",
           "behind": "Nieaktualny",
           "pinned": "Przypięty",
@@ -5222,6 +5223,14 @@
         "more": "jeszcze {count}",
         "remove": "Usuń węzeł",
         "remove_text": "Usuwa węzeł i wszystkie jego serwery dedykowane z 5Stack.",
+        "remove_game": {
+          "action": "Usuń {game}",
+          "title": "Usunąć {game} z tego węzła?",
+          "description": "Usuwa pliki {game} z węzła. Mecze i serwery nie będą mogły tu używać {game}, dopóki nie zostanie ponownie zainstalowane.",
+          "cs2_returns": "Włączone węzły zainstalują CS2 ponownie przy następnej aktualizacji CS2.",
+          "started": "{game} jest usuwane z węzła",
+          "stop_matches": "Najpierw wyłącz „Przyjmuje mecze”"
+        },
         "rename": "Zmień nazwę {node}",
         "label": "Etykieta węzła",
         "close": "Zamknij szczegóły",
@@ -5385,6 +5394,7 @@
           "updating_to": "Aktualizowanie do {build}",
           "installing": "Instalowanie",
           "installing_to": "Instalowanie {build}",
+          "removing": "Usuwanie",
           "installed": "Zainstalowano",
           "build": "build {build}",
           "on_update_to": "Na {build}, zaktualizuj do {target}",

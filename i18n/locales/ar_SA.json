@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "جارٍ التحديث",
           "updating_pct": "جارٍ التحديث {percent}%",
+          "removing": "جارٍ الإزالة",
           "failed": "فشل التحديث",
           "behind": "متأخر",
           "pinned": "مثبّت",
@@ -5222,6 +5223,14 @@
         "more": "{count} أخرى",
         "remove": "إزالة العقدة",
         "remove_text": "يزيل العقدة وكل سيرفر مخصص عليها من 5Stack.",
+        "remove_game": {
+          "action": "إزالة {game}",
+          "title": "إزالة {game} من هذه العقدة؟",
+          "description": "يحذف ملفات {game} من العقدة. لن تتمكن المباريات والسيرفرات من استخدام {game} هنا حتى يُثبَّت مجددًا.",
+          "cs2_returns": "تعيد العقد المفعّلة تثبيت CS2 مع تحديث CS2 القادم.",
+          "started": "تجري إزالة {game} من العقدة",
+          "stop_matches": "أوقف «يقبل المباريات» أولًا"
+        },
         "rename": "إعادة تسمية {node}",
         "label": "تسمية العقدة",
         "close": "إغلاق التفاصيل",
@@ -5385,6 +5394,7 @@
           "updating_to": "جارٍ التحديث إلى {build}",
           "installing": "جارٍ التثبيت",
           "installing_to": "جارٍ تثبيت {build}",
+          "removing": "جارٍ الإزالة",
           "installed": "مثبّت",
           "build": "الإصدار {build}",
           "on_update_to": "على {build}، حدّث إلى {target}",

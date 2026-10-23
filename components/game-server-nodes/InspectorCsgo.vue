@@ -6,11 +6,17 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import GameStatus from "~/components/game-server-nodes/GameStatus.vue";
-import { Download, EllipsisVertical, ScrollText } from "lucide-vue-next";
+import {
+  Download,
+  EllipsisVertical,
+  ScrollText,
+  Trash2,
+} from "lucide-vue-next";
 import {
   isReachable,
   type NodeLike,
@@ -28,6 +34,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   update: [];
   openLog: [];
+  remove: [];
 }>();
 
 const { t } = useI18n();
@@ -74,6 +81,15 @@ const action = computed(() =>
           <DropdownMenuItem @click="emit('openLog')">
             <ScrollText />
             {{ t(`${INSPECTOR}.cs2.update_log`) }}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            class="text-destructive focus:text-destructive"
+            :disabled="!reachable || state === 'updating'"
+            @click="emit('remove')"
+          >
+            <Trash2 />
+            {{ t(`${INSPECTOR}.remove_game.action`, { game: "CS:GO" }) }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

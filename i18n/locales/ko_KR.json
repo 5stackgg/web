@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "업데이트 중",
           "updating_pct": "업데이트 중 {percent}%",
+          "removing": "제거 중",
           "failed": "업데이트 실패",
           "behind": "구버전",
           "pinned": "고정됨",
@@ -5222,6 +5223,14 @@
         "more": "{count}개 더",
         "remove": "노드 제거",
         "remove_text": "노드와 그 위의 모든 전용 서버를 5Stack에서 제거합니다.",
+        "remove_game": {
+          "action": "{game} 제거",
+          "title": "이 노드에서 {game}을(를) 제거할까요?",
+          "description": "노드에서 {game} 파일을 삭제합니다. 다시 설치할 때까지 이 노드의 매치와 서버는 {game}을(를) 사용할 수 없습니다.",
+          "cs2_returns": "활성화된 노드는 다음 CS2 업데이트 때 CS2를 다시 설치합니다.",
+          "started": "노드에서 {game}을(를) 제거하는 중입니다",
+          "stop_matches": "먼저 '매치 수락'을 끄세요"
+        },
         "rename": "{node} 이름 변경",
         "label": "노드 라벨",
         "close": "세부 정보 닫기",
@@ -5385,6 +5394,7 @@
           "updating_to": "{build}(으)로 업데이트 중",
           "installing": "설치 중",
           "installing_to": "{build} 설치 중",
+          "removing": "제거 중",
           "installed": "설치됨",
           "build": "빌드 {build}",
           "on_update_to": "현재 {build}, {target}(으)로 업데이트",

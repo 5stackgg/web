@@ -52,8 +52,12 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const GAME = `${INSPECTOR}.game`;
 
+// the api reports a running removal as "Removing", with no build to name
+const removing = computed(() => props.updateStatus === "Removing");
 const progress = computed(() => updateProgress(props.updateStatus));
-const step = computed(() => updateStep(props.updateStatus));
+const step = computed(() =>
+  removing.value ? "" : updateStep(props.updateStatus),
+);
 
 const TONE: Record<GameStatusState, Tone> = {
   updating: "info",
@@ -77,6 +81,9 @@ const ICON = {
 const title = computed(() => {
   switch (props.state) {
     case "updating":
+      if (removing.value) {
+        return t(`${GAME}.removing`);
+      }
       if (!props.target) {
         return props.build ? t(`${GAME}.updating`) : t(`${GAME}.installing`);
       }

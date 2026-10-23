@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Güncelleniyor",
           "updating_pct": "Güncelleniyor %{percent}",
+          "removing": "Kaldırılıyor",
           "failed": "Güncelleme başarısız",
           "behind": "Geride",
           "pinned": "Sabitlendi",
@@ -5222,6 +5223,14 @@
         "more": "{count} tane daha",
         "remove": "Düğümü kaldır",
         "remove_text": "Düğümü ve üzerindeki tüm özel sunucuları 5Stack'ten kaldırır.",
+        "remove_game": {
+          "action": "{game} kaldır",
+          "title": "{game} bu düğümden kaldırılsın mı?",
+          "description": "{game} dosyalarını düğümden siler. Yeniden yüklenene kadar maçlar ve sunucular burada {game} kullanamaz.",
+          "cs2_returns": "Etkin düğümler bir sonraki CS2 güncellemesinde CS2'yi yeniden yükler.",
+          "started": "{game} düğümden kaldırılıyor",
+          "stop_matches": "Önce \"Maç kabul ediyor\" seçeneğini kapatın"
+        },
         "rename": "{node} adını değiştir",
         "label": "Düğüm etiketi",
         "close": "Ayrıntıları kapat",
@@ -5385,6 +5394,7 @@
           "updating_to": "{build} sürümüne güncelleniyor",
           "installing": "Yükleniyor",
           "installing_to": "{build} yükleniyor",
+          "removing": "Kaldırılıyor",
           "installed": "Yüklü",
           "build": "sürüm {build}",
           "on_update_to": "{build} sürümünde, {target} sürümüne güncelle",

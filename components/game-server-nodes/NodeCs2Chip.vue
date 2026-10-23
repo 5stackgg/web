@@ -71,11 +71,13 @@ const pill =
   >
     <LoaderCircle class="h-3 w-3 animate-spin motion-reduce:animate-none" />
     <span class="tabular-nums">{{
-      progress == null
-        ? t(`${INSPECTOR}.chip.updating`)
-        : t(`${INSPECTOR}.chip.updating_pct`, {
-            percent: Math.round(progress),
-          })
+      node.update_status === "Removing"
+        ? t(`${INSPECTOR}.chip.removing`)
+        : progress == null
+          ? t(`${INSPECTOR}.chip.updating`)
+          : t(`${INSPECTOR}.chip.updating_pct`, {
+              percent: Math.round(progress),
+            })
     }}</span>
   </span>
   <span

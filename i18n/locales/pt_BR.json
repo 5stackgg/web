@@ -5201,6 +5201,7 @@
         "chip": {
           "updating": "Atualizando",
           "updating_pct": "Atualizando {percent}%",
+          "removing": "Removendo",
           "failed": "Falha na atualização",
           "behind": "Desatualizado",
           "pinned": "Fixado",
@@ -5222,6 +5223,14 @@
         "more": "mais {count}",
         "remove": "Remover nó",
         "remove_text": "Remove o nó e todos os servidores dedicados nele do 5Stack.",
+        "remove_game": {
+          "action": "Remover {game}",
+          "title": "Remover {game} deste nó?",
+          "description": "Apaga os arquivos do {game} do nó. Partidas e servidores não poderão usar o {game} aqui até que ele seja instalado novamente.",
+          "cs2_returns": "Nós ativados instalam o CS2 novamente na próxima atualização do CS2.",
+          "started": "{game} está sendo removido do nó",
+          "stop_matches": "Desative \"Aceitando partidas\" primeiro"
+        },
         "rename": "Renomear {node}",
         "label": "Rótulo do nó",
         "close": "Fechar detalhes",
@@ -5385,6 +5394,7 @@
           "updating_to": "Atualizando para {build}",
           "installing": "Instalando",
           "installing_to": "Instalando {build}",
+          "removing": "Removendo",
           "installed": "Instalado",
           "build": "build {build}",
           "on_update_to": "Na {build}, atualize para {target}",

@@ -1,5 +1,10 @@
 import { Kind, valueFromASTUntyped } from "graphql";
-import type { DocumentNode, FieldNode, OperationDefinitionNode } from "graphql";
+import type {
+  DocumentNode,
+  FieldNode,
+  OperationDefinitionNode,
+  SelectionSetNode,
+} from "graphql";
 
 type Row = Record<string, any>;
 
@@ -121,4 +126,26 @@ export function resolveRootField(
       args.limit == null ? undefined : offset + args.limit,
     ),
   };
+}
+
+// Hasura only returns the fields a query selects.
+export function selectFields(data: any, selectionSet?: SelectionSetNode): any {
+  if (Array.isArray(data)) {
+    return data.map((item) => selectFields(item, selectionSet));
+  }
+  if (!selectionSet || data === null || typeof data !== "object") {
+    return data;
+  }
+  return Object.fromEntries(
+    selectionSet.selections.flatMap((selection) =>
+      selection.kind === Kind.FIELD && selection.name.value in data
+        ? [
+            [
+              selection.name.value,
+              selectFields(data[selection.name.value], selection.selectionSet),
+            ],
+          ]
+        : [],
+    ),
+  );
 }

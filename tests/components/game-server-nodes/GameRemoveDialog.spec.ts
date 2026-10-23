@@ -16,10 +16,17 @@ const removals = () =>
     print(options.mutation).includes("removeCs"),
   );
 
-const mountDialog = (game: "cs2" | "csgo") =>
+const mountDialog = (
+  game: "cs2" | "csgo",
+  node: Record<string, unknown> = {},
+) =>
   mountSuspended(GameRemoveDialog, {
     attachTo: document.body,
-    props: { node: { id: "node-1", label: "Frankfurt 1" }, game, open: true },
+    props: {
+      node: { id: "node-1", label: "Frankfurt 1", ...node },
+      game,
+      open: true,
+    },
   });
 
 const confirm = async () => {
@@ -50,6 +57,18 @@ describe("GameRemoveDialog", () => {
     await flushPromises();
 
     expect(document.body.textContent).toContain("next CS2 update");
+  });
+
+  it("doesn't say CS2 comes back on a GPU-only node that doesn't render", async () => {
+    await mountDialog("cs2", {
+      gpu: true,
+      enabled_for_match_making: false,
+      gpu_rendering_enabled: false,
+    });
+    await flushPromises();
+
+    expect(document.body.textContent).toContain("Remove CS2 from this node?");
+    expect(document.body.textContent).not.toContain("next CS2 update");
   });
 
   it("removes the game once confirmed and then closes", async () => {

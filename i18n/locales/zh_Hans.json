@@ -2678,9 +2678,8 @@
         "players": {
           "permissions_section": "角色权限",
           "leaderboard_section": "排行榜",
-          "leaderboard_section_description": "玩家需在当前查看的赛季或时间范围内达到这些最低要求，才会出现在排行榜上。最少回合数仅适用于 HLTV 评分、ADR、KPR、KAST 和 UDR。奖杯、Faceit 和 Premier 排行榜不受两者影响。",
+          "leaderboard_section_description": "玩家需在当前查看的赛季或时间范围内打满这么多场比赛，才会出现在排行榜上。奖杯、Faceit 和 Premier 排行榜不受此限制。",
           "leaderboard_min_matches": "最少比赛数",
-          "leaderboard_min_rounds": "最少回合数",
           "force_name_registration": "强制玩家名称注册",
           "force_name_registration_description": "如果强制要求玩家注册，玩家将需要提交一个在平台上使用的名称。",
           "refresh_all_title": "重建搜索索引",

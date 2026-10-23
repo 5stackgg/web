@@ -2678,9 +2678,8 @@
         "players": {
           "permissions_section": "Rol izinleri",
           "leaderboard_section": "Sıralamalar",
-          "leaderboard_section_description": "Oyuncular, görüntülenen sezon veya dönemde bu alt sınırlara ulaştıklarında sıralamada görünür. En az raunt sınırı yalnızca HLTV Rating, ADR, KPR, KAST ve UDR için geçerlidir. Ödüller, Faceit ve Premier sıralamaları ikisini de dikkate almaz.",
+          "leaderboard_section_description": "Oyuncular, görüntülenen sezon veya dönemde bu kadar maç oynadıktan sonra sıralamada görünür. Ödüller, Faceit ve Premier sıralamaları bunu dikkate almaz.",
           "leaderboard_min_matches": "En az maç",
-          "leaderboard_min_rounds": "En az raunt",
           "force_name_registration": "Oyuncu adı kaydını zorunlu kıl",
           "force_name_registration_description": "Oyuncu kaydı zorunlu kılınırsa, oyuncunun platformda kullanılacak bir isim girmesi gerekir.",
           "refresh_all_title": "Arama indeksini yeniden oluştur",

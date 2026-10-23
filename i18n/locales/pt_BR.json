@@ -2678,9 +2678,8 @@
         "players": {
           "permissions_section": "Permissões de Cargo",
           "leaderboard_section": "Rankings",
-          "leaderboard_section_description": "Os jogadores só aparecem em um ranking depois de atingir esses mínimos na temporada ou no período exibido. O mínimo de rodadas vale apenas para HLTV Rating, ADR, KPR, KAST e UDR. Os rankings de Troféus, Faceit e Premier ignoram ambos.",
+          "leaderboard_section_description": "Os jogadores só aparecem em um ranking depois de jogar essa quantidade de partidas na temporada ou no período exibido. Os rankings de Troféus, Faceit e Premier ignoram esse limite.",
           "leaderboard_min_matches": "Mínimo de partidas",
-          "leaderboard_min_rounds": "Mínimo de rodadas",
           "force_name_registration": "Forçar Registro de Nome do Jogador",
           "force_name_registration_description": "Se o registro de nome for obrigatório, o jogador deverá informar um nome que será usado na plataforma.",
           "refresh_all_title": "Atualizar Todos os Jogadores",

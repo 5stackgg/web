@@ -244,21 +244,21 @@ async function doScanSteamBans() {
             "
           >
             <FormField
-              v-for="minimum in leaderboardMinimums"
-              :key="minimum.name"
               v-slot="{ componentField }"
-              :name="minimum.name"
+              name="leaderboard_min_matches"
             >
               <FormItem>
                 <FormLabel>{{
-                  $t(`pages.settings.application.players.${minimum.name}`)
+                  $t(
+                    "pages.settings.application.players.leaderboard_min_matches",
+                  )
                 }}</FormLabel>
                 <FormControl>
                   <Input
                     v-bind="componentField"
                     type="number"
-                    :min="minimum.min"
-                    :max="minimum.max"
+                    min="1"
+                    max="1000"
                   />
                 </FormControl>
                 <FormMessage />
@@ -646,29 +646,25 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
-// Fallbacks match get_leaderboard.sql's.
-const LEADERBOARD_MINIMUMS = [
-  { name: "leaderboard_min_matches", fallback: 1, min: 1, max: 1000 },
-  { name: "leaderboard_min_rounds", fallback: 20, min: 0, max: 10000 },
-];
+// Matches get_leaderboard.sql's fallback.
+const LEADERBOARD_MIN_MATCHES = 3;
 
 export default {
   data() {
     return {
       submitting: false,
-      leaderboardMinimums: LEADERBOARD_MINIMUMS,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
             dedicated_servers_min_role_to_connect: z
               .string()
               .default(e_player_roles_enum.user),
-            ...Object.fromEntries(
-              LEADERBOARD_MINIMUMS.map(({ name, fallback, min, max }) => [
-                name,
-                z.number().int().min(min).max(max).default(fallback),
-              ]),
-            ),
+            leaderboard_min_matches: z
+              .number()
+              .int()
+              .min(1)
+              .max(1000)
+              .default(LEADERBOARD_MIN_MATCHES),
             public: z.object({
               player_name_registration: z.string().default("false"),
               create_matches_role: z.string().default(e_player_roles_enum.user),
@@ -689,7 +685,7 @@ export default {
           if (setting.value == null || setting.value === "") {
             continue;
           }
-          if (LEADERBOARD_MINIMUMS.some(({ name }) => name === setting.name)) {
+          if (setting.name === "leaderboard_min_matches") {
             const value = Number(setting.value);
             if (Number.isInteger(value)) {
               (this.form.setFieldValue as any)(setting.name, value);
@@ -763,10 +759,12 @@ export default {
                       values.dedicated_servers_min_role_to_connect,
                     ),
                   },
-                  ...LEADERBOARD_MINIMUMS.map(({ name, fallback }) => ({
-                    name,
-                    value: String(values[name] ?? fallback),
-                  })),
+                  {
+                    name: "leaderboard_min_matches",
+                    value: String(
+                      values.leaderboard_min_matches ?? LEADERBOARD_MIN_MATCHES,
+                    ),
+                  },
                 ],
                 on_conflict: {
                   constraint: settings_constraint.settings_pkey,

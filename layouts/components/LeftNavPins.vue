@@ -100,21 +100,27 @@ async function onKeydown(
 
 <template>
   <SidebarGroup class="py-0.5">
-    <SidebarMenu v-if="rail">
-      <template v-for="group in groups" :key="group.id">
-        <SidebarMenuItem v-for="item in group.items" :key="item.key">
-          <SidebarMenuButton as-child :tooltip="item.label">
-            <NuxtLink
-              :to="item.to!"
-              :class="{ 'router-link-active': item.active }"
-            >
-              <component :is="item.icon" />
-              <span>{{ item.label }}</span>
-            </NuxtLink>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+    <template v-if="rail">
+      <template
+        v-for="(group, index) in groups.filter((group) => group.items.length)"
+        :key="group.id"
+      >
+        <Separator v-if="index > 0" class="mx-auto my-1 w-5" />
+        <SidebarMenu>
+          <SidebarMenuItem v-for="item in group.items" :key="item.key">
+            <SidebarMenuButton as-child :tooltip="item.label">
+              <NuxtLink
+                :to="item.to!"
+                :class="{ 'router-link-active': item.active }"
+              >
+                <component :is="item.icon" class="size-4 shrink-0" />
+                <span>{{ item.label }}</span>
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </template>
-    </SidebarMenu>
+    </template>
 
     <div v-else class="flex flex-col pb-2">
       <template v-for="group in groups" :key="group.id">

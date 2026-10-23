@@ -63,7 +63,7 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
             class="relative"
             :class="{ 'router-link-active': item.active }"
           >
-            <component :is="item.icon" />
+            <component :is="item.icon" class="size-4 shrink-0" />
             <span>{{ item.label }}</span>
             <span
               v-if="item.warning || item.badge"

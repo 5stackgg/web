@@ -97,7 +97,7 @@ const LEGEND_SPAN: Record<number, string> = {
       class="grid w-full gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]"
     >
       <div
-        class="relative mx-auto w-full min-w-0 lg:sticky lg:top-4 lg:flex lg:min-h-[calc(100dvh-var(--header-height,4rem)-2rem)] lg:max-w-[min(1000px,calc(100dvh-var(--header-height,4rem)-5rem))] lg:flex-col lg:self-start"
+        class="relative mx-auto w-full min-w-0 lg:sticky lg:top-4 lg:flex lg:min-h-[calc(100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-2rem)] lg:max-w-[min(1000px,calc(100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-5rem))] lg:flex-col lg:self-start"
       >
         <div class="lg:my-auto">
           <UtilityMapRail :map-name="null" horizontal class="mb-3 lg:hidden" />

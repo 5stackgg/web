@@ -23,7 +23,11 @@ const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
 // floating SettingsSaveBar — can lift itself above it. Defaults to 0 when the
 // dock is empty / on pages without one. Its left edge is the content column's
 // (past the left nav), which is where toasts line up.
+//
+// The system alert banners sit above the page inside the scroller, so a column
+// sized to the window below the header (the utility card) subtracts theirs.
 const bottomDock = ref<HTMLElement | null>(null);
+const systemAlerts = ref<HTMLElement | null>(null);
 let dockRO: ResizeObserver | null = null;
 
 function publishDockBox() {
@@ -32,13 +36,21 @@ function publishDockBox() {
   const root = document.documentElement.style;
   root.setProperty("--main-bottom-dock-height", `${h}px`);
   root.setProperty("--main-content-left", `${left}px`);
+  root.setProperty(
+    "--system-alerts-height",
+    `${systemAlerts.value?.offsetHeight ?? 0}px`,
+  );
 }
 
 onMounted(() => {
   publishDockBox();
-  if (typeof ResizeObserver !== "undefined" && bottomDock.value) {
+  if (typeof ResizeObserver !== "undefined") {
     dockRO = new ResizeObserver(() => publishDockBox());
-    dockRO.observe(bottomDock.value);
+    for (const box of [bottomDock.value, systemAlerts.value]) {
+      if (box) {
+        dockRO.observe(box);
+      }
+    }
   }
 });
 
@@ -46,6 +58,7 @@ onBeforeUnmount(() => {
   dockRO?.disconnect();
   document.documentElement.style.removeProperty("--main-bottom-dock-height");
   document.documentElement.style.removeProperty("--main-content-left");
+  document.documentElement.style.removeProperty("--system-alerts-height");
 });
 
 // Inject values from default.vue
@@ -89,7 +102,9 @@ useScrollRestorationAnchor(pageScroller, scrollFloorRootEl);
           ref="pageScroller"
           class="flex-1 overflow-auto [scrollbar-gutter:stable]"
         >
-          <SystemAlertBanner />
+          <div ref="systemAlerts">
+            <SystemAlertBanner />
+          </div>
           <div
             ref="scrollFloorRootEl"
             class="p-2 sm:p-4 w-full"

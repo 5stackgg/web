@@ -38,7 +38,7 @@ const mapName = computed(() =>
 <template>
   <div v-if="railed" class="mx-auto flex w-full justify-center gap-4">
     <div
-      class="hidden shrink-0 lg:sticky lg:top-4 lg:flex lg:h-[calc(100dvh-var(--header-height,4rem)-2rem)] lg:items-center lg:self-start"
+      class="hidden shrink-0 lg:sticky lg:top-4 lg:flex lg:h-[calc(100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-2rem)] lg:items-center lg:self-start"
     >
       <UtilityMapRail :map-name="mapName" />
     </div>
@@ -46,7 +46,7 @@ const mapName = computed(() =>
     <!-- As wide as the board at its largest plus the card, and no wider, so
          nothing is left over to drift the rail away from the board. -->
     <div
-      class="min-w-0 flex-1 lg:max-w-[calc(min(1000px,100dvh-var(--header-height,4rem)-5rem)+27rem)]"
+      class="min-w-0 flex-1 lg:max-w-[calc(min(1000px,100dvh-var(--header-height,4rem)-var(--system-alerts-height,0px)-5rem)+27rem)]"
     >
       <NuxtPage :page-key="utilityOutletKey" />
     </div>

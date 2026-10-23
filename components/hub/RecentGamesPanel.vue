@@ -319,50 +319,35 @@ export default {
   apollo: {
     $subscribe: {
       matches: {
+        // The player's own matches, found from their lineups, then the latest
+        // ten. Reading matches newest first until ten held the player went
+        // through every match there is for a player with fewer than ten. Typed
+        // loosely: the nested selection is deeper than TypeScript will expand.
         query: typedGql("subscription")({
-          matches: [
+          players_by_pk: [
+            { steam_id: $("steamId", "bigint!") },
             {
-              limit: 10,
-              // The lineups rather than is_in_lineup: a computed field is
-              // checked match by match, newest first, until ten are found.
-              where: {
-                _and: [
-                  {
-                    _or: [
-                      {
-                        lineup_1: {
-                          lineup_players: {
-                            steam_id: { _eq: $("steamId", "bigint!") },
-                          },
-                        },
-                      },
-                      {
-                        lineup_2: {
-                          lineup_players: {
-                            steam_id: { _eq: $("steamId", "bigint!") },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                  RESULT_MATCHES_WHERE,
-                ],
-              },
-              order_by: [{}, { created_at: order_by.desc }],
-            },
-            {
-              ...simpleMatchFields,
-              elo_changes: [
+              matches: [
                 {
-                  where: {
-                    player_steam_id: { _eq: $("steamId", "bigint!") },
-                  },
+                  limit: 10,
+                  where: RESULT_MATCHES_WHERE,
+                  order_by: [{ created_at: order_by.desc }],
                 },
-                eloFields,
+                {
+                  ...simpleMatchFields,
+                  elo_changes: [
+                    {
+                      where: {
+                        player_steam_id: { _eq: $("steamId", "bigint!") },
+                      },
+                    },
+                    eloFields,
+                  ],
+                },
               ],
             },
           ],
-        }),
+        } as any),
         variables() {
           return { steamId: (this as any).me?.steam_id };
         },
@@ -370,7 +355,7 @@ export default {
           return !(this as any).me?.steam_id;
         },
         result({ data }: { data: any }) {
-          (this as any).matches = data.matches;
+          (this as any).matches = data.players_by_pk?.matches ?? [];
           (this as any).loading = false;
           void (this as any).loadMatchStats();
         },

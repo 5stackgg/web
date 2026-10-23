@@ -486,6 +486,30 @@ export default defineNuxtConfig({
         // above stays non-empty purely so this build still counts as a host.
         shared: {},
       }),
+      // Rollup keeps a node per object for the whole build, and each compiled
+      // locale is one huge object literal: the 16 non-English locales held
+      // ~2.7 GB of heap. A JSON.parse string is one node with the same data.
+      {
+        name: "i18n-locales-json-parse",
+        apply: "build",
+        enforce: "post",
+        transform(code, id) {
+          if (!/\/i18n\/locales\/[^/]+\.json$/.test(id)) {
+            return;
+          }
+          const resource = code.match(
+            /^const resource = ([\s\S]*)\nexport default resource\s*$/,
+          )?.[1];
+          if (!resource) {
+            return;
+          }
+          const json = JSON.stringify(new Function(`return ${resource}`)());
+          return {
+            code: `export default /* #__PURE__ */ JSON.parse(${JSON.stringify(json)})`,
+            map: { mappings: "" },
+          };
+        },
+      },
     ],
     build: {
       target: "esnext",

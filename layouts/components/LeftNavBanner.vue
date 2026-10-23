@@ -3,7 +3,8 @@ import type { RouteLocationRaw } from "vue-router";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 
 // The brand across the top of the left nav, and the home link. An uploaded
-// banner image fills it; without one it shows the logo and the name.
+// banner shows whole at its own shape; without one it shows the logo and the
+// name.
 defineProps<{ to: RouteLocationRaw }>();
 
 const { t } = useI18n();
@@ -15,7 +16,8 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
 <template>
   <NuxtLink
     :to="to"
-    class="nav-banner relative flex h-[76px] shrink-0 items-center gap-3.5 overflow-hidden pl-3 pr-4 outline-none ring-inset ring-sidebar-ring focus-visible:ring-2"
+    class="nav-banner relative flex shrink-0 items-center overflow-hidden outline-none ring-inset ring-sidebar-ring focus-visible:ring-2"
+    :class="{ 'h-[76px] gap-3.5 pl-3 pr-4': !bannerUrl }"
     :aria-label="t('layouts.app_nav.navigation.home')"
     @click="setOpenMobile(false)"
   >
@@ -23,7 +25,7 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
       v-if="bannerUrl"
       :src="bannerUrl"
       alt=""
-      class="nav-banner-fade absolute inset-0 size-full object-cover"
+      class="relative max-h-[120px] w-full object-contain"
     />
     <template v-else>
       <img
@@ -46,7 +48,7 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
 
 <style scoped>
 /* The band has no bottom edge: its shade, the contour rings and the amber
-   wash under the logo, and any uploaded banner, all fade out into the nav. */
+   wash under the logo all fade out into the nav. */
 .nav-banner {
   background: linear-gradient(
     180deg,
@@ -74,9 +76,6 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
       rgb(255 255 255 / 0.035) 11px 12px
     ),
     linear-gradient(90deg, transparent 30%, hsl(var(--tac-amber) / 0.05));
-}
-.nav-banner::before,
-.nav-banner-fade {
   -webkit-mask-image: linear-gradient(
     180deg,
     #000 30%,

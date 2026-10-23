@@ -8137,7 +8137,7 @@
         "staff": "스태프 밴",
         "staff_hint": "모더레이터가 부여",
         "auto": "자동",
-        "auto_hint": "Steam VAC 밴에 따른 조치",
+        "auto_hint": "Steam VAC 밴 또는 FACEIT 치팅 차단에 따른 조치",
         "banned_here": "여기서 밴",
         "any": "전체",
         "banned_here_now": "현재 여기서 밴됨",
@@ -8164,7 +8164,7 @@
         "staff": "스태프 밴",
         "staff_title": "스태프가 여기서 밴함",
         "auto": "자동 밴",
-        "auto_title": "Steam VAC 밴으로 여기서 자동 밴됨"
+        "auto_title": "Steam VAC 밴 또는 FACEIT 치팅 차단으로 여기서 자동 밴됨"
       },
       "length": {
         "permanent": "영구",
@@ -8234,7 +8234,7 @@
         "banned_auto": "여기서 자동 밴",
         "banned_by": "{name}이(가) 여기서 밴",
         "banned_staff": "스태프가 여기서 밴",
-        "for_vac": "Steam VAC 밴에 따른 조치",
+        "for_vac": "Steam VAC 밴 또는 FACEIT 치팅 차단에 따른 조치",
         "ban_ended": "밴 종료",
         "last_match": "여기서의 마지막 경기",
         "matches_after_steam": "Steam 밴 이후 {count}경기 | Steam 밴 이후 {count}경기"

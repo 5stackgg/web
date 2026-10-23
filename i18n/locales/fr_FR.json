@@ -8137,7 +8137,7 @@
         "staff": "Ban du staff",
         "staff_hint": "Prononcé par un modérateur",
         "auto": "Automatique",
-        "auto_hint": "Pour un ban VAC Steam",
+        "auto_hint": "Pour un ban VAC Steam ou un bannissement FACEIT pour triche",
         "banned_here": "Banni ici",
         "any": "Tous",
         "banned_here_now": "Banni ici actuellement",
@@ -8164,7 +8164,7 @@
         "staff": "Ban du staff",
         "staff_title": "Banni ici par le staff",
         "auto": "Ban auto",
-        "auto_title": "Banni ici automatiquement pour un ban VAC Steam"
+        "auto_title": "Banni ici automatiquement pour un ban VAC Steam ou un bannissement FACEIT pour triche"
       },
       "length": {
         "permanent": "Permanent",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Banni ici automatiquement",
         "banned_by": "Banni ici par {name}",
         "banned_staff": "Banni ici par le staff",
-        "for_vac": "pour le ban VAC Steam",
+        "for_vac": "pour un ban VAC Steam ou un bannissement FACEIT pour triche",
         "ban_ended": "Ban terminé",
         "last_match": "Dernier match ici",
         "matches_after_steam": "{count} match après le ban Steam | {count} matchs après le ban Steam"

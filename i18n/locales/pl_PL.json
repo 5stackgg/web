@@ -8137,7 +8137,7 @@
         "staff": "Ban od administracji",
         "staff_hint": "Nałożony przez moderatora",
         "auto": "Automatyczny",
-        "auto_hint": "Za ban VAC na Steam",
+        "auto_hint": "Za ban VAC na Steam lub ban FACEIT za oszukiwanie",
         "banned_here": "Zbanowany tutaj",
         "any": "Dowolny",
         "banned_here_now": "Obecnie zbanowany tutaj",
@@ -8164,7 +8164,7 @@
         "staff": "Ban administracji",
         "staff_title": "Zbanowany tutaj przez administrację",
         "auto": "Auto-ban",
-        "auto_title": "Zbanowany tutaj automatycznie za ban VAC na Steam"
+        "auto_title": "Zbanowany tutaj automatycznie za ban VAC na Steam lub ban FACEIT za oszukiwanie"
       },
       "length": {
         "permanent": "Permanentny",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Zbanowany tutaj automatycznie",
         "banned_by": "Zbanowany tutaj przez {name}",
         "banned_staff": "Zbanowany tutaj przez administrację",
-        "for_vac": "za ban VAC na Steam",
+        "for_vac": "za ban VAC na Steam lub ban FACEIT za oszukiwanie",
         "ban_ended": "Ban zakończony",
         "last_match": "Ostatni mecz tutaj",
         "matches_after_steam": "{count} mecz po banie na Steam | {count} meczów po banie na Steam"

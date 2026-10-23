@@ -8137,7 +8137,7 @@
         "staff": "Yetkili banı",
         "staff_hint": "Bir moderatör verdi",
         "auto": "Otomatik",
-        "auto_hint": "Bir Steam VAC banı için",
+        "auto_hint": "Bir Steam VAC banı veya FACEIT hile yasağı için",
         "banned_here": "Burada banlı",
         "any": "Herhangi",
         "banned_here_now": "Şu an burada banlı",
@@ -8164,7 +8164,7 @@
         "staff": "Yetkili banı",
         "staff_title": "Burada yetkililer tarafından banlandı",
         "auto": "Oto ban",
-        "auto_title": "Bir Steam VAC banı nedeniyle burada otomatik banlandı"
+        "auto_title": "Bir Steam VAC banı veya FACEIT hile yasağı nedeniyle burada otomatik banlandı"
       },
       "length": {
         "permanent": "Kalıcı",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Burada otomatik banlandı",
         "banned_by": "Burada {name} tarafından banlandı",
         "banned_staff": "Burada yetkililer tarafından banlandı",
-        "for_vac": "Steam VAC banı nedeniyle",
+        "for_vac": "Steam VAC banı veya FACEIT hile yasağı nedeniyle",
         "ban_ended": "Ban bitti",
         "last_match": "Buradaki son maç",
         "matches_after_steam": "Steam banından sonra {count} maç | Steam banından sonra {count} maç"

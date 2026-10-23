@@ -8137,7 +8137,7 @@
         "staff": "Staff-Bann",
         "staff_hint": "Von einem Moderator verhängt",
         "auto": "Automatisch",
-        "auto_hint": "Für einen Steam-VAC-Bann",
+        "auto_hint": "Für einen Steam-VAC-Bann oder eine FACEIT-Cheating-Sperre",
         "banned_here": "Hier gebannt",
         "any": "Alle",
         "banned_here_now": "Hier aktuell gebannt",
@@ -8164,7 +8164,7 @@
         "staff": "Staff-Bann",
         "staff_title": "Hier vom Staff gebannt",
         "auto": "Auto-Bann",
-        "auto_title": "Hier automatisch wegen eines Steam-VAC-Banns gebannt"
+        "auto_title": "Hier automatisch wegen eines Steam-VAC-Banns oder einer FACEIT-Cheating-Sperre gebannt"
       },
       "length": {
         "permanent": "Permanent",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Hier automatisch gebannt",
         "banned_by": "Hier von {name} gebannt",
         "banned_staff": "Hier vom Staff gebannt",
-        "for_vac": "wegen des Steam-VAC-Banns",
+        "for_vac": "wegen eines Steam-VAC-Banns oder einer FACEIT-Cheating-Sperre",
         "ban_ended": "Bann beendet",
         "last_match": "Letztes Match hier",
         "matches_after_steam": "{count} Match nach dem Steam-Bann | {count} Matches nach dem Steam-Bann"

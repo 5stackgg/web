@@ -8137,7 +8137,7 @@
         "staff": "Staff ban",
         "staff_hint": "Issued by a moderator",
         "auto": "Automatic",
-        "auto_hint": "For a Steam VAC ban",
+        "auto_hint": "For a Steam VAC or FACEIT cheating ban",
         "banned_here": "Banned here",
         "any": "Any",
         "banned_here_now": "Banned here now",
@@ -8164,7 +8164,7 @@
         "staff": "Staff ban",
         "staff_title": "Banned here by staff",
         "auto": "Auto ban",
-        "auto_title": "Banned here automatically for a Steam VAC ban"
+        "auto_title": "Banned here automatically for a Steam VAC or FACEIT cheating ban"
       },
       "length": {
         "permanent": "Permanent",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Banned here automatically",
         "banned_by": "Banned here by {name}",
         "banned_staff": "Banned here by staff",
-        "for_vac": "for the Steam VAC ban",
+        "for_vac": "for a Steam VAC or FACEIT cheating ban",
         "ban_ended": "Ban ended",
         "last_match": "Last match here",
         "matches_after_steam": "{count} match after the Steam ban | {count} matches after the Steam ban"

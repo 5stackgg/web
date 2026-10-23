@@ -8137,7 +8137,7 @@
         "staff": "スタッフBAN",
         "staff_hint": "モデレーターが発行",
         "auto": "自動",
-        "auto_hint": "SteamのVAC BANによる",
+        "auto_hint": "SteamのVAC BANまたはFACEITのチートBANによる",
         "banned_here": "ここでのBAN",
         "any": "すべて",
         "banned_here_now": "現在ここでBAN中",
@@ -8164,7 +8164,7 @@
         "staff": "スタッフBAN",
         "staff_title": "スタッフによりここでBAN",
         "auto": "自動BAN",
-        "auto_title": "SteamのVAC BANによりここで自動BAN"
+        "auto_title": "SteamのVAC BANまたはFACEITのチートBANによりここで自動BAN"
       },
       "length": {
         "permanent": "永久",
@@ -8234,7 +8234,7 @@
         "banned_auto": "ここで自動BAN",
         "banned_by": "{name}がここでBAN",
         "banned_staff": "スタッフがここでBAN",
-        "for_vac": "SteamのVAC BANによる",
+        "for_vac": "SteamのVAC BANまたはFACEITのチートBANによる",
         "ban_ended": "BAN終了",
         "last_match": "ここでの最終試合",
         "matches_after_steam": "SteamのBAN後に{count}試合 | SteamのBAN後に{count}試合"

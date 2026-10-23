@@ -8137,7 +8137,7 @@
         "staff": "Ban dello staff",
         "staff_hint": "Emesso da un moderatore",
         "auto": "Automatico",
-        "auto_hint": "Per un ban VAC di Steam",
+        "auto_hint": "Per un ban VAC di Steam o un ban FACEIT per cheating",
         "banned_here": "Bannato qui",
         "any": "Qualsiasi",
         "banned_here_now": "Bannato qui ora",
@@ -8164,7 +8164,7 @@
         "staff": "Ban dello staff",
         "staff_title": "Bannato qui dallo staff",
         "auto": "Ban auto",
-        "auto_title": "Bannato qui automaticamente per un ban VAC di Steam"
+        "auto_title": "Bannato qui automaticamente per un ban VAC di Steam o un ban FACEIT per cheating"
       },
       "length": {
         "permanent": "Permanente",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Bannato qui automaticamente",
         "banned_by": "Bannato qui da {name}",
         "banned_staff": "Bannato qui dallo staff",
-        "for_vac": "per il ban VAC di Steam",
+        "for_vac": "per un ban VAC di Steam o un ban FACEIT per cheating",
         "ban_ended": "Ban terminato",
         "last_match": "Ultima partita qui",
         "matches_after_steam": "{count} partita dopo il ban di Steam | {count} partite dopo il ban di Steam"

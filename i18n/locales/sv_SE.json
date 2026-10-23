@@ -8137,7 +8137,7 @@
         "staff": "Staffban",
         "staff_hint": "Utfärdad av en moderator",
         "auto": "Automatisk",
-        "auto_hint": "För en Steam VAC-ban",
+        "auto_hint": "För en Steam VAC-ban eller en FACEIT-avstängning för fusk",
         "banned_here": "Bannad här",
         "any": "Alla",
         "banned_here_now": "Bannad här nu",
@@ -8164,7 +8164,7 @@
         "staff": "Staffban",
         "staff_title": "Bannad här av staff",
         "auto": "Autoban",
-        "auto_title": "Bannad här automatiskt för en Steam VAC-ban"
+        "auto_title": "Bannad här automatiskt för en Steam VAC-ban eller en FACEIT-avstängning för fusk"
       },
       "length": {
         "permanent": "Permanent",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Bannad här automatiskt",
         "banned_by": "Bannad här av {name}",
         "banned_staff": "Bannad här av staff",
-        "for_vac": "för Steam VAC-banen",
+        "for_vac": "för en Steam VAC-ban eller en FACEIT-avstängning för fusk",
         "ban_ended": "Banen avslutad",
         "last_match": "Senaste match här",
         "matches_after_steam": "{count} match efter Steam-banen | {count} matcher efter Steam-banen"

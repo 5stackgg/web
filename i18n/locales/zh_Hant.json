@@ -8137,7 +8137,7 @@
         "staff": "管理員封鎖",
         "staff_hint": "由版主發出",
         "auto": "自動",
-        "auto_hint": "因 Steam VAC 封鎖",
+        "auto_hint": "因 Steam VAC 封鎖或 FACEIT 作弊封鎖",
         "banned_here": "在此封鎖",
         "any": "任意",
         "banned_here_now": "目前在此封鎖",
@@ -8164,7 +8164,7 @@
         "staff": "管理員封鎖",
         "staff_title": "被管理員在此封鎖",
         "auto": "自動封鎖",
-        "auto_title": "因 Steam VAC 封鎖而在此被自動封鎖"
+        "auto_title": "因 Steam VAC 封鎖或 FACEIT 作弊封鎖而在此被自動封鎖"
       },
       "length": {
         "permanent": "永久",
@@ -8234,7 +8234,7 @@
         "banned_auto": "在此被自動封鎖",
         "banned_by": "在此被 {name} 封鎖",
         "banned_staff": "在此被管理員封鎖",
-        "for_vac": "因 Steam VAC 封鎖",
+        "for_vac": "因 Steam VAC 封鎖或 FACEIT 作弊封鎖",
         "ban_ended": "封鎖結束",
         "last_match": "在此最近一場比賽",
         "matches_after_steam": "Steam 封鎖後 {count} 場比賽 | Steam 封鎖後 {count} 場比賽"

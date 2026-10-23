@@ -8137,7 +8137,7 @@
         "staff": "Baneo del staff",
         "staff_hint": "Impuesto por un moderador",
         "auto": "Automático",
-        "auto_hint": "Por un baneo VAC de Steam",
+        "auto_hint": "Por un baneo VAC de Steam o un baneo por trampas en FACEIT",
         "banned_here": "Baneado aquí",
         "any": "Cualquiera",
         "banned_here_now": "Baneado aquí ahora",
@@ -8164,7 +8164,7 @@
         "staff": "Baneo del staff",
         "staff_title": "Baneado aquí por el staff",
         "auto": "Baneo auto",
-        "auto_title": "Baneado aquí automáticamente por un baneo VAC de Steam"
+        "auto_title": "Baneado aquí automáticamente por un baneo VAC de Steam o un baneo por trampas en FACEIT"
       },
       "length": {
         "permanent": "Permanente",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Baneado aquí automáticamente",
         "banned_by": "Baneado aquí por {name}",
         "banned_staff": "Baneado aquí por el staff",
-        "for_vac": "por el baneo VAC de Steam",
+        "for_vac": "por un baneo VAC de Steam o un baneo por trampas en FACEIT",
         "ban_ended": "Baneo terminado",
         "last_match": "Última partida aquí",
         "matches_after_steam": "{count} partida tras el baneo de Steam | {count} partidas tras el baneo de Steam"

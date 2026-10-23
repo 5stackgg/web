@@ -8137,7 +8137,7 @@
         "staff": "Staff-ban",
         "staff_hint": "Givet af en moderator",
         "auto": "Automatisk",
-        "auto_hint": "For et Steam VAC-ban",
+        "auto_hint": "For et Steam VAC-ban eller en FACEIT-udelukkelse for snyd",
         "banned_here": "Bannet her",
         "any": "Alle",
         "banned_here_now": "Bannet her nu",
@@ -8164,7 +8164,7 @@
         "staff": "Staff-ban",
         "staff_title": "Bannet her af staff",
         "auto": "Auto-ban",
-        "auto_title": "Bannet her automatisk for et Steam VAC-ban"
+        "auto_title": "Bannet her automatisk for et Steam VAC-ban eller en FACEIT-udelukkelse for snyd"
       },
       "length": {
         "permanent": "Permanent",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Bannet her automatisk",
         "banned_by": "Bannet her af {name}",
         "banned_staff": "Bannet her af staff",
-        "for_vac": "for Steam VAC-bannet",
+        "for_vac": "for et Steam VAC-ban eller en FACEIT-udelukkelse for snyd",
         "ban_ended": "Ban afsluttet",
         "last_match": "Seneste kamp her",
         "matches_after_steam": "{count} kamp efter Steam-bannet | {count} kampe efter Steam-bannet"

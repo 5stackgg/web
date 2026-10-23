@@ -8137,7 +8137,7 @@
         "staff": "Бан від персоналу",
         "staff_hint": "Видав модератор",
         "auto": "Автоматичний",
-        "auto_hint": "За VAC-бан у Steam",
+        "auto_hint": "За VAC-бан у Steam або бан FACEIT за читерство",
         "banned_here": "Забанений тут",
         "any": "Будь-який",
         "banned_here_now": "Зараз забанений тут",
@@ -8164,7 +8164,7 @@
         "staff": "Бан персоналу",
         "staff_title": "Забанений тут персоналом",
         "auto": "Автобан",
-        "auto_title": "Забанений тут автоматично за VAC-бан у Steam"
+        "auto_title": "Забанений тут автоматично за VAC-бан у Steam або бан FACEIT за читерство"
       },
       "length": {
         "permanent": "Назавжди",
@@ -8234,7 +8234,7 @@
         "banned_auto": "Забанений тут автоматично",
         "banned_by": "Забанений тут: {name}",
         "banned_staff": "Забанений тут персоналом",
-        "for_vac": "за VAC-бан у Steam",
+        "for_vac": "за VAC-бан у Steam або бан FACEIT за читерство",
         "ban_ended": "Бан завершено",
         "last_match": "Останній матч тут",
         "matches_after_steam": "{count} матч після бану в Steam | {count} матчів після бану в Steam"

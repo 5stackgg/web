@@ -8137,7 +8137,7 @@
         "staff": "حظر من الطاقم",
         "staff_hint": "فرضه مشرف",
         "auto": "تلقائي",
-        "auto_hint": "بسبب حظر VAC على Steam",
+        "auto_hint": "بسبب حظر VAC على Steam أو حظر غش على FACEIT",
         "banned_here": "محظور هنا",
         "any": "الكل",
         "banned_here_now": "محظور هنا الآن",
@@ -8164,7 +8164,7 @@
         "staff": "حظر الطاقم",
         "staff_title": "حظره الطاقم هنا",
         "auto": "حظر تلقائي",
-        "auto_title": "حُظر هنا تلقائيًا بسبب حظر VAC على Steam"
+        "auto_title": "حُظر هنا تلقائيًا بسبب حظر VAC على Steam أو حظر غش على FACEIT"
       },
       "length": {
         "permanent": "دائم",
@@ -8234,7 +8234,7 @@
         "banned_auto": "حُظر هنا تلقائيًا",
         "banned_by": "حظره {name} هنا",
         "banned_staff": "حظره الطاقم هنا",
-        "for_vac": "بسبب حظر VAC على Steam",
+        "for_vac": "بسبب حظر VAC على Steam أو حظر غش على FACEIT",
         "ban_ended": "انتهى الحظر",
         "last_match": "آخر مباراة هنا",
         "matches_after_steam": "{count} مباراة بعد حظر Steam | {count} مباريات بعد حظر Steam"

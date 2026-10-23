@@ -8137,7 +8137,7 @@
         "staff": "管理员封禁",
         "staff_hint": "由版主发出",
         "auto": "自动",
-        "auto_hint": "因 Steam VAC 封禁",
+        "auto_hint": "因 Steam VAC 封禁或 FACEIT 作弊封禁",
         "banned_here": "在此封禁",
         "any": "任意",
         "banned_here_now": "当前在此封禁",
@@ -8164,7 +8164,7 @@
         "staff": "管理员封禁",
         "staff_title": "被管理员在此封禁",
         "auto": "自动封禁",
-        "auto_title": "因 Steam VAC 封禁而在此被自动封禁"
+        "auto_title": "因 Steam VAC 封禁或 FACEIT 作弊封禁而在此被自动封禁"
       },
       "length": {
         "permanent": "永久",
@@ -8234,7 +8234,7 @@
         "banned_auto": "在此被自动封禁",
         "banned_by": "在此被 {name} 封禁",
         "banned_staff": "在此被管理员封禁",
-        "for_vac": "因 Steam VAC 封禁",
+        "for_vac": "因 Steam VAC 封禁或 FACEIT 作弊封禁",
         "ban_ended": "封禁结束",
         "last_match": "在此最近一场比赛",
         "matches_after_steam": "Steam 封禁后 {count} 场比赛 | Steam 封禁后 {count} 场比赛"

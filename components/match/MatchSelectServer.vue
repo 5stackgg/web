@@ -65,7 +65,8 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { e_server_types_enum } from "~/generated/zeus";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { e_player_roles_enum, e_server_types_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -160,8 +161,22 @@ export default {
     },
   },
   computed: {
+    // The api only moves a match onto a LAN for organizers, a LAN the match
+    // is already on, or one the LAN probe put you on.
     regions() {
-      return useApplicationSettingsStore().availableRegions;
+      const chosen = [
+        this.match.region,
+        ...(this.match.options?.regions ?? []),
+      ];
+      return useApplicationSettingsStore().availableRegions.filter(
+        (region) =>
+          !region.is_lan ||
+          chosen.includes(region.value) ||
+          useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer) ||
+          useMatchmakingStore().lanRegions.some(
+            (lan) => lan.value === region.value,
+          ),
+      );
     },
     canSelectDedicatedServer() {
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =

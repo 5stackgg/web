@@ -1,4 +1,4 @@
-import { playerFields } from "~/graphql/playerFields";
+import { playerFieldsWithoutRanksOrElo } from "~/graphql/playerFields";
 
 /**
  * `tournament_teams.checked_in_at` is the ONE check-in signal anything
@@ -15,14 +15,12 @@ import { playerFields } from "~/graphql/playerFields";
  */
 const pendingTeamFields = {
   checked_in_at: true,
-  checked_in: true,
   can_recruit: true,
   invites_join_team: true,
 } as {};
 
 const pendingRosterFields = {
   checked_in_at: true,
-  target_eligible: true,
 } as {};
 
 export default {
@@ -40,7 +38,6 @@ export default {
   // here would re-fetch that player, elo and sanction lookups included, once
   // per team on every poll, for nothing.
   captain_steam_id: true,
-  owner_steam_id: true,
   team: {
     id: true,
     name: true,
@@ -52,15 +49,7 @@ export default {
     {
       ...pendingRosterFields,
       role: true,
-      player: playerFields,
-    },
-  ],
-  roster_aggregate: [
-    {},
-    {
-      aggregate: {
-        count: true,
-      },
+      player: playerFieldsWithoutRanksOrElo,
     },
   ],
 };

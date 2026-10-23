@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Permisos de rol",
           "leaderboard_section": "Clasificaciones",
-          "leaderboard_section_description": "Los jugadores solo aparecen en una clasificación cuando alcanzan estos mínimos en la temporada o el periodo que se está viendo. El mínimo de rondas solo se aplica a Rating HLTV, ADR, KPR, KAST y UDR. Trofeos, Faceit y Premier ignoran ambos.",
+          "leaderboard_section_description": "Los jugadores solo aparecen en una clasificación cuando alcanzan estos mínimos en la temporada o el periodo que se está viendo. El mínimo de rondas solo se aplica a Rating HLTV, ADR, KPR, KAST y UDR. Las clasificaciones de Trofeos, Faceit y Premier ignoran ambos.",
           "leaderboard_min_matches": "Mínimo de partidas",
           "leaderboard_min_rounds": "Mínimo de rondas",
           "force_name_registration": "Forzar registro del nombre del jugador",

@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Права ролей",
           "leaderboard_section": "Таблицы лидеров",
-          "leaderboard_section_description": "Игроки попадают в таблицу лидеров, только набрав эти минимумы за просматриваемый сезон или период. Минимум раундов действует только для Рейтинга HLTV, ADR, KPR, KAST и UDR. Награды, Faceit и Premier не учитывают ни один из них.",
+          "leaderboard_section_description": "Игроки попадают в таблицу лидеров, только набрав эти минимумы за просматриваемый сезон или период. Минимум раундов действует только для Рейтинга HLTV, ADR, KPR, KAST и UDR. Таблицы «Награды», Faceit и Premier не учитывают ни один из них.",
           "leaderboard_min_matches": "Минимум матчей",
           "leaderboard_min_rounds": "Минимум раундов",
           "force_name_registration": "Обязательная регистрация имени игрока",

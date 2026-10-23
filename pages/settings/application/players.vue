@@ -258,6 +258,7 @@ async function doScanSteamBans() {
                     v-bind="componentField"
                     type="number"
                     :min="minimum.min"
+                    :max="minimum.max"
                   />
                 </FormControl>
                 <FormMessage />
@@ -647,8 +648,8 @@ import { toast } from "@/components/ui/toast";
 
 // Fallbacks match get_leaderboard.sql's.
 const LEADERBOARD_MINIMUMS = [
-  { name: "leaderboard_min_matches", fallback: 1, min: 1 },
-  { name: "leaderboard_min_rounds", fallback: 20, min: 0 },
+  { name: "leaderboard_min_matches", fallback: 1, min: 1, max: 1000 },
+  { name: "leaderboard_min_rounds", fallback: 20, min: 0, max: 10000 },
 ];
 
 export default {
@@ -663,9 +664,9 @@ export default {
               .string()
               .default(e_player_roles_enum.user),
             ...Object.fromEntries(
-              LEADERBOARD_MINIMUMS.map(({ name, fallback, min }) => [
+              LEADERBOARD_MINIMUMS.map(({ name, fallback, min, max }) => [
                 name,
-                z.number().int().min(min).default(fallback),
+                z.number().int().min(min).max(max).default(fallback),
               ]),
             ),
             public: z.object({

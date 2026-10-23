@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Rollen-Berechtigungen",
           "leaderboard_section": "Ranglisten",
-          "leaderboard_section_description": "Spieler erscheinen erst in einer Rangliste, wenn sie diese Mindestwerte in der angezeigten Saison oder im angezeigten Zeitraum erreichen. Mindestrunden gelten nur für HLTV Rating, ADR, KPR, KAST und UDR. Auszeichnungen, Faceit und Premier ignorieren beide.",
+          "leaderboard_section_description": "Spieler erscheinen erst in einer Rangliste, wenn sie diese Mindestwerte in der angezeigten Saison oder im angezeigten Zeitraum erreichen. Mindestrunden gelten nur für HLTV Rating, ADR, KPR, KAST und UDR. Die Ranglisten für Auszeichnungen, Faceit und Premier ignorieren beide.",
           "leaderboard_min_matches": "Mindestanzahl Matches",
           "leaderboard_min_rounds": "Mindestanzahl Runden",
           "force_name_registration": "Namensregistrierung für Spieler erzwingen",

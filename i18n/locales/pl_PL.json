@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Uprawnienia ról",
           "leaderboard_section": "Rankingi",
-          "leaderboard_section_description": "Gracze pojawiają się w rankingu dopiero po osiągnięciu tych minimów w wyświetlanym sezonie lub okresie. Minimalna liczba rund dotyczy tylko HLTV Rating, ADR, KPR, KAST i UDR. Nagrody, Faceit i Premier ignorują oba progi.",
+          "leaderboard_section_description": "Gracze pojawiają się w rankingu dopiero po osiągnięciu tych minimów w wyświetlanym sezonie lub okresie. Minimalna liczba rund dotyczy tylko HLTV Rating, ADR, KPR, KAST i UDR. Rankingi Nagrody, Faceit i Premier ignorują oba progi.",
           "leaderboard_min_matches": "Minimalna liczba meczów",
           "leaderboard_min_rounds": "Minimalna liczba rund",
           "force_name_registration": "Wymuś rejestrację nazwy gracza",

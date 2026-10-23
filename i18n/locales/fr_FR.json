@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Permissions des rôles",
           "leaderboard_section": "Classements",
-          "leaderboard_section_description": "Les joueurs n'apparaissent dans un classement qu'une fois ces minimums atteints sur la saison ou la période affichée. Le minimum de manches ne s'applique qu'au Rating HLTV, à l'ADR, au KPR, au KAST et à l'UDR. Les récompenses, Faceit et Premier ignorent les deux.",
+          "leaderboard_section_description": "Les joueurs n'apparaissent dans un classement qu'une fois ces minimums atteints sur la saison ou la période affichée. Le minimum de manches ne s'applique qu'au Rating HLTV, à l'ADR, au KPR, au KAST et à l'UDR. Les classements Récompenses, Faceit et Premier ignorent les deux.",
           "leaderboard_min_matches": "Minimum de matchs",
           "leaderboard_min_rounds": "Minimum de manches",
           "force_name_registration": "Forcer l'enregistrement du nom du joueur",

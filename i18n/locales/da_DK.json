@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Rolletilladelser",
           "leaderboard_section": "Ranglister",
-          "leaderboard_section_description": "Spillere vises først på en rangliste, når de opfylder disse minimumskrav i den viste sæson eller periode. Minimum runder gælder kun for HLTV-rating, ADR, KPR, KAST og UDR. Trofæer, Faceit og Premier ignorerer begge.",
+          "leaderboard_section_description": "Spillere vises først på en rangliste, når de opfylder disse minimumskrav i den viste sæson eller periode. Minimum runder gælder kun for HLTV-rating, ADR, KPR, KAST og UDR. Ranglisterne for trofæer, Faceit og Premier ignorerer begge.",
           "leaderboard_min_matches": "Minimum kampe",
           "leaderboard_min_rounds": "Minimum runder",
           "force_name_registration": "Kræv navneregistrering af spillere",

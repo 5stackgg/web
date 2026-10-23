@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "Дозволи ролей",
           "leaderboard_section": "Таблиці лідерів",
-          "leaderboard_section_description": "Гравці потрапляють до таблиці лідерів лише після досягнення цих мінімумів у сезоні чи періоді, що переглядається. Мінімум раундів діє лише для HLTV Rating, ADR, KPR, KAST та UDR. Нагороди, Faceit і Premier не враховують жодного з них.",
+          "leaderboard_section_description": "Гравці потрапляють до таблиці лідерів лише після досягнення цих мінімумів у сезоні чи періоді, що переглядається. Мінімум раундів діє лише для HLTV Rating, ADR, KPR, KAST та UDR. Таблиці «Нагороди», Faceit і Premier не враховують жодного з них.",
           "leaderboard_min_matches": "Мінімум матчів",
           "leaderboard_min_rounds": "Мінімум раундів",
           "force_name_registration": "Примусова реєстрація імені гравця",

@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "역할 권한",
           "leaderboard_section": "리더보드",
-          "leaderboard_section_description": "선수는 조회 중인 시즌 또는 기간에 이 최소 기준을 충족해야 리더보드에 표시됩니다. 최소 라운드는 HLTV 레이팅, ADR, KPR, KAST, UDR에만 적용됩니다. 어워드, Faceit, Premier에는 둘 다 적용되지 않습니다.",
+          "leaderboard_section_description": "선수는 조회 중인 시즌 또는 기간에 이 최소 기준을 충족해야 리더보드에 표시됩니다. 최소 라운드는 HLTV 레이팅, ADR, KPR, KAST, UDR에만 적용됩니다. 어워드, Faceit, Premier 리더보드에는 둘 다 적용되지 않습니다.",
           "leaderboard_min_matches": "최소 매치 수",
           "leaderboard_min_rounds": "최소 라운드 수",
           "force_name_registration": "플레이어 이름 등록 강제",

@@ -2678,7 +2678,7 @@
         "players": {
           "permissions_section": "صلاحيات الأدوار",
           "leaderboard_section": "لوحات المتصدرين",
-          "leaderboard_section_description": "لا يظهر اللاعبون في لوحة المتصدرين إلا بعد بلوغ هذه الحدود الدنيا خلال الموسم أو الفترة المعروضة. ينطبق الحد الأدنى للجولات فقط على HLTV Rating وADR وKPR وKAST وUDR. لا تتأثر الكؤوس وFaceit وPremier بأي منهما.",
+          "leaderboard_section_description": "لا يظهر اللاعبون في لوحة المتصدرين إلا بعد بلوغ هذه الحدود الدنيا خلال الموسم أو الفترة المعروضة. ينطبق الحد الأدنى للجولات فقط على HLTV Rating وADR وKPR وKAST وUDR. لا تتأثر لوحات الكؤوس وFaceit وPremier بأي منهما.",
           "leaderboard_min_matches": "الحد الأدنى للمباريات",
           "leaderboard_min_rounds": "الحد الأدنى للجولات",
           "force_name_registration": "إلزام اللاعبين بتسجيل الاسم",

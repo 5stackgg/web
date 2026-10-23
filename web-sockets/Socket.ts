@@ -1304,6 +1304,10 @@ socket.listen("matchmaking:region-stats", (data) => {
   useMatchmakingStore().regionStats = data;
 });
 
+socket.listen("players-online:profiles", (profiles) => {
+  useMatchmakingStore().addOnlineProfiles(profiles);
+});
+
 socket.listen("players-online", (onlinePlayerSteamIds) => {
   useMatchmakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
   useMatchmakingStore().presenceLoaded = true;

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { print } from "graphql";
-import { flushPromises } from "@vue/test-utils";
+import { nextTick } from "vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 
 vi.mock("~/web-sockets/Socket", async (importOriginal) => ({
@@ -25,7 +25,11 @@ let failNextPlayers = false;
 
 let asked: Array<{ kind: "players" | "message_requests"; ids: string[] }> = [];
 
+// An api from before profiles came over the socket: it never answers, so each
+// tab falls back to looking the players up itself.
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  useMatchmakingStore().sendProfilesRequest = () => {};
   const client = useApollo().clients!.default;
   vi.spyOn(client, "query").mockImplementation((async (options: any) => {
     const document = print(options.query);
@@ -56,6 +60,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   asked = [];
   vi.restoreAllMocks();
 });
@@ -65,11 +70,11 @@ async function roster(
   ids: string[],
 ) {
   store.onlinePlayerSteamIds = ids;
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  await flushPromises();
+  await nextTick();
+  await vi.advanceTimersByTimeAsync(300 + 5000);
 }
 
-describe("the online roster", () => {
+describe("the online roster on an api that sends no profiles", () => {
   it("asks about each player once, however often the roster is broadcast", async () => {
     const store = useMatchmakingStore();
 
@@ -94,12 +99,11 @@ describe("the online roster", () => {
   it("asks again for players whose lookup failed", async () => {
     const store = useMatchmakingStore();
     failNextPlayers = true;
-    const unhandled = vi.fn();
-    process.on("unhandledRejection", unhandled);
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
 
     await roster(store, [DELTA]);
     await roster(store, [DELTA, ECHO]);
-    process.off("unhandledRejection", unhandled);
+    error.mockRestore();
 
     expect(asked.filter((a) => a.kind === "players")).toEqual([
       { kind: "players", ids: [DELTA, ECHO] },

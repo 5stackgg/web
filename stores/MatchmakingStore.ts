@@ -1,4 +1,4 @@
-import { ref, watch, computed } from "vue";
+import { ref, shallowRef, watch, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { e_match_types_enum, $ } from "~/generated/zeus";
@@ -16,6 +16,7 @@ import { isInCs2 } from "~/utilities/cs2Presence";
 import type { RegionStats } from "~/utilities/matchmakingPartySize";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { setActiveHub } from "~/composables/useHubState";
+import socket from "~/web-sockets/Socket";
 
 const REGION_LATENCY_PREFIX = "5stack_region_latency_";
 const MAX_LATENCY_KEY = "5stack_max_acceptable_latency";
@@ -67,17 +68,23 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const regionStats = ref<RegionStats>({});
 
-  // Presence arrives as a full roster on every change, so asking for the whole
-  // roster each time meant one player connecting re-ran elo and the three
-  // sanction checks for everyone online, in every open tab. A profile doesn't
-  // change while its player sits in the list, so keep the ones already
-  // fetched and only ask the API for steam ids never seen before.
+  // The api sends each player's profile over the socket when they come
+  // online, and every profile to a tab when it connects, so the list needs no
+  // query from each tab. A profile doesn't change while its player sits in
+  // the list, so profiles are kept until the map is bounded.
   const profiles = new Map<string, any>();
-  // Every steam id already asked for, found or not: the api broadcasts the
-  // roster to every tab whenever anyone connects, so asking again for ids the
-  // api didn't return re-ran these queries in every tab on every broadcast.
+  // Steam ids asked of the api over the socket, and of Hasura by the fallback:
+  // the roster is broadcast to every tab, so an id is asked about once.
+  const requestedSteamIds = new Set<string>();
   const askedSteamIds = new Set<string>();
   const MAX_ASKED_STEAM_IDS = 5000;
+  // An api from before profiles came over the socket never sends any; its
+  // tabs look the players up themselves.
+  let apiSendsProfiles = false;
+  const PROFILES_ANSWER_TIMEOUT_MS = 5000;
+  const sendProfilesRequest = shallowRef((steamIds: Array<string>) => {
+    socket.event("players-online:profiles", { steamIds });
+  });
 
   const rebuildPlayersOnline = () => {
     playersOnline.value = onlinePlayerSteamIds.value
@@ -85,22 +92,64 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       .filter(Boolean) as any;
   };
 
-  const queryPlayers = async () => {
-    const steamIds = onlinePlayerSteamIds.value;
+  const addOnlineProfiles = (rows: Array<any>) => {
+    apiSendsProfiles = true;
 
-    if (askedSteamIds.size > MAX_ASKED_STEAM_IDS) {
-      askedSteamIds.clear();
-      profiles.clear();
+    for (const row of rows ?? []) {
+      if (row?.steam_id != null) {
+        profiles.set(String(row.steam_id), row);
+      }
     }
 
+    rebuildPlayersOnline();
+  };
+
+  const requestProfiles = () => {
+    if (profiles.size + requestedSteamIds.size > MAX_ASKED_STEAM_IDS) {
+      profiles.clear();
+      requestedSteamIds.clear();
+      askedSteamIds.clear();
+    }
+
+    const missing = onlinePlayerSteamIds.value
+      .map(String)
+      .filter((steamId) => !profiles.has(steamId))
+      .filter((steamId) => !requestedSteamIds.has(steamId));
+
+    rebuildPlayersOnline();
+
+    if (missing.length === 0) {
+      return;
+    }
+
+    for (const steamId of missing) {
+      requestedSteamIds.add(steamId);
+    }
+
+    sendProfilesRequest.value(missing);
+
+    setTimeout(() => {
+      if (apiSendsProfiles) {
+        return;
+      }
+
+      const online = new Set(onlinePlayerSteamIds.value.map(String));
+      const unanswered = missing.filter(
+        (steamId) => online.has(steamId) && !profiles.has(steamId),
+      );
+
+      if (unanswered.length > 0) {
+        void queryPlayers(unanswered);
+      }
+    }, PROFILES_ANSWER_TIMEOUT_MS);
+  };
+
+  const queryPlayers = async (steamIds: Array<string>) => {
     const missing = steamIds.filter(
       (steamId) => !askedSteamIds.has(String(steamId)),
     );
 
-    // Players only left, or they are all already known -- no round trip, but
-    // the list still has to drop whoever went offline.
     if (missing.length === 0) {
-      rebuildPlayersOnline();
       return;
     }
 
@@ -128,10 +177,13 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
         },
       }));
     } catch (error) {
+      // Asked again on the next roster.
       for (const steamId of missing) {
         askedSteamIds.delete(String(steamId));
+        requestedSteamIds.delete(String(steamId));
       }
-      throw error;
+      console.error("[matchmaking] online players lookup failed", error);
+      return;
     }
 
     for (const player of data.players) {
@@ -173,8 +225,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   // Presence churns in bursts -- a match ending drops ten players at once, and
   // each drop is its own roster push.
-  const queryPlayersDebounced = debounce(() => {
-    void queryPlayers();
+  const requestProfilesDebounced = debounce(() => {
+    requestProfiles();
   }, 250);
 
   const friends = ref([]);
@@ -323,7 +375,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       newSteamIds.length !== oldSteamIds.length ||
       !newSteamIds.every((id, index) => id === oldSteamIds[index])
     ) {
-      queryPlayersDebounced();
+      requestProfilesDebounced();
     }
   });
 
@@ -772,6 +824,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     playersOnline,
     onlinePlayerSteamIds,
     presenceLoaded,
+    addOnlineProfiles,
+    sendProfilesRequest,
     joinedMatchmakingQueues,
 
     checkLatenies,

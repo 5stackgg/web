@@ -2,7 +2,7 @@
 import type { SelectTriggerProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
-import { ChevronDownIcon } from '@radix-icons/vue'
+import { ChevronDown } from "lucide-vue-next"
 import { SelectIcon, SelectTrigger, useForwardProps } from "reka-ui"
 import { cn } from "@/lib/utils"
 
@@ -22,8 +22,9 @@ const forwardedProps = useForwardProps(delegatedProps)
     )"
   >
     <slot />
+    <!-- Oxanium's capitals sit about 0.8px above the middle of the line, so the chevron is raised to meet them -->
     <SelectIcon as-child>
-      <ChevronDownIcon class="w-4 h-4 opacity-50 shrink-0" />
+      <ChevronDown class="w-4 h-4 opacity-50 shrink-0 -translate-y-px" />
     </SelectIcon>
   </SelectTrigger>
 </template>

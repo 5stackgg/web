@@ -178,23 +178,7 @@ const showsBuild = computed(
     />
 
     <i18n-t
-      v-if="state === 'behind' && build && target"
-      :keypath="`${GAME}.on_update_to`"
-      tag="p"
-      class="gsn-line"
-      scope="global"
-    >
-      <template #build>
-        <span class="font-mono text-[11.5px] text-foreground">{{ build }}</span>
-      </template>
-      <template #target>
-        <span class="font-mono text-[11.5px] text-foreground">{{
-          target
-        }}</span>
-      </template>
-    </i18n-t>
-    <i18n-t
-      v-else-if="state === 'failed' && build"
+      v-if="state === 'failed' && build"
       :keypath="`${GAME}.still_on`"
       tag="p"
       class="gsn-line"

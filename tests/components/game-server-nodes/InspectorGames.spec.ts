@@ -80,10 +80,10 @@ describe("CS2 section", () => {
     expect(wrapper.text()).toContain("25971020");
   });
 
-  it("offers the update with the build it moves to", async () => {
+  it("offers the update without spelling out the builds", async () => {
     const wrapper = await mountCs2({});
     expect(wrapper.text()).toContain("Update available");
-    expect(wrapper.text()).toContain("On 25966348, update to 25971020");
+    expect(wrapper.text()).not.toContain("update to");
     expect(wrapper.find("button.gsn-st-update").exists()).toBe(true);
   });
 
@@ -207,7 +207,6 @@ describe("CS:GO section", () => {
   it("says when CS:GO is behind the latest build", async () => {
     const wrapper = await mountCsgo({ csgo_build_id: 12426148 }, 12430215);
     expect(wrapper.text()).toContain("Update available");
-    expect(wrapper.text()).toContain("On 12426148, update to 12430215");
   });
 
   it("is up to date on the latest build", async () => {

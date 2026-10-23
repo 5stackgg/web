@@ -75,7 +75,7 @@ export function nodeSettings(
   return {
     pinning: {
       enabled: value("enable_cpu_pinning") === "true",
-      cpusPerServer: number("number_of_cpus_per_server", 1) || 1,
+      cpusPerServer: number("number_of_cpus_per_server", 2) || 2,
     } as CpuPinning,
     disk: {
       warning: number("disk_warning_percent", DEFAULT_DISK_THRESHOLDS.warning),

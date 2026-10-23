@@ -268,10 +268,12 @@ function runCommand(
                 {{ $t("match.tabs.no_logs_description") }}
               </p>
             </div>
+            <!-- ServiceLogs renders through a Teleport, so the fill is set on its
+                 section from here rather than through a class it would not get. -->
             <div
               v-if="canShowLogs"
               v-show="hasLogs"
-              class="lg:flex-1 lg:min-h-0"
+              class="lg:flex lg:flex-1 lg:min-h-0 lg:flex-col lg:[&>section]:min-h-0 lg:[&>section]:flex-1"
             >
               <ServiceLogs
                 :service="`${match.source === 'practice' ? 'u' : 'm'}-${match.id}`"

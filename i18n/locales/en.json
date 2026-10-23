@@ -9947,6 +9947,15 @@
       "blocked_chip": "not eligible",
       "invite_hint": "Ask an organizer to invite your team, or to send you an invite link."
     },
+    "viewing": {
+      "label": "Viewing",
+      "menu_title": "Teams you registered",
+      "you_play": "You play",
+      "owner": "Owner",
+      "players": "{count}/{max} players",
+      "plays_hint": "You play on {team}. The others you registered as owner.",
+      "owner_hint": "You registered these teams as owner."
+    },
     "invites": {
       "title": "Invites",
       "description": "Invite a team or a player directly and they can register even while this tournament is invite only.",

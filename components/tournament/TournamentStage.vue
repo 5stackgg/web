@@ -143,8 +143,29 @@ export default {
     "stage.groups"() {
       this.syncGroupLabel();
     },
+    followTeamId: {
+      immediate: true,
+      handler(teamId: string | null) {
+        const groups = this.stage.groups || 1;
+        if (!teamId || groups < 2) {
+          return;
+        }
+        const bracket = (this.stage.brackets || []).find(
+          (bracket: any) =>
+            bracket.team_1?.id === teamId || bracket.team_2?.id === teamId,
+        );
+        if (!bracket) {
+          return;
+        }
+        // A lower bracket's group is its division + groups.
+        this.activeGroupTab = `group-${((bracket.group - 1) % groups) + 1}`;
+      },
+    },
   },
   computed: {
+    followTeamId() {
+      return useBracketView().followTeamId.value;
+    },
     effectivePageScroll() {
       return this.viewMode === "scroll";
     },

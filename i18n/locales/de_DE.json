@@ -9947,6 +9947,15 @@
       "blocked_chip": "nicht berechtigt",
       "invite_hint": "Bitte einen Veranstalter, dein Team einzuladen oder dir einen Einladungslink zu schicken."
     },
+    "viewing": {
+      "label": "Ansicht",
+      "menu_title": "Von dir angemeldete Teams",
+      "you_play": "Du spielst",
+      "owner": "Owner",
+      "players": "{count}/{max} Spieler",
+      "plays_hint": "Du spielst bei {team}. Die anderen hast du als Owner angemeldet.",
+      "owner_hint": "Du hast diese Teams als Owner angemeldet."
+    },
     "invites": {
       "title": "Einladungen",
       "description": "Lade ein Team oder einen Spieler direkt ein, dann können sie sich anmelden, auch solange dieses Turnier nur mit Einladung ist.",

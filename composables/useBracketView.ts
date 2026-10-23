@@ -24,6 +24,10 @@ const bracketScope = ref<"upper" | "lower" | null>(null);
 
 // Tournament team whose path is lit across every visible bracket.
 const followTeamId = ref<string | null>(null);
+// The bracket mounts and unmounts with its tab, so the page's default team and
+// whether the viewer has since picked their own (None included) live here.
+const followDefaultTeamId = ref<string | null>(null);
+const followPicked = ref(false);
 
 const zoomBase = () =>
   autoFit.value ? currentFitZoom.value : manualZoom.value;
@@ -90,6 +94,8 @@ export function useBracketView() {
     groupLabel,
     bracketScope,
     followTeamId,
+    followDefaultTeamId,
+    followPicked,
     zoomIn,
     zoomOut,
     resetZoom,

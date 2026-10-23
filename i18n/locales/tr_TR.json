@@ -9947,6 +9947,15 @@
       "blocked_chip": "katılamaz",
       "invite_hint": "Bir organizatörden takımını davet etmesini ya da sana bir davet bağlantısı göndermesini iste."
     },
+    "viewing": {
+      "label": "Görüntülenen",
+      "menu_title": "Kaydettiğin takımlar",
+      "you_play": "Oynuyorsun",
+      "owner": "Sahip",
+      "players": "{count}/{max} oyuncu",
+      "plays_hint": "{team} takımında oynuyorsun. Diğerlerini sahip olarak kaydettin.",
+      "owner_hint": "Bu takımları sahip olarak kaydettin."
+    },
     "invites": {
       "title": "Davetler",
       "description": "Bir takımı ya da oyuncuyu doğrudan davet et; bu turnuva sadece davetle olsa bile kaydolabilirler.",

@@ -9947,6 +9947,15 @@
       "blocked_chip": "får inte delta",
       "invite_hint": "Be en arrangör bjuda in ditt lag eller skicka dig en inbjudningslänk."
     },
+    "viewing": {
+      "label": "Visar",
+      "menu_title": "Lag du har anmält",
+      "you_play": "Du spelar",
+      "owner": "Ägare",
+      "players": "{count}/{max} spelare",
+      "plays_hint": "Du spelar i {team}. De andra har du anmält som ägare.",
+      "owner_hint": "Du har anmält de här lagen som ägare."
+    },
     "invites": {
       "title": "Inbjudningar",
       "description": "Bjud in ett lag eller en spelare direkt, så kan de anmäla sig även när den här turneringen bara är med inbjudan.",

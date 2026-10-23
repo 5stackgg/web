@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, watch } from "vue";
 import { Route } from "lucide-vue-next";
 import {
   Select,
@@ -19,7 +19,18 @@ const props = defineProps<{
   }[];
 }>();
 
-const { followTeamId } = useBracketView();
+const { followTeamId, followDefaultTeamId, followPicked } = useBracketView();
+
+const followDefault = () => {
+  if (!followPicked.value) {
+    followTeamId.value = followDefaultTeamId.value;
+  }
+};
+
+// Not at setup: when the toolbar swaps one instance for another, the old
+// one's unmount clear runs after the new one's setup.
+onMounted(followDefault);
+watch(followDefaultTeamId, followDefault);
 
 const options = computed(() =>
   props.teams
@@ -31,6 +42,7 @@ const options = computed(() =>
 const value = computed({
   get: () => followTeamId.value ?? undefined,
   set: (next?: string) => {
+    followPicked.value = true;
     followTeamId.value = !next || next === SELECT_NONE ? null : next;
   },
 });

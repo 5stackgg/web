@@ -17,6 +17,7 @@ import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.v
 import TournamentInviteAccept from "~/components/tournament/TournamentInviteAccept.vue";
 import TournamentStats from "~/components/tournament/TournamentStats.vue";
 import TournamentDetailSkeleton from "~/components/tournament/TournamentDetailSkeleton.vue";
+import TournamentViewingSelect from "~/components/tournament/TournamentViewingSelect.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
 import {
@@ -313,6 +314,16 @@ const chatRoomUnreadPopTransition = {
               </div>
 
               <div :class="tournamentHeroActionsClasses">
+                <TournamentViewingSelect
+                  v-if="myTeams.length > 1"
+                  :teams="myTeams"
+                  :steam-id="me?.steam_id"
+                  :max-players="tournament.max_players_per_lineup"
+                  :check-in="checkInPhase"
+                  :model-value="myTeamId"
+                  @update:model-value="(id) => (selectedMyTeamId = id ?? null)"
+                />
+
                 <Button
                   v-if="
                     tournament.status ===
@@ -545,18 +556,6 @@ const chatRoomUnreadPopTransition = {
             :registration="tournamentRegistration"
             :already-entered="!!myTeam || !!myFreeAgent"
           />
-
-          <!-- An owner can enter several of their teams; the check-in panel and
-             the My team card follow the one picked here. -->
-          <Fold :open="myTeams.length > 1">
-            <AnimatedFilters
-              class="mt-4"
-              :model-value="myTeamId"
-              :options="myTeamOptions"
-              square
-              @update:model-value="(id) => (selectedMyTeamId = id ?? null)"
-            />
-          </Fold>
 
           <!-- Directly under the header, above every tab: a check-in deadline the
              reader scrolls past is a team that misses the bracket. -->
@@ -1090,6 +1089,9 @@ export default {
   unmounted() {
     useTournamentContext().value = null;
     this.onStatusMenuOpen(false);
+    const { followDefaultTeamId, followPicked } = useBracketView();
+    followDefaultTeamId.value = null;
+    followPicked.value = false;
   },
   apollo: {
     e_match_types: {
@@ -2402,14 +2404,29 @@ export default {
         teams[0]
       );
     },
-    myTeamOptions() {
-      return (this.myTeams as Array<Record<string, any>>).map((team) => ({
-        key: team.id,
-        label: team.name || team.team?.name,
-      }));
-    },
     myTeamId() {
       return (this.myTeam as Record<string, any> | undefined)?.id ?? null;
+    },
+    // Following dims every card the team is not on, so only a team placed in
+    // the stage the Bracket tab opens on (current, else first) is followed.
+    viewingFollowTeamId(): string | null {
+      if (this.myTeams.length < 2 || !this.myTeamId) {
+        return null;
+      }
+      const stages = (this.tournament?.stages ?? []) as Array<any>;
+      const orders = stages.map((stage) => stage.order || 1);
+      const current = this.tournament?.current_stage;
+      const opensOn = orders.includes(current) ? current : Math.min(...orders);
+      const placed = stages
+        .filter((stage) => (stage.order || 1) === opensOn)
+        .some((stage) =>
+          (stage.brackets ?? []).some(
+            (bracket: any) =>
+              bracket.team_1?.id === this.myTeamId ||
+              bracket.team_2?.id === this.myTeamId,
+          ),
+        );
+      return placed ? this.myTeamId : null;
     },
   },
   methods: {
@@ -2629,6 +2646,14 @@ export default {
     },
   },
   watch: {
+    viewingFollowTeamId: {
+      immediate: true,
+      handler(teamId: string | null) {
+        const { followDefaultTeamId, followPicked } = useBracketView();
+        followDefaultTeamId.value = teamId;
+        followPicked.value = false;
+      },
+    },
     // The filters follow the phase; a pick the phase no longer offers
     // falls back to All instead of an empty table.
     teamFilterOptions(options: Array<{ key: string }>) {

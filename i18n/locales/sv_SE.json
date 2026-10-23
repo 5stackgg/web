@@ -3308,7 +3308,7 @@
           "load_failed": "Kunde inte läsa in sanktionspolicyn",
           "reset": "Återställ till standard",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "Vid varje omfattning utom ”Blockerar båda” skriver den här källan inte längre en plattformsomfattande avstängning, utan bara en avgränsad karantän — ett VAC-bannat konto behåller den andra halvan av 5stack.",
+          "platform_ban_narrowed": "Vid varje omfattning utom ”Blockerar båda” skriver den här källan inte längre en plattformsomfattande avstängning, utan bara en avgränsad karantän — ett bannat konto behåller den andra halvan av 5stack.",
           "threshold": {
             "label": "Sanktionera från",
             "first_offence": "Redan den första förseelsen bestraffas.",

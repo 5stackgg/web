@@ -3308,7 +3308,7 @@
           "load_failed": "無法載入處罰政策",
           "reset": "恢復預設",
           "permanent": "永久",
-          "platform_ban_narrowed": "在「兩者都禁止」以外的任何範圍下，此來源不再寫入全平台封鎖，只會下發範圍受限的冷卻——被 VAC 封鎖的帳號仍可使用 5stack 的另一半功能。",
+          "platform_ban_narrowed": "在「兩者都禁止」以外的任何範圍下，此來源不再寫入全平台封鎖，只會下發範圍受限的冷卻——被封鎖的帳號仍可使用 5stack 的另一半功能。",
           "threshold": {
             "label": "達到多少次後處罰",
             "first_offence": "第一次違規就會被處罰。",

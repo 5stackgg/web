@@ -3308,7 +3308,7 @@
           "load_failed": "Impossible de charger la politique de sanctions",
           "reset": "Rétablir les valeurs par défaut",
           "permanent": "Permanente",
-          "platform_ban_narrowed": "À tout périmètre autre que « Bloque les deux », cette source cesse d'écrire un bannissement à l'échelle de la plateforme et n'applique qu'une exclusion limitée — un compte banni par VAC garde l'autre moitié de 5stack.",
+          "platform_ban_narrowed": "À tout périmètre autre que « Bloque les deux », cette source cesse d'écrire un bannissement à l'échelle de la plateforme et n'applique qu'une exclusion limitée — un compte banni garde l'autre moitié de 5stack.",
           "threshold": {
             "label": "Sanctionner à partir de",
             "first_offence": "La première infraction est déjà sanctionnée.",

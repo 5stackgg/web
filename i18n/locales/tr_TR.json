@@ -3308,7 +3308,7 @@
           "load_failed": "Yaptırım politikası yüklenemedi",
           "reset": "Varsayılana sıfırla",
           "permanent": "Kalıcı",
-          "platform_ban_narrowed": "“İkisini de engeller” dışındaki her kapsamda bu kaynak artık platform genelinde bir yasak yazmaz, yalnızca kapsamı sınırlı bir bekleme süresi uygular — VAC yasaklı bir hesap 5stack’in diğer yarısını korur.",
+          "platform_ban_narrowed": "“İkisini de engeller” dışındaki her kapsamda bu kaynak artık platform genelinde bir yasak yazmaz, yalnızca kapsamı sınırlı bir bekleme süresi uygular — yasaklı bir hesap 5stack’in diğer yarısını korur.",
           "threshold": {
             "label": "Şu kadar ihlalden sonra",
             "first_offence": "İlk ihlal bile cezalandırılır.",

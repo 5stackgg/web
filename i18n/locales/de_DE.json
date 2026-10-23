@@ -3308,7 +3308,7 @@
           "load_failed": "Sanktionsrichtlinie konnte nicht geladen werden",
           "reset": "Auf Standard zurücksetzen",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "Bei jedem Geltungsbereich außer „Sperrt beides“ schreibt diese Quelle keine plattformweite Sperre mehr, sondern nur noch eine begrenzte Sperrzeit — ein VAC-gebanntes Konto behält die andere Hälfte von 5stack.",
+          "platform_ban_narrowed": "Bei jedem Geltungsbereich außer „Sperrt beides“ schreibt diese Quelle keine plattformweite Sperre mehr, sondern nur noch eine begrenzte Sperrzeit — ein gebanntes Konto behält die andere Hälfte von 5stack.",
           "threshold": {
             "label": "Sanktion ab",
             "first_offence": "Schon der erste Verstoß wird bestraft.",

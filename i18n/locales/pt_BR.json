@@ -3308,7 +3308,7 @@
           "load_failed": "Não foi possível carregar a política de sanções",
           "reset": "Restaurar o padrão",
           "permanent": "Permanente",
-          "platform_ban_narrowed": "Em qualquer escopo que não seja “Bloqueia ambos”, esta fonte deixa de gravar um banimento em toda a plataforma e só aplica um bloqueio limitado — uma conta banida pelo VAC mantém a outra metade da 5stack.",
+          "platform_ban_narrowed": "Em qualquer escopo que não seja “Bloqueia ambos”, esta fonte deixa de gravar um banimento em toda a plataforma e só aplica um bloqueio limitado — uma conta banida mantém a outra metade da 5stack.",
           "threshold": {
             "label": "Sancionar a partir de",
             "first_offence": "A primeira infração já é punida.",

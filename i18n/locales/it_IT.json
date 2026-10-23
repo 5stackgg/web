@@ -3308,7 +3308,7 @@
           "load_failed": "Impossibile caricare la policy delle sanzioni",
           "reset": "Ripristina i valori predefiniti",
           "permanent": "Permanente",
-          "platform_ban_narrowed": "Con qualsiasi ambito diverso da «Blocca entrambi» questa fonte smette di applicare un ban su tutta la piattaforma e impone solo un blocco limitato: un account bannato da VAC mantiene l'altra metà di 5stack.",
+          "platform_ban_narrowed": "Con qualsiasi ambito diverso da «Blocca entrambi» questa fonte smette di applicare un ban su tutta la piattaforma e impone solo un blocco limitato: un account bannato mantiene l'altra metà di 5stack.",
           "threshold": {
             "label": "Sanziona a partire da",
             "first_offence": "Già la prima infrazione viene punita.",

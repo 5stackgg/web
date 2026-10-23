@@ -746,6 +746,7 @@ const PLAYER_FACEIT_BAN = gql`
   query PlayerFaceitBan($steamId: bigint!) {
     players_by_pk(steam_id: $steamId) {
       steam_id
+      faceit_url
       faceit_banned_at
       faceit_ban_ends_at
     }
@@ -801,6 +802,7 @@ export default {
       removingAbandonedMatch: false,
       updatingSanction: false,
       faceitBan: null as {
+        faceit_url: string | null;
         faceit_banned_at: string | null;
         faceit_ban_ends_at: string | null;
       } | null,
@@ -908,13 +910,17 @@ export default {
       return this.vacBanned || this.gameBanCount > 0;
     },
     faceitBannedAt(): string | null {
+      const endsAt = this.faceitBan?.faceit_ban_ends_at;
+      if (endsAt && new Date(endsAt) <= new Date()) {
+        return null;
+      }
       return this.faceitBan?.faceit_banned_at ?? null;
     },
     faceitBanEndsAt(): string | null {
       return this.faceitBan?.faceit_ban_ends_at ?? null;
     },
     faceitProfileUrl(): string | null {
-      return this.player?.faceit_url ?? null;
+      return this.player?.faceit_url ?? this.faceitBan?.faceit_url ?? null;
     },
     shouldRender(): boolean {
       if (this.variant === "external") {
@@ -1064,6 +1070,7 @@ export default {
           query: PLAYER_FACEIT_BAN,
           variables: { steamId: playerId },
           fetchPolicy: "network-only",
+          context: { optional: true },
         });
         if (this.playerId === playerId) {
           this.faceitBan = (data as any)?.players_by_pk ?? null;

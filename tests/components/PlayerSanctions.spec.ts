@@ -456,8 +456,41 @@ describe("PlayerSanctions FACEIT ban", () => {
     };
     const wrapper = await mountSheet([]);
 
+    const client = (useNuxtApp() as any).$apollo.defaultClient;
+    expect(client.query).not.toHaveBeenCalled();
     expect(document.body.textContent).not.toContain("FACEIT Ban");
     expect(lastSummary(wrapper).faceitBannedAt).toBeNull();
+  });
+
+  it("drops a FACEIT ban whose end has passed", async () => {
+    faceitBan = {
+      steam_id: PLAYER,
+      faceit_banned_at: "2026-01-01T00:00:00Z",
+      faceit_ban_ends_at: yesterday(),
+    };
+    const wrapper = await mountSheet([]);
+
+    expect(document.body.textContent).not.toContain("FACEIT Ban");
+    expect(lastSummary(wrapper).faceitBannedAt).toBeNull();
+  });
+
+  it("says when a FACEIT ban ends, and links FACEIT from the ban itself", async () => {
+    faceitBan = {
+      steam_id: PLAYER,
+      faceit_url: FACEIT_URL,
+      faceit_banned_at: yesterday(),
+      faceit_ban_ends_at: tomorrow(),
+    };
+    await mountSheet([]);
+
+    const text = document.body.textContent ?? "";
+    expect(text).toContain("FACEIT Ban");
+    expect(text).toContain("Expires");
+    expect(text).not.toContain("Permanent");
+    const link = Array.from(document.body.querySelectorAll("a")).find(
+      (a) => a.textContent?.trim() === "View on FACEIT",
+    );
+    expect(link?.getAttribute("href")).toBe(FACEIT_URL);
   });
 
   it("links an automatic FACEIT ban to FACEIT, not Steam", async () => {

@@ -3308,7 +3308,7 @@
           "load_failed": "无法加载处罚策略",
           "reset": "恢复默认",
           "permanent": "永久",
-          "platform_ban_narrowed": "在“两者都禁止”以外的任何范围下，此来源不再写入全平台封禁，只会下发范围受限的冷却——被 VAC 封禁的账号仍可使用 5stack 的另一半功能。",
+          "platform_ban_narrowed": "在“两者都禁止”以外的任何范围下，此来源不再写入全平台封禁，只会下发范围受限的冷却——被封禁的账号仍可使用 5stack 的另一半功能。",
           "threshold": {
             "label": "达到多少次后处罚",
             "first_offence": "第一次违规就会被处罚。",

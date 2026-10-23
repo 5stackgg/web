@@ -3308,7 +3308,7 @@
           "load_failed": "Nie udało się wczytać zasad sankcji",
           "reset": "Przywróć domyślne",
           "permanent": "Stała",
-          "platform_ban_narrowed": "Przy każdym zakresie innym niż „Blokuje oba” to źródło przestaje zapisywać bana na całej platformie i nakłada tylko ograniczoną blokadę — konto z banem VAC zachowuje drugą połowę 5stack.",
+          "platform_ban_narrowed": "Przy każdym zakresie innym niż „Blokuje oba” to źródło przestaje zapisywać bana na całej platformie i nakłada tylko ograniczoną blokadę — zbanowane konto zachowuje drugą połowę 5stack.",
           "threshold": {
             "label": "Ukarz po",
             "first_offence": "Karane jest już pierwsze przewinienie.",

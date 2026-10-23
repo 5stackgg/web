@@ -75,8 +75,9 @@ const {
 } = useCurrentLeagueSeason();
 const hasLeagueSeason = computed(() => !!currentLeagueSeason.value);
 
-// Same rule as the top nav: an empty view-only section stays hidden from
-// anyone who can't add to it.
+// An empty view-only section stays hidden from anyone who can't add to it.
+// Visitors are the exception for Events and League: while either is switched
+// on they always see it, so they know the site runs them.
 const applicationSettings = useApplicationSettingsStore();
 const { hasContent } = useSiteContent();
 const showTournamentsLink = computed(
@@ -88,9 +89,9 @@ const showTournamentsLink = computed(
 const showEventsLink = computed(
   () =>
     applicationSettings.eventsEnabled &&
-    (hasContent("events") ||
-      (!!authStore.me &&
-        authStore.isRoleAbove(applicationSettings.eventCreateRole))),
+    (!authStore.me ||
+      hasContent("events") ||
+      authStore.isRoleAbove(applicationSettings.eventCreateRole)),
 );
 const showNewsLink = computed(
   () =>
@@ -177,7 +178,7 @@ const builtInSections = computed<LeftNavSectionData[]>(() => {
   }
   if (
     applicationSettings.leaguesEnabled &&
-    (hasLeagueSeason.value || authStore.isAdmin)
+    (!authStore.me || hasLeagueSeason.value || authStore.isAdmin)
   ) {
     compete.push({
       key: "league",

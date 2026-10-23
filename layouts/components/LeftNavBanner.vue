@@ -15,7 +15,7 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
 <template>
   <NuxtLink
     :to="to"
-    class="nav-banner relative flex h-[76px] shrink-0 items-center gap-3.5 overflow-hidden border-b border-sidebar-border bg-black/20 pl-3 pr-4 outline-none ring-inset ring-sidebar-ring focus-visible:ring-2"
+    class="nav-banner relative flex h-[76px] shrink-0 items-center gap-3.5 overflow-hidden pl-3 pr-4 outline-none ring-inset ring-sidebar-ring focus-visible:ring-2"
     :aria-label="t('layouts.app_nav.navigation.home')"
     @click="setOpenMobile(false)"
   >
@@ -23,7 +23,7 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
       v-if="bannerUrl"
       :src="bannerUrl"
       alt=""
-      class="absolute inset-0 size-full object-cover"
+      class="nav-banner-fade absolute inset-0 size-full object-cover"
     />
     <template v-else>
       <img
@@ -45,8 +45,23 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
 </template>
 
 <style scoped>
-/* Contour rings rising from the far corner and a faint amber wash, under the
-   logo; an amber edge along the bottom, over any banner image. */
+/* The band has no bottom edge: its shade, the contour rings and the amber
+   wash under the logo, and any uploaded banner, all fade out into the nav. */
+.nav-banner {
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 0.28) 0%,
+    rgb(0 0 0 / 0.27) 19%,
+    rgb(0 0 0 / 0.24) 34%,
+    rgb(0 0 0 / 0.2) 47%,
+    rgb(0 0 0 / 0.155) 58%,
+    rgb(0 0 0 / 0.11) 68%,
+    rgb(0 0 0 / 0.07) 77%,
+    rgb(0 0 0 / 0.035) 86%,
+    rgb(0 0 0 / 0.01) 94%,
+    transparent 100%
+  );
+}
 .nav-banner::before {
   content: "";
   position: absolute;
@@ -60,18 +75,20 @@ const name = computed(() => brandName.value || t("layouts.app_nav.brand"));
     ),
     linear-gradient(90deg, transparent 30%, hsl(var(--tac-amber) / 0.05));
 }
-.nav-banner::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsl(var(--tac-amber) / 0.5) 50%,
+.nav-banner::before,
+.nav-banner-fade {
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 30%,
+    rgb(0 0 0 / 0.6) 60%,
+    rgb(0 0 0 / 0.2) 85%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 30%,
+    rgb(0 0 0 / 0.6) 60%,
+    rgb(0 0 0 / 0.2) 85%,
     transparent
   );
 }

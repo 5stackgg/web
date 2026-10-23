@@ -92,6 +92,12 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  // Every league table has guest read access in Hasura, so visitors get the
+  // seasons, standings and schedule the nav points them to.
+  if (path === "/league" || path.startsWith("/league/")) {
+    return true;
+  }
+
   if (path.startsWith("/match-popout")) {
     return true;
   }

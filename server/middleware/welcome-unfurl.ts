@@ -5,42 +5,6 @@
 // indexed is what people see. Browsers fall through to the app as usual.
 import en from "../../i18n/locales/en.json";
 
-type Settings = Record<string, string | undefined>;
-
-const SETTINGS_QUERY = `query WelcomeSettings {
-  settings(where: { name: { _like: "public.%" } }) {
-    name
-    value
-  }
-}`;
-
-const loadSettings = defineCachedFunction(
-  async (): Promise<Settings> => {
-    const apiDomain = process.env.NUXT_PUBLIC_API_DOMAIN;
-    const adminSecret = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
-    if (!apiDomain || !adminSecret) return {};
-    try {
-      const res = await $fetch<{
-        data?: { settings?: Array<{ name: string; value: string }> };
-      }>(`https://${apiDomain}/v1/graphql`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-hasura-admin-secret": adminSecret,
-        },
-        body: { query: SETTINGS_QUERY },
-      });
-      return Object.fromEntries(
-        (res?.data?.settings ?? []).map((s) => [s.name, s.value]),
-      );
-    } catch (err) {
-      console.error("[welcome-unfurl] settings fetch failed:", err);
-      return {};
-    }
-  },
-  { maxAge: 60 * 10, name: "welcome-unfurl-settings", getKey: () => "all" },
-);
-
 const copy = (en as any).pages.welcome;
 const fill = (text: string, values: Record<string, string>) =>
   text.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
@@ -53,7 +17,7 @@ export default defineEventHandler(async (event) => {
   if (!/^\/(welcome\/?)?$/.test(url.pathname)) return;
   if (!BOT_UA.test(getRequestHeader(event, "user-agent") || "")) return;
 
-  const settings = await loadSettings();
+  const settings = await loadPublicSettings();
   const on = (name: string) => settings[name] !== "false";
   const name = settings["public.brand_name"] || "5Stack";
   const webDomain = process.env.NUXT_PUBLIC_WEB_DOMAIN;
@@ -91,7 +55,7 @@ export default defineEventHandler(async (event) => {
     webDomain === "5stack.gg"
       ? "hello@5stack.gg"
       : null;
-  const image = `${origin}/landing/highlight.webp`;
+  const image = `${origin}/branding/og.png?v=${brandCardVersion(brandCardBrand(settings))}`;
   const schema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -117,6 +81,10 @@ export default defineEventHandler(async (event) => {
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${origin}/welcome" />
     <meta property="og:image" content="${image}" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="${BRAND_CARD_WIDTH}" />
+    <meta property="og:image:height" content="${BRAND_CARD_HEIGHT}" />
+    <meta property="og:image:alt" content="${escapeHtml(name)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />

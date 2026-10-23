@@ -9026,6 +9026,12 @@
     "enabled": "已开启推送通知",
     "failed": "无法开启推送通知，请重试。"
   },
+  "app_update": {
+    "title": "有新版本可用",
+    "description": "刷新页面即可获取最新版本。",
+    "refresh": "刷新",
+    "dismiss": "关闭"
+  },
   "feature_spotlights": {
     "label": "功能聚焦",
     "auto_highlights": {

@@ -8313,7 +8313,6 @@
             "body": "Röstchatt i matchen är inbyggd, och webbkameror kan krävas."
           }
         },
-        "link": "Testa demodraften",
         "replay_veto": "Spela upp vetot igen"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utility.",
             "body": "Varje granat varje spelare kastade, och vad den gjorde."
           }
-        },
-        "link": "Testa demomatchen"
+        }
       },
       "network": {
         "label": "5Stack-nätverket",

@@ -147,8 +147,8 @@ export default defineEventHandler(async (event) => {
         ["/play", "link"],
         matchmaking ? copy.play.lede : copy.play.lede_draft,
       )}
-      ${section("match", [["veto"], ["servers"], ["fix"], ["voice", on("public.voice_chat_enabled")]], ["/faq/demo-draft", "link"])}
-      ${section("match_page", [["scoreboard"], ["economy"], ["head_to_head"], ["utility"]], ["/faq/demo-match", "link"])}
+      ${section("match", [["veto"], ["servers"], ["fix"], ["voice", on("public.voice_chat_enabled")]])}
+      ${section("match_page", [["scoreboard"], ["economy"], ["head_to_head"], ["utility"]])}
       ${section(
         "compete",
         [

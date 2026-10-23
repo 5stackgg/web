@@ -8313,7 +8313,6 @@
             "body": "La chat vocale del match è integrata, e le webcam possono essere obbligatorie."
           }
         },
-        "link": "Prova il draft demo",
         "replay_veto": "Rivedi il veto"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utility.",
             "body": "Ogni granata lanciata da ogni giocatore, e cosa ha fatto."
           }
-        },
-        "link": "Prova il match demo"
+        }
       },
       "network": {
         "label": "La rete 5Stack",

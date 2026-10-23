@@ -8313,7 +8313,6 @@
             "body": "Le chat vocal du match est intégré, et les webcams peuvent être obligatoires."
           }
         },
-        "link": "Essayer la draft de démo",
         "replay_veto": "Revoir le veto"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utilitaires.",
             "body": "Chaque grenade lancée par chaque joueur, et ce qu'elle a fait."
           }
-        },
-        "link": "Essayer le match de démo"
+        }
       },
       "network": {
         "label": "Le réseau 5Stack",

@@ -8313,7 +8313,6 @@
             "body": "Sprachchat fürs Match ist eingebaut, und Webcams können Pflicht sein."
           }
         },
-        "link": "Demo-Draft ausprobieren",
         "replay_veto": "Veto erneut abspielen"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utility.",
             "body": "Jede Granate, die jeder Spieler geworfen hat, und was sie bewirkt hat."
           }
-        },
-        "link": "Demo-Match ausprobieren"
+        }
       },
       "network": {
         "label": "Das 5Stack-Netzwerk",

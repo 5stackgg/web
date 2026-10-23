@@ -8313,7 +8313,6 @@
             "body": "Czat głosowy meczu jest wbudowany, a kamery mogą być wymagane."
           }
         },
-        "link": "Wypróbuj przykładowy draft",
         "replay_veto": "Powtórz veto"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utility.",
             "body": "Każdy granat rzucony przez każdego gracza i to, co zdziałał."
           }
-        },
-        "link": "Wypróbuj przykładowy mecz"
+        }
       },
       "network": {
         "label": "Sieć 5Stack",

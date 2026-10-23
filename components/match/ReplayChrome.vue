@@ -312,19 +312,26 @@ const scorePanelStyle = computed(() => {
 const leftStyle = scorePanelStyle;
 
 // A short stage (an embed, a small window) cannot hold both full rosters, so
-// the rows tighten and the dead fold to their name line. Decided from the
-// height the full board needs, so it does not flip back and forth.
+// the rows tighten. Decided from the height the full board needs, so it does
+// not flip back and forth.
 const chromeEl = ref<HTMLElement | null>(null);
 const chromeHeight = ref(0);
+const chromeWidth = ref(0);
 let chromeRO: ResizeObserver | null = null;
 onMounted(() => {
   if (!chromeEl.value || typeof ResizeObserver === "undefined") return;
   chromeRO = new ResizeObserver(() => {
     chromeHeight.value = chromeEl.value?.clientHeight ?? 0;
+    chromeWidth.value = chromeEl.value?.clientWidth ?? 0;
   });
   chromeRO.observe(chromeEl.value);
 });
 onBeforeUnmount(() => chromeRO?.disconnect());
+
+// A narrow stage (an embed on a phone held upright) gets a watch view: the
+// map, the score, the 2D/3D switch and the transport. The rosters, tools and
+// filters wait for a wider stage.
+const narrow = computed(() => chromeWidth.value > 0 && chromeWidth.value < 560);
 
 const FULL_ROW_PX = 62;
 const TEAM_CHROME_PX = 40;
@@ -443,7 +450,11 @@ const utilClusters = computed(() => {
 
 <template>
   <TooltipProvider :delay-duration="250">
-    <div ref="chromeEl" class="bp-chrome" :class="{ 'is-mobile': mobile }">
+    <div
+      ref="chromeEl"
+      class="bp-chrome"
+      :class="{ 'is-mobile': mobile, 'is-narrow': narrow }"
+    >
       <!-- HUD -->
       <div ref="hudEl" class="bp-hud">
         <span class="bp-score"
@@ -1129,7 +1140,7 @@ const utilClusters = computed(() => {
 
       <!-- transport -->
       <div ref="barEl" class="bp-bar">
-        <div class="bp-toprow">
+        <div class="bp-toprow" :class="{ 'one-round': rounds.length <= 1 }">
           <!-- util-summary toggle is pinned on the left; only the round
                numbers scroll past it -->
           <Tooltip>
@@ -2115,7 +2126,7 @@ const utilClusters = computed(() => {
   color: #7f8fa0;
   font-variant-numeric: tabular-nums;
 }
-/* short stage: tighter rows, and the dead keep only their name line */
+/* short stage: tighter rows */
 .bp-score-panel.dense {
   gap: 6px;
 }
@@ -2124,9 +2135,6 @@ const utilClusters = computed(() => {
 }
 .bp-score-panel.dense .bp-prow {
   padding: 2px 6px 6px 9px;
-}
-.bp-score-panel.dense .bp-prow.dead {
-  padding-bottom: 2px;
 }
 .bp-score-panel.dense .bp-prow + .bp-prow {
   margin-top: 0;
@@ -2155,12 +2163,7 @@ const utilClusters = computed(() => {
 }
 .bp-score-panel.dense .prow-gear .eq.gun {
   height: 16px;
-}
-.bp-score-panel.dense .bp-prow.dead .prow-bars,
-.bp-score-panel.dense .bp-prow.dead .prow-gear {
-  display: none;
-}
-/* controls row: 2D/3D | cam dock — single line (overflows the 264px column) */
+}/* controls row: 2D/3D | cam dock — single line (overflows the 264px column) */
 .bp-controls {
   display: flex;
   align-items: center;
@@ -2689,6 +2692,34 @@ const utilClusters = computed(() => {
   .bp-chrome.is-mobile .bp-left {
     width: 300px;
   }
+}
+/* narrow stage: a watch view (see `narrow`) */
+.bp-chrome.is-narrow .bp-hud {
+  left: auto;
+  right: 8px;
+  transform: none;
+}
+.bp-chrome.is-narrow .bp-pbp,
+.bp-chrome.is-narrow .bp-score-panel,
+.bp-chrome.is-narrow .bp-sb-tools,
+.bp-chrome.is-narrow .bp-toprow .buyt,
+.bp-chrome.is-narrow .bp-filters,
+.bp-chrome.is-narrow .bp-toprow.one-round,
+.bp-chrome.is-narrow .util-lane,
+.bp-chrome.is-narrow .spd,
+.bp-chrome.is-narrow .fs,
+.bp-chrome.is-narrow .bp-help {
+  display: none;
+}
+.bp-chrome.is-narrow .bp-transport {
+  padding-bottom: 0;
+}
+/* an embed sits mid-page, never over the home indicator */
+.bp-chrome.is-narrow .bp-bar {
+  padding-bottom: 8px;
+}
+.bp-chrome.is-narrow .seek-wrap {
+  min-width: 0;
 }
 .bp-toprow .rt.on {
   background: color-mix(in srgb, var(--accent) 18%, transparent);

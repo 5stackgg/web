@@ -8313,7 +8313,6 @@
             "body": "Maç içi sesli sohbet yerleşik gelir ve web kamerası zorunlu tutulabilir."
           }
         },
-        "link": "Demo seçimi dene",
         "replay_veto": "Vetoyu yeniden oynat"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Ekipman.",
             "body": "Her oyuncunun attığı her el bombası ve ne işe yaradığı."
           }
-        },
-        "link": "Demo maçı dene"
+        }
       },
       "network": {
         "label": "5Stack ağı",

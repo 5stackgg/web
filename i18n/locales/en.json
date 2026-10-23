@@ -8313,7 +8313,6 @@
             "body": "Match voice is built in, and webcams can be required."
           }
         },
-        "link": "Try the demo draft",
         "replay_veto": "Replay the veto"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utility.",
             "body": "Every grenade each player threw, and what it did."
           }
-        },
-        "link": "Try the demo match"
+        }
       },
       "network": {
         "label": "The 5Stack network",

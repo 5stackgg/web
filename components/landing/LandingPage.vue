@@ -349,7 +349,6 @@ const outlineButton =
           wide
           v-bind="copy('match')"
           :points="sections.match"
-          :link="{ to: '/faq/demo-draft', label: $t('pages.welcome.match.link') }"
         >
           <LandingDefer :placeholder="560">
             <LandingVeto />
@@ -361,10 +360,6 @@ const outlineButton =
           wide
           v-bind="copy('match_page')"
           :points="sections.match_page"
-          :link="{
-            to: '/faq/demo-match',
-            label: $t('pages.welcome.match_page.link'),
-          }"
         >
           <LandingDefer :placeholder="780">
             <LandingMatchPage />

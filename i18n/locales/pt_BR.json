@@ -8313,7 +8313,6 @@
             "body": "O chat de voz da partida já vem embutido, e a webcam pode ser obrigatória."
           }
         },
-        "link": "Experimente o draft de demonstração",
         "replay_veto": "Repetir o veto"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utilitários.",
             "body": "Cada granada que cada jogador lançou, e o que ela fez."
           }
-        },
-        "link": "Experimente a partida de demonstração"
+        }
       },
       "network": {
         "label": "A rede 5Stack",

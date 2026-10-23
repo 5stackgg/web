@@ -8313,7 +8313,6 @@
             "body": "Stemmechat i kampen er indbygget, og webcams kan gøres obligatoriske."
           }
         },
-        "link": "Prøv demo-draften",
         "replay_veto": "Afspil vetoen igen"
       },
       "compete": {
@@ -8472,8 +8471,7 @@
             "title": "Utility.",
             "body": "Hver granat, hver spiller kastede, og hvad den gjorde."
           }
-        },
-        "link": "Prøv demokampen"
+        }
       },
       "network": {
         "label": "5Stack-netværket",

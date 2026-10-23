@@ -312,6 +312,37 @@ describe("the tournament page for a signed-out visitor", () => {
   });
 });
 
+// Polled every second for every viewer, so it asks only for what the page
+// shows: no per-player eligibility check, no rank columns a roster never
+// displays, and only the stage options the stage form and bracket cards read.
+describe("what the tournament page polls", () => {
+  it("leaves out fields nothing on the page reads", async () => {
+    await mountDetail("moderator");
+    const document = print(full()[0].query);
+
+    for (const field of [
+      "target_eligible",
+      "premier_rank",
+      "faceit_skill_level",
+      "faceit_elo",
+      "knife_round",
+      "default_models",
+      "rounds_won",
+      "matches_remaining",
+      "match_options_id",
+    ]) {
+      expect(document).not.toContain(field);
+    }
+    expect(document).toContain("roster_counts: teams");
+  });
+
+  it("leaves roster elo to the rows someone opens", async () => {
+    await mountDetail("moderator");
+
+    expect(print(full()[0].query)).not.toMatch(/^\s*elo\b/m);
+  });
+});
+
 describe("the tournament page for everyone else", () => {
   it.each([
     ["a moderator", "moderator"],

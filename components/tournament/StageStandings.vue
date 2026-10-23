@@ -264,6 +264,8 @@ import { kdColor } from "~/utils/statTiers";
 </template>
 
 <script lang="ts">
+import { loadPlayerElos, withPlayerElo } from "~/composables/usePlayerElos";
+
 export default {
   props: {
     stage: {
@@ -399,7 +401,9 @@ export default {
               ? sorted.filter((other: any) => placementOf(other) === placement)
                   .length > 1
               : (placementCounts.get(Number(row.placement) || 0) || 0) > 1,
-            roster: (row.team?.roster || []).filter((m: any) => m?.player),
+            roster: (row.team?.roster || [])
+              .filter((m: any) => m?.player)
+              .map((m: any) => ({ ...m, player: withPlayerElo(m.player) })),
           };
         });
         out.push({
@@ -448,6 +452,12 @@ export default {
         next.delete(key);
       } else {
         next.add(key);
+        const entry = this.groups
+          .flatMap((group: any) => group.entries)
+          .find((candidate: any) => String(candidate.teamId) === key);
+        void loadPlayerElos(
+          (entry?.roster ?? []).map((member: any) => member.player?.steam_id),
+        );
       }
       this.expandedTeams = next;
     },

@@ -48,3 +48,22 @@ export const playerFields = Selector("players")({
  * elo, and swapping the selector under one silently blanks it.
  */
 export const playerFieldsWithoutElo = Selector("players")(playerIdentityFields);
+
+const {
+  premier_rank: _premierRank,
+  premier_rank_updated_at: _premierRankUpdatedAt,
+  faceit_skill_level: _faceitSkillLevel,
+  faceit_elo: _faceitElo,
+  faceit_url: _faceitUrl,
+  faceit_nickname: _faceitNickname,
+  ...playerFieldsWithoutRankColumns
+} = playerIdentityFields;
+
+/**
+ * For tournament rosters: a `<PlayerDisplay>` given no `match-type` shows no
+ * Premier or FACEIT rank, and their elo is read when a row opens
+ * (`usePlayerElos`) rather than polled for every player.
+ */
+export const playerFieldsWithoutRanksOrElo = Selector("players")(
+  playerFieldsWithoutRankColumns,
+);

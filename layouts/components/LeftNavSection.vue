@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
-import {
-  AlertTriangle,
-  ChevronDown,
-  ExternalLink,
-  Star,
-} from "lucide-vue-next";
+import { ChevronDown, ExternalLink, Star } from "lucide-vue-next";
 import { NuxtLink } from "#components";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useLeftNavState } from "~/composables/useLeftNavState";
 import { glideNavMarker } from "~/composables/useLeftNavMarker";
+import LeftNavCount from "./LeftNavCount.vue";
 import type { LeftNavItem, LeftNavSectionData } from "./leftNav";
 
 const props = defineProps<{
@@ -132,20 +128,26 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
               :key="item.key"
               :style="{ '--i': index }"
             >
-              <!-- The link covers the row; the star sits left of the count. -->
+              <!-- The link covers the row. The star shows at its right end and
+                   the count steps left to make room. -->
               <div
-                class="group/row relative flex h-[30px] items-center rounded-md pr-1 transition-colors duration-150"
-                :class="
+                class="group/row relative flex h-[30px] items-center rounded-md transition-[background-color,padding] duration-200 ease-out"
+                :class="[
                   item.active
                     ? 'bg-sidebar-accent/70'
-                    : 'hover:bg-sidebar-accent/60'
-                "
+                    : 'hover:bg-sidebar-accent/60',
+                  !pinnable || item.href
+                    ? 'pr-2'
+                    : isPinned(item.key)
+                      ? 'pr-8'
+                      : 'pr-2 hover:pr-8 has-[:focus-visible]:pr-8 [@media(hover:none)]:pr-8',
+                ]"
               >
                 <component
                   :is="item.to ? NuxtLink : 'a'"
                   v-bind="linkProps(item)"
                   :data-active="item.active || undefined"
-                  class="flex min-w-0 flex-1 items-center gap-2 pl-2.5 pr-1 text-[0.8rem] text-muted-foreground outline-none transition-colors duration-150 after:absolute after:inset-0 after:rounded-md after:ring-sidebar-ring focus-visible:after:ring-2 group-hover/row:text-sidebar-foreground data-[active]:text-sidebar-foreground"
+                  class="flex min-w-0 flex-1 items-center gap-2 pl-2.5 pr-2 text-[0.8rem] text-muted-foreground outline-none transition-colors duration-150 after:absolute after:inset-0 after:rounded-md after:ring-sidebar-ring focus-visible:after:ring-2 group-hover/row:text-sidebar-foreground data-[active]:text-sidebar-foreground"
                   @click="setOpenMobile(false)"
                 >
                   <span
@@ -165,14 +167,19 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
                     aria-hidden="true"
                   />
                 </component>
+                <LeftNavCount
+                  :badge="item.badge"
+                  :tone="item.badgeTone"
+                  :warning="item.warning"
+                />
                 <button
                   v-if="pinnable && !item.href"
                   type="button"
-                  class="relative z-10 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground outline-none ring-sidebar-ring transition-[opacity,transform,color] duration-200 ease-out hover:text-[hsl(var(--tac-amber))] focus-visible:ring-2 aria-pressed:text-[hsl(var(--tac-amber))]"
+                  class="absolute right-1 top-1/2 z-10 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none ring-sidebar-ring transition-[opacity,transform,color] duration-200 ease-out hover:text-[hsl(var(--tac-amber))] focus-visible:ring-2 aria-pressed:text-[hsl(var(--tac-amber))]"
                   :class="
                     isPinned(item.key)
                       ? 'opacity-100'
-                      : 'translate-x-1 opacity-0 focus-visible:translate-x-0 focus-visible:opacity-100 group-hover/row:translate-x-0 group-hover/row:opacity-100 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100'
+                      : 'translate-x-1 opacity-0 group-hover/row:translate-x-0 group-hover/row:opacity-100 group-has-[:focus-visible]/row:translate-x-0 group-has-[:focus-visible]/row:opacity-100 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100'
                   "
                   :aria-pressed="isPinned(item.key)"
                   :aria-label="
@@ -193,27 +200,6 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
                     }"
                   />
                 </button>
-                <AlertTriangle
-                  v-if="item.warning"
-                  aria-hidden="true"
-                  class="mr-1 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                />
-                <span
-                  v-else-if="item.badge"
-                  aria-hidden="true"
-                  class="mr-1 inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums"
-                  :class="
-                    item.badgeTone === 'live'
-                      ? 'border-destructive/50 bg-destructive/15 text-destructive'
-                      : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
-                  "
-                >
-                  <span
-                    v-if="item.badgeTone === 'live'"
-                    class="h-[5px] w-[5px] rounded-full bg-current"
-                  ></span>
-                  {{ item.badge }}
-                </span>
               </div>
             </li>
           </ul>

@@ -212,7 +212,7 @@ const badgeTitle = computed(() =>
     </div>
 
     <div
-      class="db-tree-body overflow-y-auto py-1.5 lg:max-h-[calc(100vh-11rem)] lg:pr-2"
+      class="overflow-y-auto py-1.5 lg:max-h-[calc(100vh-11rem)] lg:pr-2 scrollbar-thin"
       :class="!open && 'max-lg:hidden'"
     >
       <template v-if="!find.trim()">
@@ -326,9 +326,6 @@ const badgeTitle = computed(() =>
 </template>
 
 <style scoped>
-.db-tree-body {
-  scrollbar-width: thin;
-}
 .db-tree-item {
   position: relative;
   display: grid;

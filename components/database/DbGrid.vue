@@ -86,7 +86,7 @@ onBeforeUnmount(() => observer?.disconnect());
 
 <template>
   <div
-    class="db-grid overflow-auto rounded-[10px] border border-border"
+    class="db-grid overflow-auto rounded-[10px] border border-border scrollbar-thin"
     :style="{
       maxHeight: maxHeight ? `${maxHeight}px` : undefined,
       minHeight: heldHeight
@@ -155,7 +155,6 @@ onBeforeUnmount(() => observer?.disconnect());
 <style scoped>
 .db-grid {
   background: hsl(240 6% 5.5%);
-  scrollbar-width: thin;
 }
 th {
   position: sticky;

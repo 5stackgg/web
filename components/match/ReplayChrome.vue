@@ -819,7 +819,7 @@ const utilClusters = computed(() => {
       <Transition name="bp-score">
         <div
           v-show="showScoreboard !== false"
-          class="bp-score-panel"
+          class="bp-score-panel scrollbar-thin"
           :class="{ dense: denseRoster }"
           :style="scorePanelStyle"
         >
@@ -1904,15 +1904,7 @@ const utilClusters = computed(() => {
      it stops just above the round selector / seek bar. */
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-width: thin;
   overscroll-behavior: contain;
-}
-.bp-score-panel::-webkit-scrollbar {
-  width: 6px;
-}
-.bp-score-panel::-webkit-scrollbar-thumb {
-  background: rgba(120, 140, 165, 0.35);
-  border-radius: 3px;
 }
 /* scoreboard show/hide — slide in from the right + fade */
 .bp-score-enter-active,

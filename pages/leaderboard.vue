@@ -1184,7 +1184,7 @@ onBeforeUnmount(() => {
         <div class="lb-layout-side-inner">
           <aside
             v-if="selected"
-            class="sticky top-4 max-h-[calc(var(--sidebar-height,100svh)-2rem)] overflow-y-auto overscroll-contain rounded-lg border border-border bg-card [scrollbar-width:thin]"
+            class="sticky top-4 max-h-[calc(var(--sidebar-height,100svh)-2rem)] overflow-y-auto overscroll-contain rounded-lg border border-border bg-card scrollbar-thin"
             :aria-label="$t('pages.leaderboard.panel.title')"
           >
             <Transition name="lb-panel" mode="out-in">

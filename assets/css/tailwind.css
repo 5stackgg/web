@@ -138,6 +138,24 @@
   }
 }
 
+@layer utilities {
+  /* The one visible scrollbar: opts a scroller back in from the global hide
+     above. Browsers that honour scrollbar-width/-color ignore the WebKit
+     pseudo-elements, which only cover Safari. */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

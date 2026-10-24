@@ -130,7 +130,7 @@ useSettingsSearchReveal(contentRow);
             />
           </div>
           <div
-            class="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [scrollbar-width:thin]"
+            class="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain scrollbar-thin"
           >
             <SettingsSideTabs
               class="flex-1 pb-14"
@@ -192,7 +192,7 @@ useSettingsSearchReveal(contentRow);
         <div class="grid min-w-0 grid-rows-[1fr] lg:h-full lg:min-h-0">
           <PageTransition :key="route.path">
             <div
-              class="space-y-6 min-w-0 [grid-area:1/1] lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pl-3 lg:[scrollbar-width:thin]"
+              class="space-y-6 min-w-0 [grid-area:1/1] lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pl-3 lg:scrollbar-thin"
               :data-settings-pane="route.path"
             >
               <slot />

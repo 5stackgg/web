@@ -457,7 +457,7 @@ function clipTeamName(c: Clip): string | null {
     </div>
 
     <aside
-      class="reel-queue relative min-h-0 min-w-0 lg:rounded-lg lg:bg-white/[0.03] lg:ring-1 lg:ring-inset lg:ring-white/[0.07]"
+      class="relative min-h-0 min-w-0 lg:rounded-lg lg:bg-white/[0.03] lg:ring-1 lg:ring-inset lg:ring-white/[0.07]"
     >
       <div class="flex min-h-0 flex-col lg:absolute lg:inset-0">
         <div
@@ -482,7 +482,7 @@ function clipTeamName(c: Clip): string | null {
         </div>
         <ol
           ref="queueScrollEl"
-          class="grid min-h-0 flex-1 auto-cols-[9.25rem] grid-flow-col gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:auto-cols-auto lg:grid-flow-row lg:content-start lg:gap-0.5 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-y-contain lg:px-1.5 lg:pb-1.5"
+          class="grid min-h-0 flex-1 auto-cols-[9.25rem] grid-flow-col gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:auto-cols-auto lg:grid-flow-row lg:content-start lg:gap-0.5 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-y-contain lg:px-1.5 lg:pb-1.5 scrollbar-thin"
         >
           <li v-for="c in reelQueue" :key="c.id" class="min-w-0">
             <button
@@ -574,20 +574,6 @@ function clipTeamName(c: Clip): string | null {
 </template>
 
 <style scoped>
-.reel-queue ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-.reel-queue ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.reel-queue ::-webkit-scrollbar-thumb {
-  background: rgb(255 255 255 / 0.15);
-  border-radius: 999px;
-}
-
 /* `.share-flash` keyframe lives in assets/css/tailwind.css so the
    feedback is identical across the reel, ClipTile, and the
    ClipDetailModal. */

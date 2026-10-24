@@ -1548,7 +1548,7 @@ const edgeButton =
               </div>
               <div
                 ref="stripRef"
-                class="clip-strip -mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 pt-1"
+                class="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 pt-1 scrollbar-thin"
               >
                 <button
                   v-for="q in clipQueue"
@@ -1719,11 +1719,6 @@ const edgeButton =
   .clip-modal-hints {
     display: flex;
   }
-}
-
-.clip-strip {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
 }
 </style>
 

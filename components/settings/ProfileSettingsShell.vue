@@ -66,7 +66,7 @@ watch(
       class="flex flex-col space-y-8 lg:min-h-0 lg:flex-1 lg:flex-row lg:space-x-12 lg:space-y-0"
     >
       <aside
-        class="w-full shrink-0 lg:h-full lg:w-auto lg:overflow-y-auto lg:overscroll-contain"
+        class="w-full shrink-0 lg:h-full lg:w-auto lg:overflow-y-auto lg:overscroll-contain lg:scrollbar-thin"
       >
         <!-- Mobile: single dropdown -->
         <div class="lg:hidden">
@@ -101,7 +101,7 @@ watch(
       <div
         ref="contentPane"
         :data-settings-pane="route.path"
-        class="settings-measure min-w-0 flex-1 space-y-6 lg:h-full lg:overflow-y-auto lg:overscroll-contain"
+        class="settings-measure min-w-0 flex-1 space-y-6 lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:scrollbar-thin"
       >
         <slot />
       </div>

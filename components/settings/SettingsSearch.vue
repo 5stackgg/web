@@ -171,7 +171,7 @@ defineExpose({ clear });
         v-if="searching"
         id="settings-search-results"
         role="listbox"
-        class="z-[1] min-w-0 [grid-area:1/1] lg:overflow-y-auto lg:overscroll-contain lg:pl-3 lg:[scrollbar-width:thin]"
+        class="z-[1] min-w-0 [grid-area:1/1] lg:overflow-y-auto lg:overscroll-contain lg:pl-3 lg:scrollbar-thin"
       >
         <div class="settings-measure pb-40">
           <SectionEmpty

@@ -123,7 +123,7 @@ function cornerClasses(side: "left" | "right") {
         v-if="muted && unmutePill"
         type="button"
         :aria-label="$t('ui.unmute')"
-        class="inline-flex h-[var(--stream-control)] cursor-pointer items-center gap-2 rounded-[calc(var(--stream-control)/4)] bg-foreground pl-2.5 pr-3.5 text-[13px] font-semibold text-background shadow-[0_0_0_1px_rgb(0_0_0/0.3),0_8px_24px_-8px_rgb(0_0_0/0.7)] transition-colors duration-150 hover:bg-foreground/85"
+        class="inline-flex h-[var(--stream-control)] cursor-pointer items-center gap-2 rounded-[calc(var(--stream-control)/4)] bg-[hsl(var(--tac-amber))] pl-2.5 pr-3.5 text-xs font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber-foreground))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_16px_-6px_hsl(var(--tac-amber)/0.5)] transition-colors duration-150 hover:bg-[hsl(var(--tac-amber)/0.9)]"
         :class="cornerClasses('right')"
         @click.stop="emit('toggle-mute')"
       >

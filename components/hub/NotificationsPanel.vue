@@ -32,7 +32,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         <Settings class="h-3.5 w-3.5" />
       </NuxtLink>
     </div>
-    <div class="flex-1 overflow-y-auto p-3 flex flex-col">
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-3 flex flex-col">
       <NewsNotification />
       <Transition
         enter-active-class="notif-fold"
@@ -41,7 +41,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="notif-fold-collapsed"
       >
         <div v-if="featureSpotlight" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3">
               <FeatureSpotlightNotification :spotlight="featureSpotlight" />
             </div>
@@ -60,7 +60,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="notif-fold-collapsed"
       >
         <div v-if="scheduleTasks.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3">
               <LeagueScheduleStack :tasks="scheduleTasks" />
             </div>
@@ -75,7 +75,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="notif-fold-collapsed"
       >
         <div v-if="rosterNeeds.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 space-y-2">
               <TeamRosterNeedNotification
                 v-for="need in rosterNeeds"
@@ -94,7 +94,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="notif-fold-collapsed"
       >
         <div v-if="draft_invites.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <DraftInviteNotification
                 :invite="invite"
@@ -121,7 +121,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="notif-fold-collapsed"
       >
         <div v-if="team_invites.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <TeamInviteNotification
                 type="team"
@@ -145,7 +145,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
           v-if="tournament_team_invites.length > 0"
           class="grid grid-rows-[1fr]"
         >
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <TeamInviteNotification
                 type="tournament"
@@ -169,7 +169,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-to-class="notif-fold-collapsed"
       >
         <div v-if="tournament_invites.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <TeamInviteNotification
                 type="tournament-registration"
@@ -197,7 +197,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
           :key="item.kind === 'single' ? item.notification.id : item.entityId"
           class="grid grid-rows-[1fr]"
         >
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <NotificationStack
               v-if="item.kind === 'stack'"
               variant="hub"
@@ -247,7 +247,7 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         v-if="notifications.length > 0"
         class="flex-shrink-0 grid grid-rows-[1fr]"
       >
-        <div class="min-h-0">
+        <div class="min-h-0 min-w-0">
           <div class="flex flex-row gap-2 px-3 py-3 border-t border-border">
             <Button
               size="sm"

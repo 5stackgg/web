@@ -592,13 +592,13 @@ export default defineComponent({
     <component
       :is="iconComponent"
       v-if="iconComponent"
-      class="h-3 w-3 text-muted-foreground"
+      class="h-3 w-3 shrink-0 text-muted-foreground"
     />
-    <span class="font-medium truncate">{{ primaryText }}</span>
+    <span class="min-w-0 font-medium truncate">{{ primaryText }}</span>
     <span
       v-if="status"
       :class="[
-        'ml-auto inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border',
+        'ml-auto shrink-0 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border',
         statusClass,
       ]"
     >

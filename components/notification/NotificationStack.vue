@@ -221,7 +221,7 @@ function handleTopClick(event: MouseEvent) {
 
         <h3
           :class="[
-            'text-lg font-semibold pr-28',
+            'text-lg font-semibold pr-28 [overflow-wrap:anywhere]',
             topTone ? 'flex items-center gap-2' : '',
             topTitleClass,
           ]"

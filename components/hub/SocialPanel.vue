@@ -2,7 +2,7 @@
 import { ref, computed, watch } from "vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
-import LanPlayersList from "~/components/hub/LanPlayersList.vue";
+import OthersPlayersList from "~/components/hub/OthersPlayersList.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useInvites } from "@/composables/useInvites";
 
@@ -14,16 +14,23 @@ const { hasSocialInvites } = useInvites();
 const onlineFriends = computed(() => matchmakingStore.onlineFriends);
 const offlineFriends = computed(() => matchmakingStore.offlineFriends);
 
-// Only while this tab is on a LAN: everyone online at it.
+// Everyone online while the api lists them, and everyone at this tab's LAN.
 const onLan = computed(() => !!matchmakingStore.lanRegion);
-const lanCount = computed(
-  () =>
-    (matchmakingStore.lanPlayers as any[]).length -
-    (matchmakingStore.lanLeft as string[]).length,
+const listed = computed(() => matchmakingStore.onlineListed);
+const showOthers = computed(() => onLan.value || listed.value);
+const othersCount = computed(() =>
+  listed.value
+    ? Math.max(
+        0,
+        matchmakingStore.onlineCount -
+          (matchmakingStore.onlinePlayerSteamIds as string[]).length,
+      )
+    : (matchmakingStore.lanPlayers as any[]).length -
+      (matchmakingStore.lanLeft as string[]).length,
 );
 
-watch(onLan, (on) => {
-  if (!on && activeTab.value === "lan") {
+watch(showOthers, (show) => {
+  if (!show && activeTab.value === "others") {
     activeTab.value = "friends";
   }
 });
@@ -55,14 +62,18 @@ watch(onLan, (on) => {
             />
           </TabsTrigger>
           <TabsTrigger
-            v-if="onLan"
-            value="lan"
-            data-testid="lan-tab"
+            v-if="showOthers"
+            value="others"
+            data-testid="others-tab"
             class="flex-1 text-[0.7rem] font-semibold tracking-[0.1em] uppercase px-2 py-[0.35rem]"
           >
-            {{ $t("matchmaking.lan.title") }}
+            {{
+              listed
+                ? $t("matchmaking.others.title")
+                : $t("matchmaking.lan.title")
+            }}
             <span class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums">
-              {{ lanCount }}
+              {{ othersCount }}
             </span>
           </TabsTrigger>
         </TabsList>
@@ -76,11 +87,11 @@ watch(onLan, (on) => {
         <PlayersList />
       </TabsContent>
       <TabsContent
-        v-if="onLan"
-        value="lan"
+        v-if="showOthers"
+        value="others"
         class="mt-0 flex flex-1 flex-col overflow-y-auto min-h-0 px-3 data-[state=inactive]:hidden"
       >
-        <LanPlayersList />
+        <OthersPlayersList />
       </TabsContent>
     </Tabs>
   </div>

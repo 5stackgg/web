@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Rankings",
           "leaderboard_section_description": "Os jogadores só aparecem em um ranking depois de jogar essa quantidade de partidas na temporada ou no período exibido. Os rankings de Troféus, Faceit e Premier ignoram esse limite.",
           "leaderboard_min_matches": "Mínimo de partidas",
+          "online_list_section": "Quem está online",
+          "online_list_section_description": "Enquanto houver no máximo esse número de jogadores online, a aba Outros do painel social lista todos online para rolar e pesquisar. Acima disso, a lista é desativada até haver 10% a menos, e os jogadores se encontram pela pesquisa. 0 nunca mostra a lista.",
+          "online_list_max": "Máximo de jogadores online na lista",
           "force_name_registration": "Forçar Registro de Nome do Jogador",
           "force_name_registration_description": "Se o registro de nome for obrigatório, o jogador deverá informar um nome que será usado na plataforma.",
           "refresh_all_title": "Atualizar Todos os Jogadores",
@@ -12490,7 +12493,10 @@
       "team_section": "Time · {name}"
     },
     "others": {
-      "title": "Outros"
+      "title": "Outros",
+      "new_online": "{count} novos online · Mostrar",
+      "left": "Ficou offline",
+      "online_elsewhere": "Online em outro lugar"
     },
     "banned": "Você está banido do matchmaking",
     "banned_until": "Você está banido do matchmaking até {time}",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "todos online aqui",
+      "at_region": "Na {region}",
       "search_placeholder": "Buscar nesta LAN...",
       "just_arrived": "Acabaram de chegar",
       "at_this_lan": "Nesta LAN",

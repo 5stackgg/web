@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Classifiche",
           "leaderboard_section_description": "I giocatori compaiono in una classifica solo dopo aver giocato questo numero di match nella stagione o nel periodo visualizzato. Le classifiche Trofei, Faceit e Premier lo ignorano.",
           "leaderboard_min_matches": "Match minimi",
+          "online_list_section": "Chi è online",
+          "online_list_section_description": "Finché i giocatori online non superano questo numero, la scheda Altri del pannello social elenca tutti gli online da scorrere e cercare. Oltre, l'elenco si disattiva finché non sono il 10% in meno, e i giocatori si trovano con la ricerca. 0 non mostra mai l'elenco.",
+          "online_list_max": "Massimo di giocatori online in elenco",
           "force_name_registration": "Forza la registrazione del nome giocatore",
           "force_name_registration_description": "Se la registrazione è forzata, il giocatore dovrà inserire un nome che verrà usato sulla piattaforma.",
           "refresh_all_title": "Reindicizza l'indice di ricerca",
@@ -12490,7 +12493,10 @@
       "team_section": "Squadra · {name}"
     },
     "others": {
-      "title": "Altri"
+      "title": "Altri",
+      "new_online": "{count} nuovi online · Mostra",
+      "left": "Andato offline",
+      "online_elsewhere": "Online altrove"
     },
     "banned": "Sei bannato dal matchmaking",
     "banned_until": "Sei escluso dal matchmaking fino al {time}",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "tutti quelli online qui",
+      "at_region": "Presenti a {region}",
       "search_placeholder": "Cerca in questa LAN...",
       "just_arrived": "Appena arrivati",
       "at_this_lan": "In questa LAN",

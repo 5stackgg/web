@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Ranglister",
           "leaderboard_section_description": "Spillere vises først på en rangliste, når de har spillet så mange kampe i den viste sæson eller periode. Ranglisterne for trofæer, Faceit og Premier ignorerer det.",
           "leaderboard_min_matches": "Minimum kampe",
+          "online_list_section": "Hvem er online",
+          "online_list_section_description": "Så længe højst så mange spillere er online, viser fanen Andre i det sociale panel alle online, så de kan gennemses og søges. Over det slås listen fra, indtil 10 % færre er online, og spillere finder hinanden via søgning. 0 viser aldrig listen.",
+          "online_list_max": "Højst antal online spillere på listen",
           "force_name_registration": "Kræv navneregistrering af spillere",
           "force_name_registration_description": "Hvis registrering kræves, skal spilleren angive et navn, der bruges på platformen.",
           "refresh_all_title": "Genindekser søgeindeks",
@@ -12490,7 +12493,10 @@
       "team_section": "Hold · {name}"
     },
     "others": {
-      "title": "Andre"
+      "title": "Andre",
+      "new_online": "{count} nye online · Vis",
+      "left": "Gik offline",
+      "online_elsewhere": "Online andre steder"
     },
     "banned": "Du er udelukket fra matchmaking",
     "banned_until": "Du er udelukket fra matchmaking indtil {time}",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "alle online her",
+      "at_region": "På {region}",
       "search_placeholder": "Søg på dette LAN...",
       "just_arrived": "Lige ankommet",
       "at_this_lan": "På dette LAN",

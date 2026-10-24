@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Ranglisten",
           "leaderboard_section_description": "Spieler erscheinen erst in einer Rangliste, wenn sie in der angezeigten Saison oder im angezeigten Zeitraum so viele Matches gespielt haben. Die Ranglisten für Auszeichnungen, Faceit und Premier ignorieren diesen Wert.",
           "leaderboard_min_matches": "Mindestanzahl Matches",
+          "online_list_section": "Wer ist online",
+          "online_list_section_description": "Solange höchstens so viele Spieler online sind, listet der Tab „Andere“ im Social-Panel alle Online-Spieler zum Durchblättern und Suchen. Darüber wird die Liste ausgeblendet, bis 10 % weniger online sind, und Spieler finden sich über die Suche. 0 zeigt die Liste nie.",
+          "online_list_max": "Höchstzahl gelisteter Online-Spieler",
           "force_name_registration": "Namensregistrierung für Spieler erzwingen",
           "force_name_registration_description": "Ist die Registrierung erzwungen, muss der Spieler einen Namen angeben, der auf der Plattform verwendet wird.",
           "refresh_all_title": "Suchindex neu aufbauen",
@@ -12490,7 +12493,10 @@
       "team_section": "Team · {name}"
     },
     "others": {
-      "title": "Andere"
+      "title": "Andere",
+      "new_online": "{count} neu online · Anzeigen",
+      "left": "Offline gegangen",
+      "online_elsewhere": "Anderswo online"
     },
     "banned": "Du bist vom Matchmaking gebannt",
     "banned_until": "Du bist bis {time} vom Matchmaking gesperrt",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "alle, die hier online sind",
+      "at_region": "Bei {region}",
       "search_placeholder": "Dieses LAN durchsuchen...",
       "just_arrived": "Gerade angekommen",
       "at_this_lan": "Auf diesem LAN",

@@ -35,6 +35,12 @@ function safeParseLocalStorage<T>(key: string): T | null {
   }
 }
 
+export type OnlinePage = {
+  listed: boolean;
+  players: Array<any>;
+  next: string | null;
+};
+
 export const useMatchmakingStore = defineStore("matchmaking", () => {
   // Who among my friends is online, plus me. The api no longer sends who else
   // is: a roster of everyone online sent to every tab doesn't scale.
@@ -257,6 +263,103 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     resolve?.(online ?? []);
   };
 
+  // Everyone online, which the api lists only while few enough are online. A
+  // tab showing the list pages through it and hears who comes and goes.
+  const onlineListed = ref(false);
+  const onlineChanges = ref<Record<string, boolean>>({});
+  const onlineResets = ref(0);
+  let watchingOnline = false;
+
+  const onlinePages = new Map<string, (page?: OnlinePage) => void>();
+  let onlinePageId = 0;
+
+  const sendOnlinePage = shallowRef(
+    (requestId: string, after: string | null, query: string) => {
+      socket.event("players-online:page", { requestId, after, query });
+    },
+  );
+
+  const sendOnlineWatch = shallowRef((watching: boolean) => {
+    socket.event("players-online:watch", { watching });
+  });
+
+  const fetchOnlinePage = ({
+    after = null,
+    query = "",
+  }: {
+    after?: string | null;
+    query?: string;
+  }) => {
+    const requestId = String(++onlinePageId);
+
+    return new Promise<OnlinePage | undefined>((resolve) => {
+      onlinePages.set(requestId, resolve);
+      // Lost with a dropped socket, or never answered by an older api.
+      setTimeout(() => {
+        if (onlinePages.delete(requestId)) {
+          resolve(undefined);
+        }
+      }, 10_000);
+      sendOnlinePage.value(requestId, after, query);
+    });
+  };
+
+  const setOnlinePage = (
+    page: Partial<OnlinePage> & { requestId?: string },
+  ) => {
+    const resolve = onlinePages.get(String(page?.requestId));
+    onlinePages.delete(String(page?.requestId));
+    resolve?.({
+      listed: page.listed === true,
+      players: (page.players ?? []).map((player) => ({
+        ...player,
+        steam_id: String(player.steam_id),
+      })),
+      next: page.next ?? null,
+    });
+  };
+
+  const setOnlineListed = (listed: boolean) => {
+    onlineListed.value = listed === true;
+  };
+
+  const watchOnline = (watching: boolean) => {
+    watchingOnline = watching;
+    onlineChanges.value = {};
+    sendOnlineWatch.value(watching);
+  };
+
+  const clearOnlineChanges = () => {
+    onlineChanges.value = {};
+  };
+
+  const applyOnlinePresence = ({
+    steam_id,
+    online,
+  }: {
+    steam_id: string;
+    online: boolean;
+  }) => {
+    if (!watchingOnline) {
+      return;
+    }
+    onlineChanges.value = {
+      ...onlineChanges.value,
+      [String(steam_id)]: online === true,
+    };
+  };
+
+  // A new socket watches nothing, and missed whoever came and went while the
+  // old one was down.
+  const resumeOnlineWatch = () => {
+    if (!watchingOnline) {
+      return;
+    }
+    sendOnlineWatch.value(true);
+    onlineChanges.value = {};
+    onlineResets.value += 1;
+  };
+
   const setLegacyRoster = (steamIds: Array<string>) => {
     if (friendsPresenceFromApi) {
       return;
@@ -453,6 +556,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
         myTeams.value = [];
         myTeamsFor = undefined;
         clearLan();
+        onlineChanges.value = {};
         clearTimeout(friendsResync);
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("matchmaking:friends");
@@ -936,6 +1040,18 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     checkOnline,
     setOnlineCheck,
     sendOnlineCheck,
+    onlineListed,
+    onlineChanges,
+    onlineResets,
+    fetchOnlinePage,
+    setOnlinePage,
+    sendOnlinePage,
+    setOnlineListed,
+    watchOnline,
+    sendOnlineWatch,
+    clearOnlineChanges,
+    applyOnlinePresence,
+    resumeOnlineWatch,
     myTeams,
     loadMyTeams,
     ensureMyTeams,

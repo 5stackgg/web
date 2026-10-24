@@ -2680,6 +2680,9 @@
           "leaderboard_section": "لوحات المتصدرين",
           "leaderboard_section_description": "لا يظهر اللاعبون في لوحة المتصدرين إلا بعد لعب هذا العدد من المباريات خلال الموسم أو الفترة المعروضة. لا تتأثر لوحات الكؤوس وFaceit وPremier بهذا الحد.",
           "leaderboard_min_matches": "الحد الأدنى للمباريات",
+          "online_list_section": "من المتصل",
+          "online_list_section_description": "ما دام عدد اللاعبين المتصلين لا يتجاوز هذا الرقم، يعرض تبويب «آخرون» في اللوحة الاجتماعية كل المتصلين للتصفح والبحث. فوق ذلك تتوقف القائمة حتى ينخفض العدد بنسبة 10%، ويجد اللاعبون بعضهم عبر البحث. القيمة 0 لا تعرض القائمة أبدًا.",
+          "online_list_max": "الحد الأقصى للاعبين المتصلين في القائمة",
           "force_name_registration": "إلزام اللاعبين بتسجيل الاسم",
           "force_name_registration_description": "عند إلزام اللاعبين بالتسجيل، سيُطلب من اللاعب إدخال اسم يُستخدم داخل المنصة.",
           "refresh_all_title": "إعادة بناء فهرس البحث",
@@ -12490,7 +12493,10 @@
       "team_section": "الفريق · {name}"
     },
     "others": {
-      "title": "آخرون"
+      "title": "آخرون",
+      "new_online": "{count} متصلون جدد · عرض",
+      "left": "أصبح غير متصل",
+      "online_elsewhere": "متصلون في مكان آخر"
     },
     "banned": "أنت محظور من Matchmaking",
     "banned_until": "أنت محظور من المطابقة حتى {time}",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "كل المتصلين هنا",
+      "at_region": "في {region}",
       "search_placeholder": "ابحث في هذه الشبكة...",
       "just_arrived": "وصل للتو",
       "at_this_lan": "في هذه الشبكة",

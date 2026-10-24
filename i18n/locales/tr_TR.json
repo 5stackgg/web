@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Sıralamalar",
           "leaderboard_section_description": "Oyuncular, görüntülenen sezon veya dönemde bu kadar maç oynadıktan sonra sıralamada görünür. Ödüller, Faceit ve Premier sıralamaları bunu dikkate almaz.",
           "leaderboard_min_matches": "En az maç",
+          "online_list_section": "Kimler çevrimiçi",
+          "online_list_section_description": "Çevrimiçi oyuncu sayısı bu değeri aşmadığı sürece sosyal paneldeki Diğerleri sekmesi çevrimiçi herkesi kaydırma ve arama için listeler. Bunun üzerinde liste, sayı %10 düşene kadar kapanır ve oyuncular birbirini aramayla bulur. 0 listeyi hiç göstermez.",
+          "online_list_max": "Listelenecek en fazla çevrimiçi oyuncu",
           "force_name_registration": "Oyuncu adı kaydını zorunlu kıl",
           "force_name_registration_description": "Oyuncu kaydı zorunlu kılınırsa, oyuncunun platformda kullanılacak bir isim girmesi gerekir.",
           "refresh_all_title": "Arama indeksini yeniden oluştur",
@@ -12490,7 +12493,10 @@
       "team_section": "Takım · {name}"
     },
     "others": {
-      "title": "Diğerleri"
+      "title": "Diğerleri",
+      "new_online": "{count} yeni çevrimiçi · Göster",
+      "left": "Çevrimdışı oldu",
+      "online_elsewhere": "Başka yerde çevrimiçi"
     },
     "banned": "Eşleştirmeden banlandın",
     "banned_until": "{time} tarihine kadar eşleştirmeden yasaklısın",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "burada çevrimiçi olan herkes",
+      "at_region": "{region} katılımcıları",
       "search_placeholder": "Bu LAN'da ara...",
       "just_arrived": "Yeni geldi",
       "at_this_lan": "Bu LAN'da",

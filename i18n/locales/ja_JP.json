@@ -2680,6 +2680,9 @@
           "leaderboard_section": "ランキング",
           "leaderboard_section_description": "表示中のシーズンまたは期間にこの試合数をプレイしたプレイヤーのみがランキングに表示されます。アワード、Faceit、Premierのランキングには適用されません。",
           "leaderboard_min_matches": "最低試合数",
+          "online_list_section": "オンラインのプレイヤー",
+          "online_list_section_description": "オンライン人数がこの値以下の間は、ソーシャルパネルの「その他」タブにオンラインの全員が一覧表示され、スクロールや検索ができます。超えると人数が10%減るまで一覧は表示されず、プレイヤーは検索で互いを探します。0にすると一覧は表示されません。",
+          "online_list_max": "一覧表示する最大オンライン人数",
           "force_name_registration": "プレイヤー名の登録を必須にする",
           "force_name_registration_description": "登録を必須にすると、プラットフォーム上で使用する名前の入力がプレイヤーに求められます。",
           "refresh_all_title": "検索インデックスの再構築",
@@ -12490,7 +12493,10 @@
       "team_section": "チーム · {name}"
     },
     "others": {
-      "title": "その他"
+      "title": "その他",
+      "new_online": "新たに{count}人がオンライン · 表示",
+      "left": "オフラインになりました",
+      "online_elsewhere": "他の場所でオンライン"
     },
     "banned": "マッチメイキングからBanされています。",
     "banned_until": "{time} までマッチメイキングを利用できません",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "ここでオンラインの全員",
+      "at_region": "{region}にいるプレイヤー",
       "search_placeholder": "このLANを検索...",
       "just_arrived": "到着したばかり",
       "at_this_lan": "このLAN内",

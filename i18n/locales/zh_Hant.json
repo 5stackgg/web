@@ -2680,6 +2680,9 @@
           "leaderboard_section": "排行榜",
           "leaderboard_section_description": "玩家需在目前檢視的賽季或時間範圍內打滿這麼多場比賽，才會出現在排行榜上。獎項、Faceit 和 Premier 排行榜不受此限制。",
           "leaderboard_min_matches": "最少比賽數",
+          "online_list_section": "線上玩家",
+          "online_list_section_description": "線上人數不超過此值時，社交面板的「其他」分頁會列出所有線上玩家，可捲動瀏覽和搜尋。超過後，清單會關閉，直到線上人數減少 10%，玩家需透過搜尋互相尋找。設為 0 則從不顯示清單。",
+          "online_list_max": "列出線上玩家的人數上限",
           "force_name_registration": "強制玩家名稱註冊",
           "force_name_registration_description": "若強制要求玩家註冊，玩家將必須提交一個在平台上使用的名稱。",
           "refresh_all_title": "重建搜尋索引",
@@ -12490,7 +12493,10 @@
       "team_section": "戰隊 · {name}"
     },
     "others": {
-      "title": "其他"
+      "title": "其他",
+      "new_online": "{count} 人新上線 · 顯示",
+      "left": "已離線",
+      "online_elsewhere": "在其他地方上線"
     },
     "banned": "您已被禁止使用配對系統",
     "banned_until": "你被禁止使用配對，直到 {time}",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "這裡所有在線的人",
+      "at_region": "在 {region}",
       "search_placeholder": "搜尋此 LAN...",
       "just_arrived": "剛剛到達",
       "at_this_lan": "在此 LAN",

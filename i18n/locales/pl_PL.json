@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Rankingi",
           "leaderboard_section_description": "Gracze pojawiają się w rankingu dopiero po rozegraniu tylu meczów w wyświetlanym sezonie lub okresie. Rankingi Nagrody, Faceit i Premier go ignorują.",
           "leaderboard_min_matches": "Minimalna liczba meczów",
+          "online_list_section": "Kto jest online",
+          "online_list_section_description": "Dopóki online jest nie więcej graczy niż ta liczba, karta Inni w panelu społecznościowym pokazuje wszystkich online do przewijania i wyszukiwania. Powyżej lista wyłącza się, aż online będzie o 10% mniej, a gracze znajdują się przez wyszukiwanie. 0 nigdy nie pokazuje listy.",
+          "online_list_max": "Maks. liczba graczy online na liście",
           "force_name_registration": "Wymuś rejestrację nazwy gracza",
           "force_name_registration_description": "Jeśli wymuszona jest rejestracja gracza, gracz będzie musiał podać nazwę, która będzie używana na platformie.",
           "refresh_all_title": "Przebuduj indeks wyszukiwania",
@@ -12490,7 +12493,10 @@
       "team_section": "Drużyna · {name}"
     },
     "others": {
-      "title": "Inni"
+      "title": "Inni",
+      "new_online": "Nowi online: {count} · Pokaż",
+      "left": "Teraz offline",
+      "online_elsewhere": "Online gdzie indziej"
     },
     "banned": "Masz bana w matchmakingu",
     "banned_until": "Masz zakaz dobierania meczów do {time}",
@@ -12530,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "wszyscy online tutaj",
+      "at_region": "Na {region}",
       "search_placeholder": "Szukaj w tym LAN...",
       "just_arrived": "Właśnie dołączyli",
       "at_this_lan": "W tym LAN",

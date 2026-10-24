@@ -152,8 +152,11 @@ async function onKeydown(
             :key="item.key"
             :data-pin="item.key"
             draggable="true"
-            class="group/row relative"
+            class="group/row relative flex h-8 items-center rounded-md pr-1 transition-colors duration-150"
             :class="[
+              item.active
+                ? 'bg-sidebar-accent/70'
+                : 'hover:bg-sidebar-accent/60',
               {
                 'opacity-40': dragging?.key === item.key,
                 'nav-pin-in': lastPinned === item.key,
@@ -173,7 +176,7 @@ async function onKeydown(
               draggable="false"
               :data-active="item.active || undefined"
               aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"
-              class="relative flex h-8 min-w-0 items-center gap-2.5 rounded-md pl-2.5 pr-2 text-[0.84rem] text-sidebar-foreground/85 outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 group-focus-within/row:pr-9 group-hover/row:pr-9 data-[active]:bg-sidebar-accent/70 data-[active]:text-sidebar-foreground [@media(hover:none)]:pr-9"
+              class="flex min-w-0 flex-1 items-center gap-2.5 pl-2.5 pr-1 text-[0.84rem] text-sidebar-foreground/85 outline-none transition-colors duration-150 after:absolute after:inset-0 after:rounded-md after:ring-sidebar-ring focus-visible:after:ring-2 group-hover/row:text-sidebar-foreground data-[active]:text-sidebar-foreground"
               @click="setOpenMobile(false)"
               @keydown="onKeydown($event, item.key, group.items)"
             >
@@ -187,31 +190,13 @@ async function onKeydown(
                 "
               />
               <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
-              <AlertTriangle
-                v-if="item.warning"
-                class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                :aria-label="item.warning"
-              />
-              <span
-                v-else-if="item.badge"
-                class="inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums transition-[opacity,transform] duration-150 [@media(hover:hover)]:group-focus-within/row:scale-90 [@media(hover:hover)]:group-focus-within/row:opacity-0 [@media(hover:hover)]:group-hover/row:scale-90 [@media(hover:hover)]:group-hover/row:opacity-0"
-                :class="
-                  item.badgeTone === 'live'
-                    ? 'border-destructive/50 bg-destructive/15 text-destructive'
-                    : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
-                "
-              >
-                <span
-                  v-if="item.badgeTone === 'live'"
-                  aria-hidden="true"
-                  class="h-[5px] w-[5px] rounded-full bg-current"
-                ></span>
-                {{ item.badge }}
+              <span v-if="item.warning || item.badge" class="sr-only">
+                {{ item.warning || item.badge }}
               </span>
             </NuxtLink>
             <button
               type="button"
-              class="absolute right-1 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-[hsl(var(--tac-amber))] opacity-0 outline-none ring-sidebar-ring transition-opacity duration-150 focus-visible:opacity-100 focus-visible:ring-2 group-hover/row:opacity-100 [@media(hover:none)]:opacity-100"
+              class="relative z-10 grid size-7 shrink-0 translate-x-1 place-items-center rounded-md text-[hsl(var(--tac-amber))] opacity-0 outline-none ring-sidebar-ring transition-[opacity,transform] duration-200 ease-out focus-visible:translate-x-0 focus-visible:opacity-100 focus-visible:ring-2 group-hover/row:translate-x-0 group-hover/row:opacity-100 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100"
               aria-pressed="true"
               :aria-label="
                 $t('layouts.app_nav.pins.unpin', { page: item.label })
@@ -223,6 +208,27 @@ async function onKeydown(
                 :class="{ 'nav-star-pop': lastPinned === item.key }"
               />
             </button>
+            <AlertTriangle
+              v-if="item.warning"
+              aria-hidden="true"
+              class="mr-1 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+            />
+            <span
+              v-else-if="item.badge"
+              aria-hidden="true"
+              class="mr-1 inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums"
+              :class="
+                item.badgeTone === 'live'
+                  ? 'border-destructive/50 bg-destructive/15 text-destructive'
+                  : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
+              "
+            >
+              <span
+                v-if="item.badgeTone === 'live'"
+                class="h-[5px] w-[5px] rounded-full bg-current"
+              ></span>
+              {{ item.badge }}
+            </span>
           </li>
         </ul>
       </template>

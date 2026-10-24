@@ -220,23 +220,17 @@ async function act() {
       </div>
     </div>
 
-    <div class="room-action relative z-10 grid justify-items-end gap-1">
+    <div class="room-action relative z-10 grid self-stretch">
       <Button
         variant="outline"
         size="sm"
-        class="hit h-8 w-full gap-1.5"
+        class="hit h-full min-h-8 w-full gap-1.5"
         :disabled="action.disabled || busy"
         @click="act"
       >
         <Users2 v-if="action.kind === 'join_party'" class="size-3.5" />
         {{ action.label }}
       </Button>
-      <small
-        v-if="action.reason"
-        class="text-right text-xs text-muted-foreground"
-      >
-        {{ action.reason }}
-      </small>
     </div>
   </article>
 </template>
@@ -283,12 +277,6 @@ async function act() {
       "fill fill"
       "action action";
     gap: 10px 12px;
-  }
-  .room-action {
-    justify-items: stretch;
-  }
-  .room-action small {
-    text-align: left;
   }
 }
 

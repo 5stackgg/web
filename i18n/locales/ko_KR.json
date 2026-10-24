@@ -4631,14 +4631,6 @@
         "drafting": "드래프트 중",
         "join_party": "파티와 함께 참가 ({count})",
         "sign_in_to_join": "로그인하고 참가",
-        "reasons": {
-          "no_room_for_party": "파티 전원이 들어갈 자리가 없음",
-          "host_approves": "호스트 승인 필요",
-          "subs_waiting": "교체 선수 {count}명 대기 중 | 교체 선수 {count}명 대기 중",
-          "full": "가득 참",
-          "youre_in": "참가 중",
-          "waiting_for_host": "호스트 대기 중"
-        },
         "empty": "현재 열린 드래프트 룸이 없습니다.",
         "no_results": "이 필터에 맞는 룸이 없습니다.",
         "clear_filters": "필터 지우기"

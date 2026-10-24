@@ -20,7 +20,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { HeightSwap } from "~/components/ui/transitions";
 import CreateDraftGame from "~/components/draft-games/CreateDraftGame.vue";
 import { draftRoomOptions } from "~/components/draft-games/draftRoomHeader";
-import mapLabel from "~/utilities/mapLabel";
+import MapDisplay from "~/components/MapDisplay.vue";
 
 const props = defineProps<{
   open: boolean;
@@ -363,11 +363,14 @@ const poolName = computed(
                     · {{ maps.length }}
                   </span>
                 </dd>
-                <ul v-if="maps.length" class="map-chips">
-                  <li v-for="map in maps" :key="map.id" class="map-chip">
-                    {{ mapLabel(map) }}
-                  </li>
-                </ul>
+                <div v-if="maps.length" class="map-grid">
+                  <MapDisplay
+                    v-for="map in maps"
+                    :key="map.id"
+                    :map="map"
+                    class="h-24"
+                  />
+                </div>
               </div>
               <div v-for="toggle in toggles" :key="toggle.key">
                 <dt>{{ toggle.label }}</dt>
@@ -421,22 +424,12 @@ const poolName = computed(
   color: hsl(var(--muted-foreground) / 0.8);
   text-wrap: pretty;
 }
-.map-chips {
+.map-grid {
   grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  margin-top: 0.5rem;
-}
-.map-chip {
-  display: inline-flex;
-  height: 1.625rem;
-  align-items: center;
-  border-radius: 0.375rem;
-  border: 1px solid hsl(var(--border));
-  padding: 0 0.5625rem;
-  font-size: 12.5px;
-  color: hsl(var(--muted-foreground));
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.625rem;
 }
 .cancel-draft {
   display: inline-flex;

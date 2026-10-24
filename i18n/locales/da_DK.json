@@ -4631,14 +4631,6 @@
         "drafting": "Drafter",
         "join_party": "Deltag med gruppe ({count})",
         "sign_in_to_join": "Log ind for at deltage",
-        "reasons": {
-          "no_room_for_party": "Ingen plads til din gruppe",
-          "host_approves": "Værten godkender",
-          "subs_waiting": "{count} reserve venter | {count} reserver venter",
-          "full": "Fuld",
-          "youre_in": "Du er med",
-          "waiting_for_host": "Venter på værten"
-        },
         "empty": "Ingen åbne draft-rum lige nu.",
         "no_results": "Ingen rum matcher disse filtre.",
         "clear_filters": "Ryd filtre"

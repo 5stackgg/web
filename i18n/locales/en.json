@@ -4631,14 +4631,6 @@
         "drafting": "Drafting",
         "join_party": "Join with party ({count})",
         "sign_in_to_join": "Sign in to join",
-        "reasons": {
-          "no_room_for_party": "No room for your party",
-          "host_approves": "The host approves",
-          "subs_waiting": "{count} sub waiting | {count} subs waiting",
-          "full": "Full",
-          "youre_in": "You're in",
-          "waiting_for_host": "Waiting for the host"
-        },
         "empty": "No open draft rooms right now.",
         "no_results": "No rooms match these filters.",
         "clear_filters": "Clear filters"

@@ -4631,14 +4631,6 @@
         "drafting": "جارٍ الاختيار",
         "join_party": "انضم مع المجموعة ({count})",
         "sign_in_to_join": "سجّل الدخول للانضمام",
-        "reasons": {
-          "no_room_for_party": "لا مكان لمجموعتك",
-          "host_approves": "بموافقة المستضيف",
-          "subs_waiting": "{count} بديل ينتظر | {count} بدلاء ينتظرون",
-          "full": "ممتلئة",
-          "youre_in": "أنت مشارك",
-          "waiting_for_host": "بانتظار المستضيف"
-        },
         "empty": "لا توجد غرف اختيار مفتوحة حاليًا.",
         "no_results": "لا توجد غرف تطابق هذه الفلاتر.",
         "clear_filters": "مسح الفلاتر"

@@ -4631,14 +4631,6 @@
         "drafting": "Trwa draft",
         "join_party": "Dołącz z paczką ({count})",
         "sign_in_to_join": "Zaloguj się, aby dołączyć",
-        "reasons": {
-          "no_room_for_party": "Brak miejsca dla twojej paczki",
-          "host_approves": "Host zatwierdza",
-          "subs_waiting": "{count} rezerwowy czeka | {count} rezerwowych czeka",
-          "full": "Pełny",
-          "youre_in": "Jesteś w pokoju",
-          "waiting_for_host": "Czekamy na hosta"
-        },
         "empty": "Brak otwartych pokojów draftu.",
         "no_results": "Żaden pokój nie pasuje do tych filtrów.",
         "clear_filters": "Wyczyść filtry"

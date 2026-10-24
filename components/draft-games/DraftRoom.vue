@@ -50,6 +50,7 @@ import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue"
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import DraftAdminBar from "~/components/draft-games/DraftAdminBar.vue";
 import DraftRoomMenu from "~/components/draft-games/DraftRoomMenu.vue";
+import DraftAccessMenu from "~/components/draft-games/DraftAccessMenu.vue";
 import DraftCheckInBox from "~/components/draft-games/DraftCheckInBox.vue";
 import DraftCancelDialog from "~/components/draft-games/DraftCancelDialog.vue";
 import {
@@ -440,6 +441,17 @@ const isMyTurn = computed(
 const canAssign = computed(() => isHostAssigning.value && isOrganizer.value);
 
 const canManage = computed(() => isOrganizer.value && notStarted.value);
+
+// Two pre-made teams always play private.
+const canChangeAccess = computed(
+  () =>
+    canManage.value &&
+    !(
+      props.room.mode === "Teams" &&
+      props.room.team_1_id &&
+      props.room.team_2_id
+    ),
+);
 
 const canInvite = computed(
   () =>
@@ -1671,6 +1683,7 @@ const header = computed<DraftHeaderState>(() => {
             />
           </template>
           <template #actions>
+            <DraftAccessMenu v-if="canChangeAccess" :room="room" />
             <HeightSwap axis="x" class="draft-header-buttons">
               <div
                 v-if="headerActions.length"

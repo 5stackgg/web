@@ -4631,14 +4631,6 @@
         "drafting": "Seçim yapılıyor",
         "join_party": "Partiyle katıl ({count})",
         "sign_in_to_join": "Katılmak için giriş yap",
-        "reasons": {
-          "no_room_for_party": "Partin için yer yok",
-          "host_approves": "Ev sahibi onaylar",
-          "subs_waiting": "{count} yedek bekliyor | {count} yedek bekliyor",
-          "full": "Dolu",
-          "youre_in": "Odadasın",
-          "waiting_for_host": "Ev sahibi bekleniyor"
-        },
         "empty": "Şu an açık seçim odası yok.",
         "no_results": "Bu filtrelere uyan oda yok.",
         "clear_filters": "Filtreleri temizle"

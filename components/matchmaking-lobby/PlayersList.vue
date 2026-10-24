@@ -6,7 +6,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Search, RefreshCw, UserCheck } from "lucide-vue-next";
+import { Search, RefreshCw, UserCheck, ChevronRight } from "lucide-vue-next";
+import { Fold } from "~/components/ui/transitions";
 import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
 import { useElementVisibility } from "@vueuse/core";
@@ -185,28 +186,6 @@ const rowTransition = computed(() =>
       </section>
       </Transition>
 
-      <!-- A section per team I'm on -->
-      <section
-        v-for="team in teamSections"
-        :key="`team-${team.id}`"
-        class="pb-4"
-      >
-        <div class="friend-section-label">
-          <span class="h-[2px] w-2 bg-muted-foreground/40" />
-          {{ $t("matchmaking.friends.team_section", { name: team.name }) }}
-          <span class="ml-auto tabular-nums opacity-70">
-            {{ team.online }}/{{ team.members.length }}
-          </span>
-        </div>
-        <div class="flex flex-col">
-          <FriendListItem
-            v-for="member in team.members"
-            :key="`team-${team.id}-${member.steam_id}`"
-            :player="member"
-            :muted="!isOnline(member)"
-          />
-        </div>
-      </section>
       <!-- Offline -->
       <Transition
         enter-active-class="friend-section-fold"
@@ -242,6 +221,50 @@ const rowTransition = computed(() =>
         </div>
       </section>
       </Transition>
+
+      <!-- A section per team I'm on, below Offline so offline teammates
+           don't read as online. Searching opens every team. -->
+      <section
+        v-for="team in teamSections"
+        :key="`team-${team.id}`"
+        class="pb-2"
+      >
+        <button
+          type="button"
+          class="friend-section-label friend-team-toggle"
+          :aria-expanded="team.open"
+          :disabled="!!searchQuery"
+          @click="toggleTeam(team.id)"
+        >
+          <ChevronRight
+            class="size-3 shrink-0 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+            :class="{ 'rotate-90': team.open }"
+          />
+          <span class="truncate">
+            {{ $t("matchmaking.friends.team_section", { name: team.name }) }}
+          </span>
+          <span class="ml-auto flex shrink-0 items-center gap-1 tabular-nums">
+            <span
+              class="h-1.5 w-1.5 rounded-full"
+              :class="team.online ? 'bg-green-500' : 'bg-muted-foreground/40'"
+            />
+            <span :class="team.online ? 'text-green-500' : 'opacity-70'">{{
+              team.online
+            }}</span>
+            <span class="opacity-70">/{{ team.members.length }}</span>
+          </span>
+        </button>
+        <Fold :open="team.open">
+          <div class="flex flex-col pb-2 pt-0.5">
+            <FriendListItem
+              v-for="member in team.members"
+              :key="`team-${team.id}-${member.steam_id}`"
+              :player="member"
+              :muted="!isOnline(member)"
+            />
+          </div>
+        </Fold>
+      </section>
 
       <!-- Sent requests -->
       <Transition
@@ -304,6 +327,13 @@ const rowTransition = computed(() =>
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useFriendArrivals } from "~/composables/useFriendArrivals";
+import { useLocalStorage } from "@vueuse/core";
+
+// Teams folded shut, kept per browser.
+const collapsedTeams = useLocalStorage<string[]>(
+  "hub-friends-collapsed-teams",
+  [],
+);
 
 function matchesSearch(player: any, query: string) {
   const q = query.toLowerCase();
@@ -386,6 +416,7 @@ export default {
       name: string;
       members: any[];
       online: number;
+      open: boolean;
     }> {
       const me = String(this.me?.steam_id);
       return (useMatchmakingStore().myTeams as any[])
@@ -408,6 +439,7 @@ export default {
             members,
             online: members.filter((member: any) => this.isOnline(member))
               .length,
+            open: !!this.searchQuery || !collapsedTeams.value.includes(team.id),
           };
         })
         .filter((team) => team.members.length > 0);
@@ -426,6 +458,11 @@ export default {
     },
   },
   methods: {
+    toggleTeam(id: string) {
+      collapsedTeams.value = collapsedTeams.value.includes(id)
+        ? collapsedTeams.value.filter((collapsed) => collapsed !== id)
+        : [...collapsedTeams.value, id];
+    },
     isOnline(player: any) {
       return useMatchmakingStore().onlinePlayerSteamIds.includes(
         String(player.steam_id),
@@ -470,6 +507,22 @@ export default {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
+}
+.friend-team-toggle {
+  width: 100%;
+  margin-top: -0.25rem;
+  margin-bottom: 0;
+  padding-block: 0.25rem;
+  border-radius: calc(var(--radius) - 2px);
+  text-align: left;
+  transition: color 0.15s ease;
+}
+.friend-team-toggle:hover:not(:disabled) {
+  color: hsl(var(--foreground));
+}
+.friend-team-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px hsl(var(--ring));
 }
 
 /* Animated list rows. A leaving row collapses its own height in place and the

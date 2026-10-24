@@ -130,87 +130,91 @@ onBeforeUnmount(() => clearTimeout(movingTimer));
             <li
               v-for="(item, index) in section.items"
               :key="item.key"
-              class="group/row relative"
               :style="{ '--i': index }"
             >
-              <component
-                :is="item.to ? NuxtLink : 'a'"
-                v-bind="linkProps(item)"
-                :data-active="item.active || undefined"
-                class="relative flex min-w-0 items-center rounded-md pr-2 outline-none ring-sidebar-ring transition-colors duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 data-[active]:bg-sidebar-accent/70 data-[active]:text-sidebar-foreground"
-                :class="[
-                  'h-[30px] gap-2 pl-2.5 text-[0.8rem] text-muted-foreground',
-                  pinnable &&
-                    !item.href &&
-                    'group-focus-within/row:pr-9 group-hover/row:pr-9 [@media(hover:none)]:pr-9',
-                ]"
-                @click="setOpenMobile(false)"
+              <!-- The link covers the row; the star sits left of the count. -->
+              <div
+                class="group/row relative flex h-[30px] items-center rounded-md pr-1 transition-colors duration-150"
+                :class="
+                  item.active
+                    ? 'bg-sidebar-accent/70'
+                    : 'hover:bg-sidebar-accent/60'
+                "
               >
-                <span
-                  v-if="item.active"
-                  v-nav-marker
-                  data-nav-marker
-                  aria-hidden="true"
-                  class="pointer-events-none absolute -left-[13.5px] bottom-1.5 top-1.5 w-0.5 rounded-full bg-[hsl(var(--tac-amber))]"
-                ></span>
-                <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
+                <component
+                  :is="item.to ? NuxtLink : 'a'"
+                  v-bind="linkProps(item)"
+                  :data-active="item.active || undefined"
+                  class="flex min-w-0 flex-1 items-center gap-2 pl-2.5 pr-1 text-[0.8rem] text-muted-foreground outline-none transition-colors duration-150 after:absolute after:inset-0 after:rounded-md after:ring-sidebar-ring focus-visible:after:ring-2 group-hover/row:text-sidebar-foreground data-[active]:text-sidebar-foreground"
+                  @click="setOpenMobile(false)"
+                >
+                  <span
+                    v-if="item.active"
+                    v-nav-marker
+                    data-nav-marker
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -left-[13.5px] bottom-1.5 top-1.5 w-0.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                  ></span>
+                  <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
+                  <span v-if="item.warning || item.badge" class="sr-only">
+                    {{ item.warning || item.badge }}
+                  </span>
+                  <ExternalLink
+                    v-if="item.href"
+                    class="h-3 w-3 shrink-0 opacity-60"
+                    aria-hidden="true"
+                  />
+                </component>
+                <button
+                  v-if="pinnable && !item.href"
+                  type="button"
+                  class="relative z-10 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground outline-none ring-sidebar-ring transition-[opacity,transform,color] duration-200 ease-out hover:text-[hsl(var(--tac-amber))] focus-visible:ring-2 aria-pressed:text-[hsl(var(--tac-amber))]"
+                  :class="
+                    isPinned(item.key)
+                      ? 'opacity-100'
+                      : 'translate-x-1 opacity-0 focus-visible:translate-x-0 focus-visible:opacity-100 group-hover/row:translate-x-0 group-hover/row:opacity-100 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100'
+                  "
+                  :aria-pressed="isPinned(item.key)"
+                  :aria-label="
+                    $t(
+                      isPinned(item.key)
+                        ? 'layouts.app_nav.pins.unpin'
+                        : 'layouts.app_nav.pins.pin',
+                      { page: item.label },
+                    )
+                  "
+                  @click="togglePin(item.key)"
+                >
+                  <Star
+                    class="size-3.5"
+                    :class="{
+                      'fill-current': isPinned(item.key),
+                      'nav-star-pop': lastPinned === item.key,
+                    }"
+                  />
+                </button>
                 <AlertTriangle
                   v-if="item.warning"
-                  class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                  :aria-label="item.warning"
+                  aria-hidden="true"
+                  class="mr-1 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
                 />
                 <span
                   v-else-if="item.badge"
-                  class="inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums transition-[opacity,transform] duration-150"
-                  :class="[
+                  aria-hidden="true"
+                  class="mr-1 inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums"
+                  :class="
                     item.badgeTone === 'live'
                       ? 'border-destructive/50 bg-destructive/15 text-destructive'
-                      : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]',
-                    pinnable &&
-                      '[@media(hover:hover)]:group-focus-within/row:scale-90 [@media(hover:hover)]:group-focus-within/row:opacity-0 [@media(hover:hover)]:group-hover/row:scale-90 [@media(hover:hover)]:group-hover/row:opacity-0',
-                  ]"
+                      : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
+                  "
                 >
                   <span
                     v-if="item.badgeTone === 'live'"
-                    aria-hidden="true"
                     class="h-[5px] w-[5px] rounded-full bg-current"
                   ></span>
                   {{ item.badge }}
                 </span>
-                <ExternalLink
-                  v-if="item.href"
-                  class="h-3 w-3 shrink-0 opacity-60"
-                  aria-hidden="true"
-                />
-              </component>
-              <button
-                v-if="pinnable && !item.href"
-                type="button"
-                class="absolute right-1 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none ring-sidebar-ring transition-[opacity,color] duration-150 hover:text-[hsl(var(--tac-amber))] focus-visible:opacity-100 focus-visible:ring-2 group-hover/row:opacity-100 aria-pressed:text-[hsl(var(--tac-amber))] [@media(hover:none)]:opacity-100"
-                :class="
-                  isPinned(item.key) && !item.badge
-                    ? 'opacity-100'
-                    : 'opacity-0'
-                "
-                :aria-pressed="isPinned(item.key)"
-                :aria-label="
-                  $t(
-                    isPinned(item.key)
-                      ? 'layouts.app_nav.pins.unpin'
-                      : 'layouts.app_nav.pins.pin',
-                    { page: item.label },
-                  )
-                "
-                @click="togglePin(item.key)"
-              >
-                <Star
-                  class="size-3.5"
-                  :class="{
-                    'fill-current': isPinned(item.key),
-                    'nav-star-pop': lastPinned === item.key,
-                  }"
-                />
-              </button>
+              </div>
             </li>
           </ul>
         </div>

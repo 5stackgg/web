@@ -61,14 +61,14 @@ afterEach(() => {
 
 describe("tournament match card for a forfeit or surrender", () => {
   it.each(["Forfeit", "Surrendered"])(
-    "shows a %s with a winner as a result: map dots, a neutral label, no problem red",
+    "shows a %s with a winner as a result: a neutral label, no map dots, no problem red",
     async (status) => {
       const { card, header } = await mountCard(status, "l1");
 
       expect(card.classes()).not.toContain(PROBLEM_BORDER);
       expect(header.find(".text-red-400").exists()).toBe(false);
       expect(header.text()).toContain(status);
-      expect(header.findAll("button.rounded-full")).toHaveLength(3);
+      expect(header.findAll("button.rounded-full")).toHaveLength(0);
     },
   );
 
@@ -80,11 +80,11 @@ describe("tournament match card for a forfeit or surrender", () => {
     expect(header.findAll("button.rounded-full")).toHaveLength(0);
   });
 
-  it("keeps a forfeit without a winner as it was: map dots, no label", async () => {
+  it("keeps a forfeit without a winner quiet: no label, no map dots", async () => {
     const { card, header } = await mountCard("Forfeit", null);
 
     expect(card.classes()).not.toContain(PROBLEM_BORDER);
     expect(header.text()).not.toContain("Forfeit");
-    expect(header.findAll("button.rounded-full")).toHaveLength(3);
+    expect(header.findAll("button.rounded-full")).toHaveLength(0);
   });
 });

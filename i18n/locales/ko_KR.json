@@ -9673,7 +9673,8 @@
       "forfeit_short": "기권",
       "follow_team": "팀 따라가기",
       "follow_none": "모두 보기",
-      "match_short": "{match}경기"
+      "match_short": "{match}경기",
+      "match_final": "종료"
     },
     "negotiation": {
       "schedule": "일정 조율",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "순위",
-      "tied": "동률"
+      "tied": "동률",
+      "still_in": "생존",
+      "knocked_out": "탈락",
+      "place": "순위",
+      "record": "승–패",
+      "result": "결과",
+      "teams_left": "{total}팀 중 {left}팀 남음",
+      "winner_to": "승자 → {round}",
+      "loser_to": "패자 → {round}",
+      "loser_out": "패자 탈락 · {place}",
+      "for_place": "{place} 결정전",
+      "winner_advances": "승자 진출",
+      "lost_to": "{team}에게 패배 {score}",
+      "beat": "{team} 상대 승리 {score}",
+      "more_in_bracket": "브래킷에 {count}경기 더"
     },
     "results": {
       "title": "결과",

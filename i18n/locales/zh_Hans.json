@@ -9673,7 +9673,8 @@
       "forfeit_short": "弃",
       "follow_team": "关注队伍",
       "follow_none": "显示全部",
-      "match_short": "第 {match} 场"
+      "match_short": "第 {match} 场",
+      "match_final": "已结束"
     },
     "negotiation": {
       "schedule": "安排时间",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "排名",
-      "tied": "并列"
+      "tied": "并列",
+      "still_in": "仍在赛中",
+      "knocked_out": "已淘汰",
+      "place": "名次",
+      "record": "胜–负",
+      "result": "结果",
+      "teams_left": "剩余 {left}/{total}",
+      "winner_to": "胜者 → {round}",
+      "loser_to": "败者 → {round}",
+      "loser_out": "败者出局 · {place}",
+      "for_place": "争夺{place}",
+      "winner_advances": "胜者晋级",
+      "lost_to": "负于 {team} {score}",
+      "beat": "战胜 {team} {score}",
+      "more_in_bracket": "对阵图中还有 {count} 场"
     },
     "results": {
       "title": "结果",

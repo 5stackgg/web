@@ -9673,7 +9673,8 @@
       "forfeit_short": "WO",
       "follow_team": "Seguir um time",
       "follow_none": "Mostrar todos",
-      "match_short": "Partida {match}"
+      "match_short": "Partida {match}",
+      "match_final": "Encerrada"
     },
     "negotiation": {
       "schedule": "Agendar",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Classificação",
-      "tied": "EMPATADO"
+      "tied": "EMPATADO",
+      "still_in": "Ainda na disputa",
+      "knocked_out": "Eliminados",
+      "place": "Colocação",
+      "record": "V–D",
+      "result": "Resultado",
+      "teams_left": "Restam {left} de {total}",
+      "winner_to": "Vencedor → {round}",
+      "loser_to": "Perdedor → {round}",
+      "loser_out": "Perdedor está fora · {place}",
+      "for_place": "Pelo {place} lugar",
+      "winner_advances": "Vencedor avança",
+      "lost_to": "Perdeu para {team} {score}",
+      "beat": "Venceu {team} {score}",
+      "more_in_bracket": "Mais {count} no chaveamento"
     },
     "results": {
       "title": "Resultados",

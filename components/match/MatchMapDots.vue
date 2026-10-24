@@ -27,7 +27,9 @@ type MatchMap = {
 
 type Lineup = { id?: string; name?: string | null };
 
+// `compact` is the smaller row that sits beside LIVE in a bracket tile.
 const props = defineProps<{
+  compact?: boolean;
   match: {
     options?: { best_of?: number };
     winning_lineup_id?: string | null;
@@ -116,11 +118,11 @@ const dotClass = (status: DotStatus) => {
     case "current":
       return "bg-[hsl(142_71%_55%)] shadow-[0_0_8px_hsl(142_71%_55%/0.6)]";
     case "completed":
-      return "bg-[hsl(var(--tac-amber))] shadow-[0_0_6px_hsl(var(--tac-amber)/0.5)]";
+      return "bg-zinc-300";
     case "unused":
       return "bg-gray-500 opacity-30";
     default:
-      return "bg-gray-400";
+      return "ring-1 ring-inset ring-zinc-500";
   }
 };
 
@@ -129,7 +131,7 @@ const statusAccent = (status: DotStatus) => {
     case "current":
       return "text-[hsl(142_71%_60%)] bg-[hsl(142_71%_40%/0.12)]";
     case "completed":
-      return "text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)]";
+      return "text-foreground bg-muted/40";
     case "unused":
       return "text-muted-foreground bg-muted/30";
     default:
@@ -141,8 +143,6 @@ const tooltipShadow = (status: DotStatus) => {
   switch (status) {
     case "current":
       return "shadow-[inset_0_1px_0_hsl(0_0%_100%/0.06),0_0_0_1px_hsl(142_71%_50%/0.2),0_2px_4px_hsl(0_0%_0%/0.4),0_12px_28px_-8px_hsl(0_0%_0%/0.85),0_30px_70px_-20px_hsl(0_0%_0%/0.95),0_0_50px_-12px_hsl(142_71%_45%/0.35)]";
-    case "completed":
-      return "shadow-[inset_0_1px_0_hsl(0_0%_100%/0.06),0_0_0_1px_hsl(var(--tac-amber)/0.2),0_2px_4px_hsl(0_0%_0%/0.4),0_12px_28px_-8px_hsl(0_0%_0%/0.85),0_30px_70px_-20px_hsl(0_0%_0%/0.95),0_0_50px_-12px_hsl(var(--tac-amber)/0.35)]";
     default:
       return "shadow-[inset_0_1px_0_hsl(0_0%_100%/0.06),0_0_0_1px_hsl(240_6%_30%/0.4),0_2px_4px_hsl(0_0%_0%/0.4),0_12px_28px_-8px_hsl(0_0%_0%/0.85),0_30px_70px_-20px_hsl(0_0%_0%/0.95)]";
   }
@@ -154,14 +154,17 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
 </script>
 
 <template>
-  <div class="flex gap-1.5 items-center justify-end w-16 shrink-0">
+  <div
+    class="flex shrink-0 items-center justify-end"
+    :class="compact ? 'gap-1' : 'w-16 gap-1.5'"
+  >
     <template v-for="dot in dots" :key="dot.index">
       <Tooltip>
         <TooltipTrigger as-child>
           <button
             type="button"
-            class="inline-block w-2 h-2 rounded-full cursor-help transition-all duration-150 hover:-translate-y-px hover:scale-125"
-            :class="dotClass(dot.status)"
+            class="inline-block rounded-full cursor-help transition-all duration-150 hover:-translate-y-px hover:scale-125"
+            :class="[compact ? 'h-1.5 w-1.5' : 'h-2 w-2', dotClass(dot.status)]"
             @click.stop
             @mousedown.stop
           />

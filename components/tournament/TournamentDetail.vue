@@ -1419,6 +1419,8 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
+      // The tournament whose tab the route has been synced to once already.
+      tabSyncedFor: null as string | null,
       // The Teams tab's pane: the roster, or the free-agent pool when the
       // tournament takes free agents.
       teamsPanel: "roster",
@@ -2356,6 +2358,15 @@ export default {
       }
       return tabs;
     },
+    // A live bracket is what people open a live tournament for.
+    defaultTab() {
+      const status = this.tournament?.status;
+      return (status === e_tournament_status_enum.Live ||
+        status === e_tournament_status_enum.Paused) &&
+        this.availableTournamentTabs.includes("bracket")
+        ? "bracket"
+        : "overview";
+    },
     publicTabs() {
       const labels: Record<string, string> = {
         overview: this.$t("tournament.overview"),
@@ -2649,7 +2660,7 @@ export default {
             this.$router,
             this.$route,
             "overview",
-            "overview",
+            this.defaultTab,
           );
           return;
         }
@@ -2670,10 +2681,28 @@ export default {
         this.manageSection = section;
       }
 
+      // Going live (or finishing) moves the default tab; a reader already on
+      // the page keeps the tab they have open.
+      if (
+        !requestedTab &&
+        this.tabSyncedFor === this.tournament.id &&
+        this.activeTab !== this.defaultTab &&
+        this.availableTournamentTabs.includes(this.activeTab)
+      ) {
+        void replaceRouteTab(
+          this.$router,
+          this.$route,
+          this.activeTab,
+          this.defaultTab,
+        );
+        return;
+      }
+      this.tabSyncedFor = this.tournament.id;
+
       const activeTab = getRouteTabValue(
         this.$route,
         this.availableTournamentTabs,
-        "overview",
+        this.defaultTab,
       );
 
       if (this.activeTab !== activeTab) {
@@ -2684,7 +2713,7 @@ export default {
         this.$router,
         this.$route,
         this.availableTournamentTabs,
-        "overview",
+        this.defaultTab,
       );
     },
     toggleManage() {
@@ -2868,7 +2897,7 @@ export default {
         this.$router,
         { path: this.$route.path, hash: this.$route.hash, query },
         newTab,
-        "overview",
+        this.defaultTab,
       );
     },
     manageSection(section) {

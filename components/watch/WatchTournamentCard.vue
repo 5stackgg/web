@@ -53,6 +53,10 @@ const runtimeConfig = useRuntimeConfig();
 
 const path = computed(() => `/tournaments/${props.tournament.id}`);
 const state = computed(() => tournamentRowState(props.tournament.status));
+// A live tournament opens on its bracket from anywhere on the card.
+const wholeCardLink = computed(
+  () => state.value === "live" && !props.quickLook,
+);
 const registrationOpen = computed(
   () => props.tournament.status === e_tournament_status_enum.RegistrationOpen,
 );
@@ -183,13 +187,20 @@ const primaryClasses =
 
 <template>
   <article
-    class="group/tour grid overflow-hidden rounded-lg border border-border bg-card/40 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]"
+    class="group/tour relative grid overflow-hidden rounded-lg border border-border bg-card/40 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]"
     :class="{
       'lg:grid-cols-1 lg:grid-rows-[1fr_auto]': stacked,
       'cursor-pointer': quickLook,
     }"
     @click="onCardClick"
   >
+    <NuxtLink
+      v-if="wholeCardLink"
+      :to="path"
+      tabindex="-1"
+      aria-hidden="true"
+      class="absolute inset-0 z-[1]"
+    />
     <button
       v-if="quickLook"
       type="button"
@@ -238,17 +249,17 @@ const primaryClasses =
             class="relative mr-0.5 inline-flex h-2 w-2 shrink-0"
           >
             <span
-              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75 motion-reduce:animate-none"
+              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 motion-reduce:animate-none"
             ></span>
             <span
-              class="relative inline-flex h-2 w-2 rounded-full bg-destructive"
+              class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"
             ></span>
           </span>
           <span
             v-if="statusLabel"
             class="font-semibold"
             :class="{
-              'text-destructive': state === 'live',
+              'text-emerald-400': state === 'live',
               'text-[hsl(var(--tac-amber))]': registrationOpen,
               'text-foreground/85': state !== 'live' && !registrationOpen,
             }"
@@ -265,7 +276,7 @@ const primaryClasses =
           <h3 class="m-0 text-lg font-bold leading-tight [text-wrap:balance]">
             <NuxtLink
               :to="path"
-              class="hover:underline hover:underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              class="relative z-[2] hover:underline hover:underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {{ tournament.name }}
             </NuxtLink>
@@ -326,7 +337,7 @@ const primaryClasses =
         </div>
       </div>
 
-      <div class="mt-auto flex flex-wrap gap-2 pt-1">
+      <div class="relative z-[2] mt-auto flex flex-wrap gap-2 pt-1">
         <span
           v-if="joinedLabel"
           class="inline-flex h-8 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.5)] px-3 text-xs font-semibold text-[hsl(var(--tac-amber))]"
@@ -364,7 +375,9 @@ const primaryClasses =
             {{
               state === "finished"
                 ? $t("pages.watch.tournaments.results")
-                : $t("pages.watch.tournaments.details")
+                : state === "live"
+                  ? $t("tournament.page.bracket_tab")
+                  : $t("pages.watch.tournaments.details")
             }}
           </NuxtLink>
         </Button>

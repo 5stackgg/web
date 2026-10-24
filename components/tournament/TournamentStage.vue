@@ -220,12 +220,15 @@ export default {
       );
       return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
     },
+    // Ranked tables suit round robin; an elimination bracket below already
+    // shows who is still in.
     shouldShowStandings() {
       const status = (this.tournament as any)?.status;
       return (
-        status === e_tournament_status_enum.Live ||
-        status === e_tournament_status_enum.Paused ||
-        status === e_tournament_status_enum.Finished
+        this.stage?.type === e_tournament_stage_types_enum.RoundRobin &&
+        (status === e_tournament_status_enum.Live ||
+          status === e_tournament_status_enum.Paused ||
+          status === e_tournament_status_enum.Finished)
       );
     },
   },

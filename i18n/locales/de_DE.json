@@ -9673,7 +9673,8 @@
       "forfeit_short": "AG",
       "follow_team": "Team verfolgen",
       "follow_none": "Alle anzeigen",
-      "match_short": "Match {match}"
+      "match_short": "Match {match}",
+      "match_final": "Beendet"
     },
     "negotiation": {
       "schedule": "Planen",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Tabelle",
-      "tied": "GLEICHSTAND"
+      "tied": "GLEICHSTAND",
+      "still_in": "Noch dabei",
+      "knocked_out": "Ausgeschieden",
+      "place": "Platz",
+      "record": "S–N",
+      "result": "Ergebnis",
+      "teams_left": "{left} von {total} übrig",
+      "winner_to": "Sieger → {round}",
+      "loser_to": "Verlierer → {round}",
+      "loser_out": "Verlierer scheidet aus · {place}",
+      "for_place": "Um {place}",
+      "winner_advances": "Sieger kommt weiter",
+      "lost_to": "Verloren gegen {team} {score}",
+      "beat": "Sieg gegen {team} {score}",
+      "more_in_bracket": "{count} weitere im Bracket"
     },
     "results": {
       "title": "Ergebnisse",

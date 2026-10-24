@@ -565,13 +565,14 @@ watch(
 const quickLookOpen = ref(false);
 const quickLookIndex = ref(0);
 
-// Past tournaments open their page instead, so they aren't stepped through.
+// Live and past tournaments open their page instead, so they aren't stepped
+// through.
 const quickLookItems = computed<any[]>(() =>
   hasActiveFilter.value
     ? filteredTournaments.value.filter(
-        (tournament) => tournamentRowState(tournament.status) !== "finished",
+        (tournament) => tournamentRowState(tournament.status) === "upcoming",
       )
-    : [nextLan.value, ...liveRest.value, ...agendaComing.value].filter(Boolean),
+    : [nextLan.value, ...agendaComing.value].filter(Boolean),
 );
 
 const quickLookTournament = computed(
@@ -842,8 +843,6 @@ const agendaMonthLabelClasses =
                   v-for="tournament in liveRest"
                   :key="tournament.id"
                   :tournament="tournament"
-                  quick-look
-                  @quick-look="openQuickLook(tournament)"
                 />
               </div>
             </section>

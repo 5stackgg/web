@@ -2,6 +2,7 @@
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import StageStandings from "~/components/tournament/StageStandings.vue";
+import EliminationStandings from "~/components/tournament/EliminationStandings.vue";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   HoverCard,
@@ -578,36 +579,35 @@ function playerAvatarSrc(player: {
     </section>
 
     <template v-if="showStandings">
-      <Card v-for="stage in stagesWithStandings" :key="stage.id">
-        <CardHeader>
-          <div class="flex items-center justify-between gap-3">
-            <CardTitle>
-              <template v-if="stagesWithStandings.length > 1">
-                {{ $t("tournament.stage.stage_tab", { stage: stage.order }) }}
-                ·
-                {{ stage.e_tournament_stage_type?.description || "" }}
-              </template>
-              <template v-else>
-                {{ $t("tournament.standings.title") }}
-              </template>
-            </CardTitle>
-            <span
-              v-if="isLive"
-              class="inline-flex items-center gap-2 rounded-sm border border-destructive/55 bg-destructive/15 px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
-            >
-              <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-              {{ $t("tournament.results.live_provisional") }}
-            </span>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <StageStandings
-            :stage="stage"
-            :player-stats="tournamentPlayerStats"
-            :placements="stage.id === finalStageId ? podiumSteps || [] : []"
-          />
-        </CardContent>
-      </Card>
+      <template v-for="stage in stagesWithStandings" :key="stage.id">
+        <EliminationStandings
+          v-if="isElimination(stage)"
+          :stage="stage"
+          :title="stageTitle(stage)"
+          :is-final-stage="stage.id === finalStageId"
+        />
+        <Card v-else>
+          <CardHeader>
+            <div class="flex items-center justify-between gap-3">
+              <CardTitle>{{ stageTitle(stage) }}</CardTitle>
+              <span
+                v-if="isLive"
+                class="inline-flex items-center gap-2 rounded-sm border border-destructive/55 bg-destructive/15 px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
+              >
+                <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                {{ $t("tournament.results.live_provisional") }}
+              </span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <StageStandings
+              :stage="stage"
+              :player-stats="tournamentPlayerStats"
+              :placements="stage.id === finalStageId ? podiumSteps || [] : []"
+            />
+          </CardContent>
+        </Card>
+      </template>
       <div
         v-if="stagesWithStandings.length === 0"
         class="rounded-md border border-dashed border-border p-10 text-center text-muted-foreground"
@@ -619,7 +619,11 @@ function playerAvatarSrc(player: {
 </template>
 
 <script lang="ts">
-import { $, e_tournament_status_enum } from "~/generated/zeus";
+import {
+  $,
+  e_tournament_stage_types_enum,
+  e_tournament_status_enum,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
 import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
@@ -847,6 +851,18 @@ export default {
     awardColor(grant: any) {
       return TIER_PALETTES[resolveAwardTier(null, grant.award?.tier)].primary;
     },
+    isElimination(stage: any) {
+      return (
+        stage?.type === e_tournament_stage_types_enum.SingleElimination ||
+        stage?.type === e_tournament_stage_types_enum.DoubleElimination
+      );
+    },
+    stageTitle(stage: any) {
+      if (this.stagesWithStandings.length > 1) {
+        return `${this.$t("tournament.stage.stage_tab", { stage: stage.order })} · ${stage.e_tournament_stage_type?.description || ""}`;
+      }
+      return this.$t("tournament.standings.title");
+    },
     placementLabel(placement: number) {
       if (placement === 0) return this.$t("awards.mvp");
       if (placement === 1) return this.$t("awards.first_place");
@@ -1044,7 +1060,11 @@ export default {
       return stages
         .filter(
           (stage: any) =>
-            Array.isArray(stage?.results) && stage.results.length > 0,
+            (Array.isArray(stage?.results) && stage.results.length > 0) ||
+            (this.isElimination(stage) &&
+              (stage.brackets || []).some(
+                (bracket: any) => bracket.team_1 || bracket.team_2,
+              )),
         )
         .slice()
         .sort(

@@ -9673,7 +9673,8 @@
       "forfeit_short": "FF",
       "follow_team": "Segui una squadra",
       "follow_none": "Mostra tutti",
-      "match_short": "Partita {match}"
+      "match_short": "Partita {match}",
+      "match_final": "Finita"
     },
     "negotiation": {
       "schedule": "Pianifica",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Classifica",
-      "tied": "PARI"
+      "tied": "PARI",
+      "still_in": "Ancora in gara",
+      "knocked_out": "Eliminati",
+      "place": "Posizione",
+      "record": "V–S",
+      "result": "Risultato",
+      "teams_left": "Ne restano {left} su {total}",
+      "winner_to": "Vincente → {round}",
+      "loser_to": "Perdente → {round}",
+      "loser_out": "Il perdente è fuori · {place}",
+      "for_place": "Per il posto {place}",
+      "winner_advances": "Il vincente passa",
+      "lost_to": "Sconfitta contro {team} {score}",
+      "beat": "Vittoria contro {team} {score}",
+      "more_in_bracket": "Altre {count} nel tabellone"
     },
     "results": {
       "title": "Risultati",

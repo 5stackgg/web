@@ -9673,7 +9673,8 @@
       "forfeit_short": "棄",
       "follow_team": "チームを追う",
       "follow_none": "すべて表示",
-      "match_short": "第{match}試合"
+      "match_short": "第{match}試合",
+      "match_final": "終了"
     },
     "negotiation": {
       "schedule": "日程調整",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "順位表",
-      "tied": "同率"
+      "tied": "同率",
+      "still_in": "勝ち残り",
+      "knocked_out": "敗退",
+      "place": "順位",
+      "record": "勝–敗",
+      "result": "結果",
+      "teams_left": "残り {left}/{total}",
+      "winner_to": "勝者 → {round}",
+      "loser_to": "敗者 → {round}",
+      "loser_out": "敗者は敗退 · {place}",
+      "for_place": "{place}決定戦",
+      "winner_advances": "勝者が勝ち上がり",
+      "lost_to": "{team} に敗北 {score}",
+      "beat": "{team} に勝利 {score}",
+      "more_in_bracket": "ブラケットに他 {count} 試合"
     },
     "results": {
       "title": "結果",

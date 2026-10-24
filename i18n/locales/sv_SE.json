@@ -9673,7 +9673,8 @@
       "forfeit_short": "WO",
       "follow_team": "Följ ett lag",
       "follow_none": "Visa alla",
-      "match_short": "Match {match}"
+      "match_short": "Match {match}",
+      "match_final": "Slut"
     },
     "negotiation": {
       "schedule": "Schemalägg",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Tabell",
-      "tied": "OAVGJORT"
+      "tied": "OAVGJORT",
+      "still_in": "Kvar i turneringen",
+      "knocked_out": "Utslagna",
+      "place": "Placering",
+      "record": "V–F",
+      "result": "Resultat",
+      "teams_left": "{left} av {total} kvar",
+      "winner_to": "Vinnare → {round}",
+      "loser_to": "Förlorare → {round}",
+      "loser_out": "Förloraren är ute · {place}",
+      "for_place": "Om {place}",
+      "winner_advances": "Vinnaren går vidare",
+      "lost_to": "Förlorade mot {team} {score}",
+      "beat": "Slog {team} {score}",
+      "more_in_bracket": "{count} till i bracketen"
     },
     "results": {
       "title": "Resultat",

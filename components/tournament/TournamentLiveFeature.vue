@@ -42,16 +42,16 @@ const path = computed(() => `/tournaments/${props.tournament.id}`);
           <span class="relative mr-0.5 inline-flex h-2 w-2 shrink-0">
             <span
               v-if="!paused"
-              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75 motion-reduce:animate-none"
+              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 motion-reduce:animate-none"
             ></span>
             <span
               class="relative inline-flex h-2 w-2 rounded-full"
-              :class="paused ? 'bg-muted-foreground' : 'bg-destructive'"
+              :class="paused ? 'bg-muted-foreground' : 'bg-emerald-400'"
             ></span>
           </span>
           <span
             class="font-semibold"
-            :class="paused ? 'text-foreground/85' : 'text-destructive'"
+            :class="paused ? 'text-foreground/85' : 'text-emerald-400'"
           >
             {{ statusLabel }}
           </span>
@@ -72,7 +72,7 @@ const path = computed(() => `/tournaments/${props.tournament.id}`);
         v-if="!paused"
         as-child
         size="sm"
-        class="hit relative z-[2] h-8 shrink-0 border border-destructive/55 bg-destructive/10 text-destructive hover:bg-destructive/20"
+        class="hit relative z-[2] h-8 shrink-0 border border-emerald-500/55 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
       >
         <NuxtLink :to="path">{{ $t("pages.tournaments.watch_live") }}</NuxtLink>
       </Button>

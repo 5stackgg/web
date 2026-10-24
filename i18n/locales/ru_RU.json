@@ -9673,7 +9673,8 @@
       "forfeit_short": "ТП",
       "follow_team": "Следить за командой",
       "follow_none": "Показать всех",
-      "match_short": "Матч {match}"
+      "match_short": "Матч {match}",
+      "match_final": "Завершён"
     },
     "negotiation": {
       "schedule": "Расписание",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Турнирная таблица",
-      "tied": "НИЧЬЯ"
+      "tied": "НИЧЬЯ",
+      "still_in": "Ещё в борьбе",
+      "knocked_out": "Выбыли",
+      "place": "Место",
+      "record": "В–П",
+      "result": "Результат",
+      "teams_left": "Осталось {left} из {total}",
+      "winner_to": "Победитель → {round}",
+      "loser_to": "Проигравший → {round}",
+      "loser_out": "Проигравший выбывает · {place}",
+      "for_place": "За {place} место",
+      "winner_advances": "Победитель проходит дальше",
+      "lost_to": "Проиграли {team} {score}",
+      "beat": "Победили {team} {score}",
+      "more_in_bracket": "Ещё {count} в сетке"
     },
     "results": {
       "title": "Результаты",

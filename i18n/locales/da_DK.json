@@ -9673,7 +9673,8 @@
       "forfeit_short": "WO",
       "follow_team": "Følg et hold",
       "follow_none": "Vis alle",
-      "match_short": "Kamp {match}"
+      "match_short": "Kamp {match}",
+      "match_final": "Slut"
     },
     "negotiation": {
       "schedule": "Planlæg",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Stilling",
-      "tied": "UAFGJORT"
+      "tied": "UAFGJORT",
+      "still_in": "Stadig med",
+      "knocked_out": "Slået ud",
+      "place": "Placering",
+      "record": "S–N",
+      "result": "Resultat",
+      "teams_left": "{left} af {total} tilbage",
+      "winner_to": "Vinder → {round}",
+      "loser_to": "Taber → {round}",
+      "loser_out": "Taberen er ude · {place}",
+      "for_place": "Om {place}",
+      "winner_advances": "Vinderen går videre",
+      "lost_to": "Tabte til {team} {score}",
+      "beat": "Slog {team} {score}",
+      "more_in_bracket": "{count} mere i bracketen"
     },
     "results": {
       "title": "Resultater",

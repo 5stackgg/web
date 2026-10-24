@@ -9673,7 +9673,8 @@
       "forfeit_short": "HK",
       "follow_team": "Bir takımı takip et",
       "follow_none": "Herkesi göster",
-      "match_short": "Maç {match}"
+      "match_short": "Maç {match}",
+      "match_final": "Bitti"
     },
     "negotiation": {
       "schedule": "Planla",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Sıralama",
-      "tied": "BERABERE"
+      "tied": "BERABERE",
+      "still_in": "Hâlâ turnuvada",
+      "knocked_out": "Elenenler",
+      "place": "Sıra",
+      "record": "G–M",
+      "result": "Sonuç",
+      "teams_left": "{total} takımdan {left} kaldı",
+      "winner_to": "Kazanan → {round}",
+      "loser_to": "Kaybeden → {round}",
+      "loser_out": "Kaybeden elenir · {place}",
+      "for_place": "{place} için",
+      "winner_advances": "Kazanan üst tura çıkar",
+      "lost_to": "{team} takımına kaybetti {score}",
+      "beat": "{team} takımını yendi {score}",
+      "more_in_bracket": "Tabloda {count} maç daha"
     },
     "results": {
       "title": "Sonuçlar",

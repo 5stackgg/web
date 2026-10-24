@@ -9673,7 +9673,8 @@
       "forfeit_short": "ТП",
       "follow_team": "Стежити за командою",
       "follow_none": "Показати всіх",
-      "match_short": "Матч {match}"
+      "match_short": "Матч {match}",
+      "match_final": "Завершено"
     },
     "negotiation": {
       "schedule": "Розклад",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Турнірна таблиця",
-      "tied": "НІЧИЯ"
+      "tied": "НІЧИЯ",
+      "still_in": "Ще в боротьбі",
+      "knocked_out": "Вибули",
+      "place": "Місце",
+      "record": "В–П",
+      "result": "Результат",
+      "teams_left": "Залишилось {left} з {total}",
+      "winner_to": "Переможець → {round}",
+      "loser_to": "Переможений → {round}",
+      "loser_out": "Переможений вибуває · {place}",
+      "for_place": "За {place} місце",
+      "winner_advances": "Переможець проходить далі",
+      "lost_to": "Програли {team} {score}",
+      "beat": "Перемогли {team} {score}",
+      "more_in_bracket": "Ще {count} у сітці"
     },
     "results": {
       "title": "Результати",

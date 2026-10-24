@@ -9673,7 +9673,8 @@
       "forfeit_short": "FF",
       "follow_team": "Follow a team",
       "follow_none": "Show everyone",
-      "match_short": "Match {match}"
+      "match_short": "Match {match}",
+      "match_final": "Final"
     },
     "negotiation": {
       "schedule": "Schedule",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "Standings",
-      "tied": "TIED"
+      "tied": "TIED",
+      "still_in": "Still in",
+      "knocked_out": "Knocked out",
+      "place": "Place",
+      "record": "W–L",
+      "result": "Result",
+      "teams_left": "{left} of {total} left",
+      "winner_to": "Winner → {round}",
+      "loser_to": "Loser → {round}",
+      "loser_out": "Loser is out · {place}",
+      "for_place": "For {place}",
+      "winner_advances": "Winner advances",
+      "lost_to": "Lost to {team} {score}",
+      "beat": "Beat {team} {score}",
+      "more_in_bracket": "{count} more in the bracket"
     },
     "results": {
       "title": "Results",

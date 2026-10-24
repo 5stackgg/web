@@ -9673,7 +9673,8 @@
       "forfeit_short": "ا",
       "follow_team": "تتبّع فريقًا",
       "follow_none": "عرض الجميع",
-      "match_short": "المباراة {match}"
+      "match_short": "المباراة {match}",
+      "match_final": "انتهت"
     },
     "negotiation": {
       "schedule": "جدولة",
@@ -9765,7 +9766,21 @@
     },
     "standings": {
       "title": "الترتيب",
-      "tied": "تعادل"
+      "tied": "تعادل",
+      "still_in": "لا يزال في المنافسة",
+      "knocked_out": "المُقصَون",
+      "place": "المركز",
+      "record": "ف–خ",
+      "result": "النتيجة",
+      "teams_left": "تبقى {left} من {total}",
+      "winner_to": "الفائز إلى {round}",
+      "loser_to": "الخاسر إلى {round}",
+      "loser_out": "الخاسر يخرج · {place}",
+      "for_place": "على المركز {place}",
+      "winner_advances": "الفائز يتأهل",
+      "lost_to": "خسر أمام {team} {score}",
+      "beat": "فاز على {team} {score}",
+      "more_in_bracket": "{count} مباريات أخرى في الشجرة"
     },
     "results": {
       "title": "النتائج",

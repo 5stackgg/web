@@ -1004,32 +1004,39 @@ const useEtaClock = createSharedComposable(() =>
           </span>
         </span>
         <span class="flex shrink-0 items-center gap-1.5">
-          <span
-            v-if="isActiveMatch(bracket)"
-            class="inline-flex items-center gap-1 font-bold uppercase tracking-[0.08em] text-emerald-400"
-          >
-            <span class="relative flex h-1.5 w-1.5">
-              <span
-                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
-              ></span>
+          <template v-if="isActiveMatch(bracket)">
+            <span
+              class="inline-flex items-center gap-1 font-bold uppercase tracking-[0.08em] text-emerald-400"
+            >
+              <span class="relative flex h-1.5 w-1.5">
+                <span
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
+                ></span>
+              </span>
+              {{ $t("common.live") }}
             </span>
-            {{ $t("common.live") }}
-          </span>
+            <!-- A Bo1 has one map, so there's no series to track. -->
+            <MatchMapDots
+              v-if="(getBestOf(bracket, stage, tournament) ?? 1) > 1"
+              :match="bracket.match"
+              compact
+            />
+          </template>
           <span v-else-if="isWaitingForCheckIn(bracket)" class="text-amber-400">
             {{ statusLabel(bracket) }}
           </span>
           <span v-else-if="hasProblemStatus(bracket)" class="text-red-400">
             {{ statusLabel(bracket) }}
           </span>
-          <template v-else-if="bracket.match">
-            <span v-if="resultLabel(bracket)">
-              {{ resultLabel(bracket) }}
-            </span>
-            <MatchMapDots :match="bracket.match" />
-          </template>
+          <span
+            v-else-if="isEndedWithResult(bracket.match)"
+            class="font-bold uppercase tracking-[0.08em]"
+          >
+            {{ resultLabel(bracket) || $t("tournament.bracket.match_final") }}
+          </span>
           <span v-else-if="isAwaitingSchedule(bracket)">
             {{ $t("tournament.bracket.awaiting_schedule") }}
           </span>

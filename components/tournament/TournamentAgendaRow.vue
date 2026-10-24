@@ -9,8 +9,8 @@ import { rememberTournaments } from "~/composables/useTournamentPreview";
 import { dateLocale } from "~/utilities/dateLocale";
 
 // One line of the /tournaments agenda: the start date, then what it is, then
-// where it stands. A past tournament opens its page; one still to come opens
-// the quick look, which carries the register action.
+// where it stands. A live or past tournament opens its page; one still to
+// come opens the quick look, which carries the register action.
 const props = defineProps<{ tournament: any }>();
 const emit = defineEmits<{ (e: "quick-look"): void }>();
 
@@ -18,6 +18,7 @@ rememberTournaments([props.tournament]);
 
 const {
   state,
+  paused,
   registrationOpen,
   bannerSrc,
   statusLabel,
@@ -29,6 +30,8 @@ const {
 } = useTournamentDisplay(() => props.tournament);
 
 const past = computed(() => state.value === "finished");
+const live = computed(() => state.value === "live");
+const opensPage = computed(() => past.value || live.value);
 const cancelled = computed(
   () =>
     past.value && props.tournament.status !== e_tournament_status_enum.Finished,
@@ -58,9 +61,9 @@ const meta = computed(() =>
 
 <template>
   <component
-    :is="past ? NuxtLink : 'button'"
+    :is="opensPage ? NuxtLink : 'button'"
     v-bind="
-      past
+      opensPage
         ? { to: `/tournaments/${tournament.id}` }
         : {
             type: 'button',
@@ -68,7 +71,7 @@ const meta = computed(() =>
           }
     "
     class="group/row grid w-full grid-cols-[3.25rem_6.5rem_minmax(0,1fr)_auto_1rem] items-center gap-3.5 rounded-lg border border-border bg-card/40 py-2 pl-2.5 pr-3 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring max-sm:grid-cols-[3rem_minmax(0,1fr)_1rem] max-sm:gap-x-3 max-sm:gap-y-1.5"
-    @click="!past && emit('quick-look')"
+    @click="!opensPage && emit('quick-look')"
   >
     <span
       class="grid justify-items-center border-r border-border py-1 pr-3 leading-none max-sm:row-span-2"
@@ -124,9 +127,11 @@ const meta = computed(() =>
         <span
           class="inline-flex h-[22px] items-center whitespace-nowrap rounded-md px-[7px] text-xs font-semibold ring-1 ring-inset"
           :class="
-            registrationOpen
-              ? 'text-[hsl(var(--tac-amber))] ring-[hsl(var(--tac-amber)/0.5)]'
-              : 'text-foreground/85 ring-white/[0.12]'
+            live && !paused
+              ? 'text-emerald-400 ring-emerald-500/50'
+              : registrationOpen
+                ? 'text-[hsl(var(--tac-amber))] ring-[hsl(var(--tac-amber)/0.5)]'
+                : 'text-foreground/85 ring-white/[0.12]'
           "
           >{{ statusLabel }}</span
         >

@@ -1251,8 +1251,6 @@ export default {
   border: 1px solid hsl(var(--border));
   border-radius: 0.75rem;
   background: hsl(240 6% 7%);
-  scrollbar-width: thin;
-  scrollbar-color: #27272a transparent;
   container: gpn-insp / inline-size;
 }
 .gpn-page[data-dock="wide"] .gpn-insp {

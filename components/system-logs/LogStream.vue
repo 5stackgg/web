@@ -310,7 +310,7 @@ const tagTitle = (service: string) => {
     <div
       ref="scroller"
       tabindex="0"
-      class="lg-scroll overflow-auto overscroll-contain"
+      class="overflow-auto overscroll-contain"
       :class="
         maximized
           ? 'min-h-[50vh] flex-1 lg:min-h-0'
@@ -466,10 +466,6 @@ const tagTitle = (service: string) => {
 </template>
 
 <style scoped>
-.lg-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #2a2a30 transparent;
-}
 .lg-ln {
   display: flex;
   align-items: baseline;

@@ -574,7 +574,6 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
 @media (max-width: 1100px) {
   .tl-wrap {
     overflow-x: auto;
-    scrollbar-width: thin;
   }
 }
 .tl {

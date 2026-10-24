@@ -346,7 +346,7 @@ function winnerName(round: Round) {
         </div>
       </div>
 
-      <div class="relative min-w-0 overflow-x-auto round-history__scroll pb-2">
+      <div class="relative min-w-0 overflow-x-auto pb-2">
         <div class="flex items-stretch gap-[4px] w-max py-0.5">
           <template
             v-for="(round, index) in chronologicalRounds"
@@ -551,23 +551,5 @@ function winnerName(round: Round) {
     black 70%,
     transparent
   );
-}
-
-.round-history__scroll {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
-}
-.round-history__scroll::-webkit-scrollbar {
-  height: 4px;
-}
-.round-history__scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.round-history__scroll::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--border));
-  border-radius: 2px;
-}
-.round-history__scroll::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground));
 }
 </style>

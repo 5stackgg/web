@@ -78,7 +78,7 @@ const chip = computed(() => {
     </div>
     <Fold :open="open && groups.length > 0">
       <div
-        class="lg-groups mt-1.5 max-h-[300px] overflow-y-auto rounded-[10px] border border-border bg-[hsl(240_6%_5.5%)]"
+        class="mt-1.5 max-h-[300px] overflow-y-auto rounded-[10px] border border-border bg-[hsl(240_6%_5.5%)]"
       >
         <TransitionGroup
           enter-active-class="lg-g-enter"
@@ -149,9 +149,6 @@ const chip = computed(() => {
 </template>
 
 <style scoped>
-.lg-groups {
-  scrollbar-width: thin;
-}
 .lg-g {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto auto auto auto;

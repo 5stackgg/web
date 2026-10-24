@@ -457,7 +457,7 @@ function clipTeamName(c: Clip): string | null {
     </div>
 
     <aside
-      class="reel-queue relative min-h-0 min-w-0 lg:rounded-lg lg:bg-white/[0.03] lg:ring-1 lg:ring-inset lg:ring-white/[0.07]"
+      class="relative min-h-0 min-w-0 lg:rounded-lg lg:bg-white/[0.03] lg:ring-1 lg:ring-inset lg:ring-white/[0.07]"
     >
       <div class="flex min-h-0 flex-col lg:absolute lg:inset-0">
         <div
@@ -574,20 +574,6 @@ function clipTeamName(c: Clip): string | null {
 </template>
 
 <style scoped>
-.reel-queue ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-.reel-queue ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.reel-queue ::-webkit-scrollbar-thumb {
-  background: rgb(255 255 255 / 0.15);
-  border-radius: 999px;
-}
-
 /* `.share-flash` keyframe lives in assets/css/tailwind.css so the
    feedback is identical across the reel, ClipTile, and the
    ClipDetailModal. */

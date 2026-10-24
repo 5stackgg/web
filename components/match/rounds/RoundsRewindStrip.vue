@@ -332,7 +332,7 @@ const showsHalf = (round: number) => round === props.data.halftime + 1;
       <div
         ref="scroller"
         @scroll.passive="clampLabel"
-        class="rewind-scroll relative min-w-0 flex-1 overflow-x-auto"
+        class="relative min-w-0 flex-1 overflow-x-auto"
         :class="roomy ? 'pt-7' : ''"
       >
         <div
@@ -489,11 +489,6 @@ const showsHalf = (round: number) => round === props.data.halftime + 1;
   -webkit-mask-repeat: no-repeat;
   mask-position: center;
   -webkit-mask-position: center;
-}
-
-.rewind-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
 }
 
 .rewind-hatch {

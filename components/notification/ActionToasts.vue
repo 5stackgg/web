@@ -509,7 +509,7 @@ const dismissItem = (item: ToastItem) => {
           <Transition name="fan">
             <div
               v-if="hoveredGroup === entry.key && entry.count > 1"
-              class="absolute inset-x-0 bottom-full flex max-h-[60vh] origin-bottom flex-col gap-3 overflow-y-auto pb-3 pr-1 [scrollbar-width:thin]"
+              class="absolute inset-x-0 bottom-full flex max-h-[60vh] origin-bottom flex-col gap-3 overflow-y-auto pb-3 pr-1"
             >
               <ToastCard
                 v-for="extra in entry.group.slice(0, -1)"

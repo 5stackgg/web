@@ -1204,8 +1204,6 @@ onBeforeUnmount(() => stopTier?.());
   border: 1px solid hsl(var(--border));
   border-radius: 0.75rem;
   background: hsl(240 6% 7%);
-  scrollbar-width: thin;
-  scrollbar-color: #27272a transparent;
   container: gsn-insp / inline-size;
 }
 .gsn-page[data-dock="wide"] .gsn-insp {

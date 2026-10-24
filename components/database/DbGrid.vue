@@ -155,7 +155,6 @@ onBeforeUnmount(() => observer?.disconnect());
 <style scoped>
 .db-grid {
   background: hsl(240 6% 5.5%);
-  scrollbar-width: thin;
 }
 th {
   position: sticky;

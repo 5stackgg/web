@@ -146,7 +146,7 @@ watch(
 
     <div
       ref="scroller"
-      class="round-selector__scroll relative min-w-0 flex-1 overflow-x-auto pb-2.5 -mb-2.5"
+      class="relative min-w-0 flex-1 overflow-x-auto pb-2.5 -mb-2.5"
     >
       <div class="flex items-end gap-1 w-max px-0.5 py-1">
         <template v-for="(entry, index) in rounds" :key="entry.round">
@@ -196,23 +196,3 @@ watch(
     </button>
   </div>
 </template>
-
-<style scoped>
-.round-selector__scroll {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
-}
-.round-selector__scroll::-webkit-scrollbar {
-  height: 4px;
-}
-.round-selector__scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.round-selector__scroll::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--border));
-  border-radius: 2px;
-}
-.round-selector__scroll::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground));
-}
-</style>

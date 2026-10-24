@@ -12495,7 +12495,8 @@
     "others": {
       "title": "その他",
       "new_online": "新たに{count}人がオンライン · 表示",
-      "left": "オフラインになりました"
+      "left": "オフラインになりました",
+      "online_elsewhere": "他の場所でオンライン"
     },
     "banned": "マッチメイキングからBanされています。",
     "banned_until": "{time} までマッチメイキングを利用できません",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "ここでオンラインの全員",
+      "at_region": "{region}にいるプレイヤー",
       "search_placeholder": "このLANを検索...",
       "just_arrived": "到着したばかり",
       "at_this_lan": "このLAN内",

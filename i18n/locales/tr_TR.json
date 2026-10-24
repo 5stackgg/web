@@ -12495,7 +12495,8 @@
     "others": {
       "title": "Diğerleri",
       "new_online": "{count} yeni çevrimiçi · Göster",
-      "left": "Çevrimdışı oldu"
+      "left": "Çevrimdışı oldu",
+      "online_elsewhere": "Başka yerde çevrimiçi"
     },
     "banned": "Eşleştirmeden banlandın",
     "banned_until": "{time} tarihine kadar eşleştirmeden yasaklısın",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "burada çevrimiçi olan herkes",
+      "at_region": "{region} katılımcıları",
       "search_placeholder": "Bu LAN'da ara...",
       "just_arrived": "Yeni geldi",
       "at_this_lan": "Bu LAN'da",

@@ -12495,7 +12495,8 @@
     "others": {
       "title": "기타",
       "new_online": "새로 온라인 {count}명 · 보기",
-      "left": "오프라인됨"
+      "left": "오프라인됨",
+      "online_elsewhere": "다른 곳에서 온라인"
     },
     "banned": "매치메이킹 이용이 정지되었습니다",
     "banned_until": "{time}까지 매치메이킹이 제한됩니다",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "여기 접속 중인 모두",
+      "at_region": "{region} 참가자",
       "search_placeholder": "이 LAN 검색...",
       "just_arrived": "방금 도착",
       "at_this_lan": "이 LAN에 있음",

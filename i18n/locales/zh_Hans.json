@@ -12495,7 +12495,8 @@
     "others": {
       "title": "其他",
       "new_online": "{count} 人新上线 · 显示",
-      "left": "已下线"
+      "left": "已下线",
+      "online_elsewhere": "在其他地方在线"
     },
     "banned": "您已被禁止使用匹配系统",
     "banned_until": "你被禁止使用匹配，直到 {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "这里所有在线的人",
+      "at_region": "在 {region}",
       "search_placeholder": "搜索此 LAN...",
       "just_arrived": "刚刚到达",
       "at_this_lan": "在此 LAN",

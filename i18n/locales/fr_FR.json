@@ -12495,7 +12495,8 @@
     "others": {
       "title": "Autres",
       "new_online": "{count} nouveaux en ligne · Afficher",
-      "left": "Passé hors ligne"
+      "left": "Passé hors ligne",
+      "online_elsewhere": "En ligne ailleurs"
     },
     "banned": "Tu es banni du matchmaking",
     "banned_until": "Vous êtes exclu du matchmaking jusqu'au {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "tous ceux en ligne ici",
+      "at_region": "Sur place : {region}",
       "search_placeholder": "Rechercher sur ce LAN...",
       "just_arrived": "Vient d'arriver",
       "at_this_lan": "Sur ce LAN",

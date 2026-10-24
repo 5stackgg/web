@@ -12495,7 +12495,8 @@
     "others": {
       "title": "آخرون",
       "new_online": "{count} متصلون جدد · عرض",
-      "left": "أصبح غير متصل"
+      "left": "أصبح غير متصل",
+      "online_elsewhere": "متصلون في مكان آخر"
     },
     "banned": "أنت محظور من Matchmaking",
     "banned_until": "أنت محظور من المطابقة حتى {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "كل المتصلين هنا",
+      "at_region": "في {region}",
       "search_placeholder": "ابحث في هذه الشبكة...",
       "just_arrived": "وصل للتو",
       "at_this_lan": "في هذه الشبكة",

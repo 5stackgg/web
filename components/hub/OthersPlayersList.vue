@@ -72,6 +72,11 @@ const justArrived = computed(() =>
       !lanLeft.value.has(player.steam_id),
   ),
 );
+const lanHere = computed(
+  () =>
+    lanListed.value.filter((player) => !lanLeft.value.has(player.steam_id))
+      .length,
+);
 const atLan = computed(() =>
   lanListed.value.filter(
     (player) =>
@@ -212,30 +217,21 @@ onBeforeUnmount(() => {
   }
 });
 
+// On a LAN each group says it's empty itself; off one, the online list is all
+// there is.
 const isEmpty = computed(
   () =>
-    lanListed.value.length === 0 &&
-    onlineShown.value.length === 0 &&
-    newOnline.value === 0 &&
+    !onLan.value &&
+    listing.value &&
+    loaded.value &&
     !loading.value &&
-    (!listing.value || loaded.value),
+    onlineShown.value.length === 0 &&
+    newOnline.value === 0,
 );
 </script>
 
 <template>
   <div ref="listRoot" class="flex min-h-full flex-1 flex-col gap-3 p-2">
-    <div
-      v-if="onLan"
-      class="flex items-center gap-2 text-xs text-muted-foreground"
-    >
-      <span
-        data-testid="lan-region"
-        class="rounded border border-[hsl(var(--tac-amber)/0.4)] px-1.5 py-px font-mono text-[0.65rem] text-[hsl(var(--tac-amber))]"
-      >
-        {{ regionName }}
-      </span>
-      {{ $t("matchmaking.lan.everyone_here") }}
-    </div>
     <div class="relative">
       <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
@@ -249,54 +245,74 @@ const isEmpty = computed(
       />
     </div>
 
-    <section v-if="justArrived.length > 0" data-testid="lan-arrived">
-      <div class="others-section-label">
-        {{ $t("matchmaking.lan.just_arrived") }}
-        <span class="ml-auto tabular-nums opacity-70">
-          {{ justArrived.length }}
+    <section v-if="onLan" data-testid="lan-group">
+      <div class="others-group-label text-[hsl(var(--tac-amber))]">
+        <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]" />
+        <span data-testid="lan-region">
+          {{ $t("matchmaking.lan.at_region", { region: regionName }) }}
         </span>
+        <span class="ml-auto tabular-nums opacity-70">{{ lanHere }}</span>
       </div>
-      <FriendListItem
-        v-for="player in justArrived"
-        :key="`arrived-${player.steam_id}`"
-        :player="player"
-        :online="true"
-      />
-    </section>
 
-    <section v-if="atLan.length > 0" data-testid="lan-players">
-      <div class="others-section-label">
-        {{ $t("matchmaking.lan.at_this_lan") }}
-        <span class="ml-auto tabular-nums opacity-70">
-          {{ atLan.length }}
-        </span>
-      </div>
-      <div
-        v-for="player in atLan"
-        :key="`lan-${player.steam_id}`"
-        :data-left="lanLeft.has(player.steam_id) || undefined"
-      >
+      <div v-if="justArrived.length > 0" data-testid="lan-arrived">
+        <div class="others-sub-label">
+          {{ $t("matchmaking.lan.just_arrived") }}
+        </div>
         <FriendListItem
+          v-for="player in justArrived"
+          :key="`arrived-${player.steam_id}`"
           :player="player"
-          :online="!lanLeft.has(player.steam_id)"
-          :muted="lanLeft.has(player.steam_id)"
+          :online="true"
         />
-        <p
-          v-if="lanLeft.has(player.steam_id)"
-          class="-mt-1 pb-1 pl-12 text-[0.65rem] text-muted-foreground"
-        >
-          {{ $t("matchmaking.lan.left") }}
-        </p>
       </div>
+
+      <div v-if="atLan.length > 0" data-testid="lan-players">
+        <div v-if="justArrived.length > 0" class="others-sub-label">
+          {{ $t("matchmaking.lan.at_this_lan") }}
+        </div>
+        <div
+          v-for="player in atLan"
+          :key="`lan-${player.steam_id}`"
+          :data-left="lanLeft.has(player.steam_id) || undefined"
+        >
+          <FriendListItem
+            :player="player"
+            :online="!lanLeft.has(player.steam_id)"
+            :muted="lanLeft.has(player.steam_id)"
+          />
+          <p
+            v-if="lanLeft.has(player.steam_id)"
+            class="-mt-1 pb-1 pl-12 text-[0.65rem] text-muted-foreground"
+          >
+            {{ $t("matchmaking.lan.left") }}
+          </p>
+        </div>
+      </div>
+
+      <p
+        v-if="lanListed.length === 0"
+        class="px-1 text-xs text-muted-foreground"
+      >
+        {{
+          searchQuery
+            ? $t("layouts.hub.empty.no_match", { query: searchQuery })
+            : $t("matchmaking.lan.empty_title")
+        }}
+      </p>
     </section>
 
     <section
-      v-if="listing && (onlineShown.length > 0 || newOnline > 0)"
+      v-if="listing && (onlineShown.length > 0 || newOnline > 0 || onLan)"
       data-testid="online-players"
+      :class="{ 'border-t border-border pt-3': onLan }"
     >
-      <div class="others-section-label">
+      <div class="others-group-label text-muted-foreground">
         <span class="h-2 w-2 rounded-full bg-green-500" />
-        {{ $t("common.online") }}
+        {{
+          onLan
+            ? $t("matchmaking.others.online_elsewhere")
+            : $t("common.online")
+        }}
       </div>
       <button
         v-if="newOnline > 0 && !searchQuery"
@@ -324,6 +340,18 @@ const isEmpty = computed(
           {{ $t("matchmaking.others.left") }}
         </p>
       </div>
+      <p
+        v-if="
+          onlineShown.length === 0 && newOnline === 0 && loaded && !loading
+        "
+        class="px-1 text-xs text-muted-foreground"
+      >
+        {{
+          searchQuery
+            ? $t("layouts.hub.empty.no_match", { query: searchQuery })
+            : $t("layouts.hub.empty.others_title")
+        }}
+      </p>
     </section>
 
     <div
@@ -340,31 +368,33 @@ const isEmpty = computed(
       :title="
         searchQuery
           ? $t('layouts.hub.empty.no_match', { query: searchQuery })
-          : listed
-            ? $t('layouts.hub.empty.others_title')
-            : $t('matchmaking.lan.empty_title')
+          : $t('layouts.hub.empty.others_title')
       "
       :description="
-        searchQuery
-          ? null
-          : listed
-            ? $t('layouts.hub.empty.others_description')
-            : $t('matchmaking.lan.empty_description')
+        searchQuery ? null : $t('layouts.hub.empty.others_description')
       "
     />
   </div>
 </template>
 
 <style scoped>
-.others-section-label {
+.others-group-label {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.others-sub-label {
+  margin: 0.25rem 0 0.25rem 0.1rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
 }

@@ -12495,7 +12495,8 @@
     "others": {
       "title": "Övriga",
       "new_online": "{count} nya online · Visa",
-      "left": "Gick offline"
+      "left": "Gick offline",
+      "online_elsewhere": "Online någon annanstans"
     },
     "banned": "Du är avstängd från matchmaking",
     "banned_until": "Du är avstängd från matchmaking till {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "alla som är online här",
+      "at_region": "På {region}",
       "search_placeholder": "Sök på detta LAN...",
       "just_arrived": "Precis anlänt",
       "at_this_lan": "På detta LAN",

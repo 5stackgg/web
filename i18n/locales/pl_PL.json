@@ -12495,7 +12495,8 @@
     "others": {
       "title": "Inni",
       "new_online": "Nowi online: {count} · Pokaż",
-      "left": "Teraz offline"
+      "left": "Teraz offline",
+      "online_elsewhere": "Online gdzie indziej"
     },
     "banned": "Masz bana w matchmakingu",
     "banned_until": "Masz zakaz dobierania meczów do {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "wszyscy online tutaj",
+      "at_region": "Na {region}",
       "search_placeholder": "Szukaj w tym LAN...",
       "just_arrived": "Właśnie dołączyli",
       "at_this_lan": "W tym LAN",

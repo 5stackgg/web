@@ -12495,7 +12495,8 @@
     "others": {
       "title": "其他",
       "new_online": "{count} 人新上線 · 顯示",
-      "left": "已離線"
+      "left": "已離線",
+      "online_elsewhere": "在其他地方上線"
     },
     "banned": "您已被禁止使用配對系統",
     "banned_until": "你被禁止使用配對，直到 {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "這裡所有在線的人",
+      "at_region": "在 {region}",
       "search_placeholder": "搜尋此 LAN...",
       "just_arrived": "剛剛到達",
       "at_this_lan": "在此 LAN",

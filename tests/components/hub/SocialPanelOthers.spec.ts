@@ -160,7 +160,9 @@ describe("the Others list", () => {
     atLan();
     const wrapper = await mountList();
 
-    expect(wrapper.get('[data-testid="lan-region"]').text()).toBe("Vulkan LAN");
+    expect(wrapper.get('[data-testid="lan-region"]').text()).toBe(
+      "At Vulkan LAN",
+    );
     expect(names(wrapper, "lan-players")).toEqual(["stranger", "asked"]);
     expect(wrapper.find('[data-testid="online-players"]').exists()).toBe(false);
   });
@@ -230,6 +232,28 @@ describe("the Others list", () => {
 
     expect(names(wrapper, "lan-players")).toEqual(["stranger", "asked"]);
     expect(names(wrapper, "online-players")).toEqual(["newcomer"]);
+    expect(wrapper.get('[data-testid="online-players"]').text()).toContain(
+      "Online elsewhere",
+    );
+  });
+
+  it("says when nobody else is at the LAN or online elsewhere", async () => {
+    const store = signedIn();
+    useApplicationSettingsStore().availableRegions = [
+      { value: "vulkan", description: "Vulkan LAN", is_lan: true },
+    ] as any;
+    store.setLanRoster({ region: "vulkan", players: [player(ME, "me")] });
+    listed(store, { "null|": { players: [], next: null } });
+
+    const wrapper = await mountList();
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="lan-group"]').text()).toContain(
+      "Nobody else is here yet",
+    );
+    expect(wrapper.get('[data-testid="online-players"]').text()).toContain(
+      "Nobody else is online",
+    );
   });
 
   it("greys out who went offline and counts arrivals until asked to show them", async () => {

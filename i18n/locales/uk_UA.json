@@ -12495,7 +12495,8 @@
     "others": {
       "title": "Інші",
       "new_online": "Нових у мережі: {count} · Показати",
-      "left": "Не в мережі"
+      "left": "Не в мережі",
+      "online_elsewhere": "У мережі деінде"
     },
     "banned": "Тебе заблоковано в матчмейкінгу",
     "banned_until": "Вам заборонено добір матчів до {time}",
@@ -12535,6 +12536,7 @@
     "lan": {
       "title": "LAN",
       "everyone_here": "усі, хто тут у мережі",
+      "at_region": "На {region}",
       "search_placeholder": "Пошук у цій LAN...",
       "just_arrived": "Щойно прийшли",
       "at_this_lan": "У цій LAN",

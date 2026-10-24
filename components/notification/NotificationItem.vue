@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
     </div>
     <h3
       :class="[
-        'text-lg font-semibold mb-2',
+        'text-lg font-semibold mb-2 [overflow-wrap:anywhere]',
         notification.deletable !== false ? 'pr-[4.5rem]' : 'pr-9',
         tone ? 'flex items-center gap-2' : '',
         titleToneClass,
@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
       {{ $t("layouts.notifications.review_orphaned_uploads") }}
     </Button>
 
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center gap-2">
       <span
         :class="[
           'text-xs',

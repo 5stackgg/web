@@ -4631,14 +4631,6 @@
         "drafting": "Draft en cours",
         "join_party": "Rejoindre avec le groupe ({count})",
         "sign_in_to_join": "Connecte-toi pour rejoindre",
-        "reasons": {
-          "no_room_for_party": "Pas de place pour ton groupe",
-          "host_approves": "L'hôte valide",
-          "subs_waiting": "{count} remplaçant en attente | {count} remplaçants en attente",
-          "full": "Complète",
-          "youre_in": "Tu en fais partie",
-          "waiting_for_host": "En attente de l'hôte"
-        },
         "empty": "Aucune draft ouverte pour le moment.",
         "no_results": "Aucune draft ne correspond à ces filtres.",
         "clear_filters": "Effacer les filtres"

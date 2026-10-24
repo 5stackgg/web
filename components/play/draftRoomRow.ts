@@ -99,8 +99,6 @@ export type DraftActionKind =
 export type DraftAction = {
   kind: DraftActionKind;
   label: string;
-  // The line under the button, empty when the seat bar already says it.
-  reason: string;
   disabled: boolean;
 };
 
@@ -118,40 +116,23 @@ export function draftAction(
 ): DraftAction {
   const accepted = acceptedPlayers(game);
   const left = Math.max((game?.capacity ?? 0) - accepted.length, 0);
-  const subs = waitlistPlayers(game).length;
   const mine = viewer.meSteamId
     ? (game?.players ?? []).find(
         (p: any) => String(p.steam_id) === String(viewer.meSteamId),
       )
     : undefined;
 
-  if (mine && mine.status !== "Requested") {
-    return {
-      kind: "view",
-      label: t("draft_games.card.view"),
-      reason: t("pages.play.draft_rooms.reasons.youre_in"),
-      disabled: false,
-    };
-  }
   if (mine?.status === "Requested") {
     return {
       kind: "requested",
       label: t("draft_games.card.requested"),
-      reason: t("pages.play.draft_rooms.reasons.waiting_for_host"),
       disabled: true,
     };
   }
-  if (left === 0) {
+  if (mine || left === 0) {
     return {
       kind: "view",
       label: t("draft_games.card.view"),
-      reason: subs
-        ? t(
-            "pages.play.draft_rooms.reasons.subs_waiting",
-            { count: subs },
-            subs,
-          )
-        : t("pages.play.draft_rooms.reasons.full"),
       disabled: false,
     };
   }
@@ -159,7 +140,6 @@ export function draftAction(
     return {
       kind: "sign_in",
       label: t("pages.play.draft_rooms.sign_in_to_join"),
-      reason: "",
       disabled: false,
     };
   }
@@ -167,32 +147,25 @@ export function draftAction(
     return {
       kind: "request",
       label: t("draft_games.card.request"),
-      reason: t("pages.play.draft_rooms.reasons.host_approves"),
       disabled: false,
     };
   }
-  if (viewer.isPartyLeader && viewer.partySize > 1) {
-    if (left >= viewer.partySize) {
-      return {
-        kind: "join_party",
-        label: t("pages.play.draft_rooms.join_party", {
-          count: viewer.partySize,
-        }),
-        reason: "",
-        disabled: false,
-      };
-    }
+  if (
+    viewer.isPartyLeader &&
+    viewer.partySize > 1 &&
+    left >= viewer.partySize
+  ) {
     return {
-      kind: "join",
-      label: t("draft_games.card.join"),
-      reason: t("pages.play.draft_rooms.reasons.no_room_for_party"),
+      kind: "join_party",
+      label: t("pages.play.draft_rooms.join_party", {
+        count: viewer.partySize,
+      }),
       disabled: false,
     };
   }
   return {
     kind: "join",
     label: t("draft_games.card.join"),
-    reason: "",
     disabled: false,
   };
 }

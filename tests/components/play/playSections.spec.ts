@@ -105,9 +105,11 @@ describe("draft room meta line", () => {
 });
 
 describe("draft room action", () => {
-  it("joins with no line under the button: the seat bar counts the spots", () => {
-    const action = draftAction(room(), solo, t);
-    expect(action).toMatchObject({ kind: "join", reason: "" });
+  it("joins an open room", () => {
+    expect(draftAction(room(), solo, t)).toMatchObject({
+      kind: "join",
+      label: "Join",
+    });
   });
 
   it("offers the whole party when it fits", () => {
@@ -122,19 +124,16 @@ describe("draft room action", () => {
       capacity: 4,
       players: [player("host", "Accepted"), player("a", "Accepted")],
     });
-    expect(draftAction(nearlyFull, partyOf3, t)).toMatchObject({
-      kind: "join",
-      reason: "No room for your party",
-    });
+    expect(draftAction(nearlyFull, partyOf3, t).kind).toBe("join");
   });
 
   it("asks the host when approval is required", () => {
     expect(
       draftAction(room({ require_approval: true }), solo, t),
-    ).toMatchObject({ kind: "request", reason: "The host approves" });
+    ).toMatchObject({ kind: "request" });
   });
 
-  it("only views a full room, naming the subs waiting", () => {
+  it("only views a full room", () => {
     const full = room({
       capacity: 2,
       players: [
@@ -144,10 +143,7 @@ describe("draft room action", () => {
         player("w2", "Waitlist"),
       ],
     });
-    expect(draftAction(full, solo, t)).toMatchObject({
-      kind: "view",
-      reason: "2 subs waiting",
-    });
+    expect(draftAction(full, solo, t).kind).toBe("view");
   });
 
   it("shows a member their room and a requester a disabled wait", () => {

@@ -590,6 +590,24 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       },
     });
 
+  const setAccess = (draftGameId: string, access: e_lobby_access_enum) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation SetDraftGameAccess(
+          $draftGameId: uuid!
+          $access: e_lobby_access_enum!
+        ) {
+          update_draft_games_by_pk(
+            pk_columns: { id: $draftGameId }
+            _set: { access: $access }
+          ) {
+            id
+          }
+        }
+      `,
+      variables: { draftGameId, access },
+    });
+
   const start = (draftGameId: string) =>
     getGraphqlClient().mutate({
       mutation: gql`
@@ -896,6 +914,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     leave,
     cancelDraftRoom,
     extend,
+    setAccess,
     start,
     pick,
     add,

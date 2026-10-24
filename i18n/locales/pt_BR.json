@@ -4631,14 +4631,6 @@
         "drafting": "Em draft",
         "join_party": "Entrar com o grupo ({count})",
         "sign_in_to_join": "Entre para participar",
-        "reasons": {
-          "no_room_for_party": "Sem espaço para seu grupo",
-          "host_approves": "O host aprova",
-          "subs_waiting": "{count} reserva aguardando | {count} reservas aguardando",
-          "full": "Cheia",
-          "youre_in": "Você está dentro",
-          "waiting_for_host": "Aguardando o host"
-        },
         "empty": "Nenhuma sala draft aberta no momento.",
         "no_results": "Nenhuma sala corresponde a esses filtros.",
         "clear_filters": "Limpar filtros"

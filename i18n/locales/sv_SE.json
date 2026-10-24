@@ -4631,14 +4631,6 @@
         "drafting": "Draftar",
         "join_party": "Gå med som grupp ({count})",
         "sign_in_to_join": "Logga in för att gå med",
-        "reasons": {
-          "no_room_for_party": "Ingen plats för din grupp",
-          "host_approves": "Värden godkänner",
-          "subs_waiting": "{count} reserv väntar | {count} reserver väntar",
-          "full": "Fullt",
-          "youre_in": "Du är med",
-          "waiting_for_host": "Väntar på värden"
-        },
         "empty": "Inga öppna draftrum just nu.",
         "no_results": "Inga rum matchar filtren.",
         "clear_filters": "Rensa filter"

@@ -4631,14 +4631,6 @@
         "drafting": "ドラフト中",
         "join_party": "パーティーで参加（{count}）",
         "sign_in_to_join": "ログインして参加",
-        "reasons": {
-          "no_room_for_party": "パーティー全員分の空きがありません",
-          "host_approves": "ホストの承認制",
-          "subs_waiting": "控え{count}人が待機中 | 控え{count}人が待機中",
-          "full": "満員",
-          "youre_in": "参加中",
-          "waiting_for_host": "ホストを待っています"
-        },
         "empty": "現在募集中のドラフトルームはありません。",
         "no_results": "条件に合うルームがありません。",
         "clear_filters": "フィルターをクリア"

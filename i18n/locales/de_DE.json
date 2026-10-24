@@ -4631,14 +4631,6 @@
         "drafting": "Draft läuft",
         "join_party": "Mit Party beitreten ({count})",
         "sign_in_to_join": "Zum Beitreten einloggen",
-        "reasons": {
-          "no_room_for_party": "Kein Platz für deine Party",
-          "host_approves": "Der Host gibt frei",
-          "subs_waiting": "{count} Ersatzspieler wartet | {count} Ersatzspieler warten",
-          "full": "Voll",
-          "youre_in": "Du bist dabei",
-          "waiting_for_host": "Warten auf den Host"
-        },
         "empty": "Gerade keine offenen Draft-Rooms.",
         "no_results": "Keine Rooms passen zu diesen Filtern.",
         "clear_filters": "Filter zurücksetzen"

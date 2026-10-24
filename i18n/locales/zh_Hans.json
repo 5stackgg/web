@@ -4631,14 +4631,6 @@
         "drafting": "选秀中",
         "join_party": "带小队加入（{count}）",
         "sign_in_to_join": "登录后加入",
-        "reasons": {
-          "no_room_for_party": "位置不够容纳你的小队",
-          "host_approves": "需房主批准",
-          "subs_waiting": "{count} 名替补等待中 | {count} 名替补等待中",
-          "full": "已满",
-          "youre_in": "你已加入",
-          "waiting_for_host": "等待房主"
-        },
         "empty": "当前没有开放的选秀房间。",
         "no_results": "没有符合这些筛选条件的房间。",
         "clear_filters": "清除筛选"

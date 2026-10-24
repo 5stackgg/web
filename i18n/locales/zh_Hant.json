@@ -4631,14 +4631,6 @@
         "drafting": "選人中",
         "join_party": "帶小隊加入（{count}）",
         "sign_in_to_join": "登入後加入",
-        "reasons": {
-          "no_room_for_party": "位置不夠容納你的小隊",
-          "host_approves": "需房主核准",
-          "subs_waiting": "{count} 名替補等待中 | {count} 名替補等待中",
-          "full": "已滿",
-          "youre_in": "你已加入",
-          "waiting_for_host": "等待房主"
-        },
         "empty": "目前沒有開放的選人房間。",
         "no_results": "沒有符合這些篩選條件的房間。",
         "clear_filters": "清除篩選"

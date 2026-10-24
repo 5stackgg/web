@@ -4631,14 +4631,6 @@
         "drafting": "Draft in corso",
         "join_party": "Unisciti col gruppo ({count})",
         "sign_in_to_join": "Accedi per unirti",
-        "reasons": {
-          "no_room_for_party": "Nessun posto per il tuo gruppo",
-          "host_approves": "Approva l'host",
-          "subs_waiting": "{count} riserva in attesa | {count} riserve in attesa",
-          "full": "Piena",
-          "youre_in": "Ci sei dentro",
-          "waiting_for_host": "In attesa dell'host"
-        },
         "empty": "Nessuna draft room aperta al momento.",
         "no_results": "Nessuna room corrisponde a questi filtri.",
         "clear_filters": "Cancella filtri"

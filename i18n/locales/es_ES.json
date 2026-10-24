@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Clasificaciones",
           "leaderboard_section_description": "Los jugadores solo aparecen en una clasificación cuando han jugado esta cantidad de partidas en la temporada o el periodo que se está viendo. Las clasificaciones de Trofeos, Faceit y Premier lo ignoran.",
           "leaderboard_min_matches": "Mínimo de partidas",
+          "online_list_section": "Quién está en línea",
+          "online_list_section_description": "Mientras no haya más jugadores en línea que este número, la pestaña Otros del panel social muestra a todos los conectados para desplazarse y buscar. Por encima, la lista se desactiva hasta que haya un 10 % menos, y los jugadores se encuentran mediante la búsqueda. 0 nunca muestra la lista.",
+          "online_list_max": "Máximo de jugadores en línea en la lista",
           "force_name_registration": "Forzar registro del nombre del jugador",
           "force_name_registration_description": "Si se fuerza el registro, el jugador deberá indicar un nombre que se usará en la plataforma.",
           "refresh_all_title": "Reindexar el índice de búsqueda",
@@ -12490,7 +12493,9 @@
       "team_section": "Equipo · {name}"
     },
     "others": {
-      "title": "Otros"
+      "title": "Otros",
+      "new_online": "{count} nuevos en línea · Mostrar",
+      "left": "Se desconectó"
     },
     "banned": "Estás baneado del matchmaking",
     "banned_until": "Tienes vetado el emparejamiento hasta {time}",

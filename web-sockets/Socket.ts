@@ -1328,6 +1328,18 @@ socket.listen("players-online:count", (count) => {
   useMatchmakingStore().setOnlineCount(count);
 });
 
+socket.listen("players-online:listed", (listed) => {
+  useMatchmakingStore().setOnlineListed(listed);
+});
+
+socket.listen("players-online:page", (page) => {
+  useMatchmakingStore().setOnlinePage(page);
+});
+
+socket.listen("online-presence", (presence) => {
+  useMatchmakingStore().applyOnlinePresence(presence);
+});
+
 // Only read from an api that predates friends presence.
 socket.listen("players-online", (onlinePlayerSteamIds) => {
   useMatchmakingStore().setLegacyRoster(onlinePlayerSteamIds);
@@ -1392,6 +1404,7 @@ socket.listen("pong", (data?: { serverNow?: number; sentAt?: number }) => {
 
 socket.listen("online", () => {
   useServerClockStore().reconnected();
+  useMatchmakingStore().resumeOnlineWatch();
 });
 
 socket.listen("team-lobby:join", (data) => {});

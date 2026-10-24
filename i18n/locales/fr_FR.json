@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Classements",
           "leaderboard_section_description": "Les joueurs n'apparaissent dans un classement qu'après avoir joué ce nombre de matchs sur la saison ou la période affichée. Les classements Récompenses, Faceit et Premier l'ignorent.",
           "leaderboard_min_matches": "Minimum de matchs",
+          "online_list_section": "Qui est en ligne",
+          "online_list_section_description": "Tant que le nombre de joueurs en ligne ne dépasse pas cette valeur, l'onglet Autres du panneau social liste tous les joueurs en ligne, à parcourir et à rechercher. Au-delà, la liste se désactive jusqu'à ce qu'il y en ait 10 % de moins, et les joueurs se trouvent via la recherche. 0 ne l'affiche jamais.",
+          "online_list_max": "Nombre max. de joueurs en ligne listés",
           "force_name_registration": "Forcer l'enregistrement du nom du joueur",
           "force_name_registration_description": "Si l'enregistrement est forcé, le joueur devra saisir un nom qui sera utilisé sur la plateforme.",
           "refresh_all_title": "Réindexer l'index de recherche",
@@ -12490,7 +12493,9 @@
       "team_section": "Équipe · {name}"
     },
     "others": {
-      "title": "Autres"
+      "title": "Autres",
+      "new_online": "{count} nouveaux en ligne · Afficher",
+      "left": "Passé hors ligne"
     },
     "banned": "Tu es banni du matchmaking",
     "banned_until": "Vous êtes exclu du matchmaking jusqu'au {time}",

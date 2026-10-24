@@ -266,6 +266,35 @@ async function doScanSteamBans() {
             </FormField>
           </SettingsSection>
 
+          <SettingsSection
+            id="online-list"
+            :title="
+              $t('pages.settings.application.players.online_list_section')
+            "
+            :description="
+              $t(
+                'pages.settings.application.players.online_list_section_description',
+              )
+            "
+          >
+            <FormField v-slot="{ componentField }" name="online_list_max">
+              <FormItem>
+                <FormLabel>{{
+                  $t("pages.settings.application.players.online_list_max")
+                }}</FormLabel>
+                <FormControl>
+                  <Input
+                    v-bind="componentField"
+                    type="number"
+                    min="0"
+                    max="100000"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </SettingsSection>
+
           <SettingsSaveBar
             :form="form"
             :submitting="submitting"
@@ -648,6 +677,9 @@ import { toast } from "@/components/ui/toast";
 
 // Matches get_leaderboard.sql's fallback.
 const LEADERBOARD_MIN_MATCHES = 3;
+// Matches the api's PresenceService.LIST_MAX_DEFAULT.
+const ONLINE_LIST_MAX = 200;
+const NUMBER_SETTINGS = ["leaderboard_min_matches", "online_list_max"];
 
 export default {
   data() {
@@ -665,6 +697,12 @@ export default {
               .min(1)
               .max(1000)
               .default(LEADERBOARD_MIN_MATCHES),
+            online_list_max: z
+              .number()
+              .int()
+              .min(0)
+              .max(100000)
+              .default(ONLINE_LIST_MAX),
             public: z.object({
               player_name_registration: z.string().default("false"),
               create_matches_role: z.string().default(e_player_roles_enum.user),
@@ -685,7 +723,7 @@ export default {
           if (setting.value == null || setting.value === "") {
             continue;
           }
-          if (setting.name === "leaderboard_min_matches") {
+          if (NUMBER_SETTINGS.includes(setting.name)) {
             const value = Number(setting.value);
             if (Number.isInteger(value)) {
               (this.form.setFieldValue as any)(setting.name, value);
@@ -764,6 +802,10 @@ export default {
                     value: String(
                       values.leaderboard_min_matches ?? LEADERBOARD_MIN_MATCHES,
                     ),
+                  },
+                  {
+                    name: "online_list_max",
+                    value: String(values.online_list_max ?? ONLINE_LIST_MAX),
                   },
                 ],
                 on_conflict: {

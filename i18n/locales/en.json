@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Leaderboards",
           "leaderboard_section_description": "Players appear on a leaderboard only once they have played this many matches in the season or time range being viewed. The Awards, Faceit and Premier boards ignore it.",
           "leaderboard_min_matches": "Minimum matches",
+          "online_list_section": "Who's online",
+          "online_list_section_description": "While no more than this many players are online, the Others tab in the social panel lists everyone online to scroll through and search. Above it, the list turns off until 10% fewer are online, and players find each other through search. 0 never lists everyone.",
+          "online_list_max": "Most players online to list",
           "force_name_registration": "Force player name registration",
           "force_name_registration_description": "If forced to have player registration, the player will be required to submit a name that will be used on the platform.",
           "refresh_all_title": "Reindex search index",
@@ -12490,7 +12493,9 @@
       "team_section": "Team · {name}"
     },
     "others": {
-      "title": "Others"
+      "title": "Others",
+      "new_online": "{count} new online · Show",
+      "left": "Went offline"
     },
     "banned": "You are banned from matchmaking",
     "banned_until": "You are banned from matchmaking until {time}",

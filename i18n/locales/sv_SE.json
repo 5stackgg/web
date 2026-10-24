@@ -2680,6 +2680,9 @@
           "leaderboard_section": "Topplistor",
           "leaderboard_section_description": "Spelare visas på en topplista först när de har spelat så många matcher under den säsong eller period som visas. Topplistorna för utmärkelser, Faceit och Premier ignorerar det.",
           "leaderboard_min_matches": "Minsta antal matcher",
+          "online_list_section": "Vem är online",
+          "online_list_section_description": "Så länge högst så många spelare är online listar fliken Övriga i den sociala panelen alla som är online, att bläddra och söka bland. Över det stängs listan av tills 10 % färre är online, och spelare hittar varandra via sökning. 0 visar aldrig listan.",
+          "online_list_max": "Max antal spelare online i listan",
           "force_name_registration": "Tvinga registrering av spelarnamn",
           "force_name_registration_description": "Om spelarregistrering krävs måste spelaren ange ett namn som används på plattformen.",
           "refresh_all_title": "Reindexera sökindex",
@@ -12490,7 +12493,9 @@
       "team_section": "Lag · {name}"
     },
     "others": {
-      "title": "Övriga"
+      "title": "Övriga",
+      "new_online": "{count} nya online · Visa",
+      "left": "Gick offline"
     },
     "banned": "Du är avstängd från matchmaking",
     "banned_until": "Du är avstängd från matchmaking till {time}",

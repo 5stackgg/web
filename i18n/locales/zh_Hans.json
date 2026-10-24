@@ -2680,6 +2680,9 @@
           "leaderboard_section": "排行榜",
           "leaderboard_section_description": "玩家需在当前查看的赛季或时间范围内打满这么多场比赛，才会出现在排行榜上。奖杯、Faceit 和 Premier 排行榜不受此限制。",
           "leaderboard_min_matches": "最少比赛数",
+          "online_list_section": "在线玩家",
+          "online_list_section_description": "在线人数不超过此值时，社交面板的“其他”标签会列出所有在线玩家，可滚动浏览和搜索。超过后，列表会关闭，直到在线人数减少 10%，玩家需通过搜索互相查找。设为 0 则从不显示列表。",
+          "online_list_max": "列出在线玩家的人数上限",
           "force_name_registration": "强制玩家名称注册",
           "force_name_registration_description": "如果强制要求玩家注册，玩家将需要提交一个在平台上使用的名称。",
           "refresh_all_title": "重建搜索索引",
@@ -12490,7 +12493,9 @@
       "team_section": "战队 · {name}"
     },
     "others": {
-      "title": "其他"
+      "title": "其他",
+      "new_online": "{count} 人新上线 · 显示",
+      "left": "已下线"
     },
     "banned": "您已被禁止使用匹配系统",
     "banned_until": "你被禁止使用匹配，直到 {time}",

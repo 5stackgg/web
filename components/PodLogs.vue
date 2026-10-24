@@ -17,7 +17,7 @@
     <div
       ref="scrollContainer"
       :class="[
-        'overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)] scrollbar-thin',
+        'overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)]',
         maximized
           ? 'min-h-0 flex-1'
           : fill

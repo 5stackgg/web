@@ -482,7 +482,7 @@ function clipTeamName(c: Clip): string | null {
         </div>
         <ol
           ref="queueScrollEl"
-          class="grid min-h-0 flex-1 auto-cols-[9.25rem] grid-flow-col gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:auto-cols-auto lg:grid-flow-row lg:content-start lg:gap-0.5 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-y-contain lg:px-1.5 lg:pb-1.5 scrollbar-thin"
+          class="grid min-h-0 flex-1 auto-cols-[9.25rem] grid-flow-col gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:auto-cols-auto lg:grid-flow-row lg:content-start lg:gap-0.5 lg:overflow-y-auto lg:overflow-x-hidden lg:overscroll-y-contain lg:px-1.5 lg:pb-1.5"
         >
           <li v-for="c in reelQueue" :key="c.id" class="min-w-0">
             <button

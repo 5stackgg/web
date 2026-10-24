@@ -345,7 +345,7 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
 </script>
 
 <template>
-  <div class="tl-wrap scrollbar-thin">
+  <div class="tl-wrap">
     <div class="tl">
       <div class="tl-ticks" aria-hidden="true">
         <i v-for="tick in ticks" :key="tick.t" :style="{ left: tick.left }" />

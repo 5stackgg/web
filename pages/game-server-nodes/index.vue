@@ -1069,7 +1069,7 @@ onBeforeUnmount(() => stopTier?.());
       <aside
         v-if="docked"
         ref="aside"
-        class="gsn-insp scrollbar-thin"
+        class="gsn-insp"
         :aria-label="$t(`${INSPECTOR}.details`)"
       >
         <Transition

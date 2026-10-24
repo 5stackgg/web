@@ -346,7 +346,7 @@ function winnerName(round: Round) {
         </div>
       </div>
 
-      <div class="relative min-w-0 overflow-x-auto scrollbar-thin pb-2">
+      <div class="relative min-w-0 overflow-x-auto pb-2">
         <div class="flex items-stretch gap-[4px] w-max py-0.5">
           <template
             v-for="(round, index) in chronologicalRounds"

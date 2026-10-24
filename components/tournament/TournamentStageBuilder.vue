@@ -128,7 +128,7 @@ import {
              many stages exist. -->
         <div class="mb-2 flex flex-wrap items-start gap-2">
           <TabsList
-            class="flex min-w-0 flex-1 flex-nowrap gap-2 overflow-x-auto p-0 pb-1 bg-transparent border-none h-auto justify-start scrollbar-thin"
+            class="flex min-w-0 flex-1 flex-nowrap gap-2 overflow-x-auto p-0 pb-1 bg-transparent border-none h-auto justify-start"
           >
             <TabsTrigger
               v-for="stageNumber in stageNumbers"

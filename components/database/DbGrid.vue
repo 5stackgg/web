@@ -86,7 +86,7 @@ onBeforeUnmount(() => observer?.disconnect());
 
 <template>
   <div
-    class="db-grid overflow-auto rounded-[10px] border border-border scrollbar-thin"
+    class="db-grid overflow-auto rounded-[10px] border border-border"
     :style="{
       maxHeight: maxHeight ? `${maxHeight}px` : undefined,
       minHeight: heldHeight

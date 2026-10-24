@@ -332,7 +332,7 @@ const showsHalf = (round: number) => round === props.data.halftime + 1;
       <div
         ref="scroller"
         @scroll.passive="clampLabel"
-        class="relative min-w-0 flex-1 overflow-x-auto scrollbar-thin"
+        class="relative min-w-0 flex-1 overflow-x-auto"
         :class="roomy ? 'pt-7' : ''"
       >
         <div

@@ -819,7 +819,7 @@ const utilClusters = computed(() => {
       <Transition name="bp-score">
         <div
           v-show="showScoreboard !== false"
-          class="bp-score-panel scrollbar-thin"
+          class="bp-score-panel"
           :class="{ dense: denseRoster }"
           :style="scorePanelStyle"
         >

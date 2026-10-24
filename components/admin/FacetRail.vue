@@ -166,7 +166,7 @@ const countOf = (group: string, value: string) =>
     <div class="min-w-0 lg:border-r lg:border-border/70 lg:pr-3">
       <aside
         :aria-label="label"
-        class="grid min-w-0 gap-2 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:pr-1 scrollbar-thin"
+        class="grid min-w-0 gap-2 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:pr-1"
       >
         <button
           v-if="!wide"

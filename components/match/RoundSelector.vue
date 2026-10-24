@@ -146,7 +146,7 @@ watch(
 
     <div
       ref="scroller"
-      class="relative min-w-0 flex-1 overflow-x-auto pb-2.5 -mb-2.5 scrollbar-thin"
+      class="relative min-w-0 flex-1 overflow-x-auto pb-2.5 -mb-2.5"
     >
       <div class="flex items-end gap-1 w-max px-0.5 py-1">
         <template v-for="(entry, index) in rounds" :key="entry.round">

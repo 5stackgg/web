@@ -310,7 +310,7 @@ const tagTitle = (service: string) => {
     <div
       ref="scroller"
       tabindex="0"
-      class="overflow-auto overscroll-contain scrollbar-thin"
+      class="overflow-auto overscroll-contain"
       :class="
         maximized
           ? 'min-h-[50vh] flex-1 lg:min-h-0'

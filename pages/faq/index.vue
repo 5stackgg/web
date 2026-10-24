@@ -114,7 +114,7 @@ const supportLinks = computed(() =>
     <div class="grid items-start gap-8 lg:grid-cols-[15.5rem_minmax(0,1fr)]">
       <PageTransition :step="2" class="lg:sticky lg:top-4">
         <aside
-          class="lg:max-h-[calc(100svh-6rem)] lg:overflow-y-auto lg:pr-1 scrollbar-thin"
+          class="lg:max-h-[calc(100svh-6rem)] lg:overflow-y-auto lg:pr-1"
         >
           <FaqNav :parts="outline" @go="go" />
         </aside>

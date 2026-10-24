@@ -78,7 +78,7 @@ const chip = computed(() => {
     </div>
     <Fold :open="open && groups.length > 0">
       <div
-        class="mt-1.5 max-h-[300px] overflow-y-auto scrollbar-thin rounded-[10px] border border-border bg-[hsl(240_6%_5.5%)]"
+        class="mt-1.5 max-h-[300px] overflow-y-auto rounded-[10px] border border-border bg-[hsl(240_6%_5.5%)]"
       >
         <TransitionGroup
           enter-active-class="lg-g-enter"

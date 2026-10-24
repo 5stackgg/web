@@ -212,7 +212,7 @@ const badgeTitle = computed(() =>
     </div>
 
     <div
-      class="overflow-y-auto py-1.5 lg:max-h-[calc(100vh-11rem)] lg:pr-2 scrollbar-thin"
+      class="overflow-y-auto py-1.5 lg:max-h-[calc(100vh-11rem)] lg:pr-2"
       :class="!open && 'max-lg:hidden'"
     >
       <template v-if="!find.trim()">

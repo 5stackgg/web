@@ -441,7 +441,7 @@ const sheetFade = {
       <aside
         v-if="docked"
         ref="aside"
-        class="gpn-insp scrollbar-thin"
+        class="gpn-insp"
         :aria-label="$t(`${INSPECTOR}.details`)"
       >
         <Transition
